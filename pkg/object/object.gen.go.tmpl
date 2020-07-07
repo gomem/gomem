@@ -1,0 +1,284 @@
+// Copyright 2019 Nick Poorman
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{{$package := "object"}}
+
+package {{$package}}
+
+import (
+	"fmt"
+	"math"
+
+	"github.com/apache/arrow/go/arrow"
+	"github.com/apache/arrow/go/arrow/decimal128"
+	"github.com/apache/arrow/go/arrow/float16"
+)
+
+{{$kinds := buildKinds .In}}
+
+var (
+{{range $kind := $kinds}}
+{{- if $kind.Data.MaxValue}}
+Max{{$kind.Data.Name}} = {{$kind.Data.MaxValue}}
+{{- end}}
+{{- end}}
+)
+
+{{range $kind := $kinds}}
+
+{{- if not (contains $kind.Data.Skip "CastableTo")}}
+type CastableTo{{$kind.Data.Name}} interface {
+	To{{$kind.Data.Name}}Checked() ({{$kind.Data.Name}}, Boolean)
+	To{{$kind.Data.Name}}() {{$kind.Data.Name}}
+}
+{{- end}}
+
+{{- if not (contains $kind.Data.Skip "CastTo")}}
+// CastTo{{$kind.Data.Name}} takes an interface{} type or any Object type and
+// attempts to convert it to the {{$kind.Data.Name}} Object type.
+func CastTo{{$kind.Data.Name}}(v interface{}) ({{$kind.Data.Name}}, bool) {
+    switch pt := v.(type) {
+    case *{{$kind.Data.Name}}:
+        return *pt, true
+	case {{$kind.Data.Name}}:
+        return pt, true
+    {{- range .Data.CastTo}}
+		{{- if not .NotImplemented }}
+			{{- if .From}}
+				{{- if ne .From $kind.Data.Name}} {{/* Don't include the case if it's the one we wrote out above */}}
+					case *{{stripPackage $package .From}}:
+						t := *pt
+						{{- if .ViaBlock}}
+							return func(t {{stripPackage $package .From}}) {{$kind.Data.Name}} {
+								{{.ViaBlock}}
+							}(t), true
+						{{- else}}
+							return {{.Via}}, true
+						{{- end}}
+					case {{stripPackage $package .From}}:
+						t := pt
+						{{- if .ViaBlock}}
+							return func(t {{stripPackage $package .From}}) {{$kind.Data.Name}} {
+								{{.ViaBlock}}
+							}(t), true
+						{{- else}}
+							return {{.Via}}, true
+						{{- end}}
+				{{- end}}
+			{{- end}}
+		{{- end}}
+	{{- end}}
+    default:
+		// Also handles when v is nil
+       return {{$kind.Data.Default}}, false
+    }
+}
+{{- end}}
+
+{{if not (contains $kind.Data.Skip "New")}}
+// New{{$kind.Data.Name}} creates a new {{$kind.Data.Name}} object
+// from the given value provided as v.
+func New{{$kind.Data.Name}}(v {{$kind.Data.Type}}) {{$kind.Data.Name}} {
+	return {{$kind.Data.Name}}(v)
+}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "Struct")}}
+// {{$kind.Data.Name}} has logic to apply to this type.
+type {{$kind.Data.Name}} {{$kind.Data.Type}}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "Value")}}
+// Value returns the underlying value in it's native type.
+func (e {{$kind.Data.Name}}) Value() {{$kind.Data.Type}} {
+	{{- if eq $kind.Data.Name $kind.Data.Type}}
+		return e
+	{{- else}}
+		return {{$kind.Data.Type}}(e)
+	{{- end}}
+}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "compare")}}
+// compare takes the left and right objects and applies the comparator function to them.
+func (e {{$kind.Data.Name}}) compareTypes(r Object, f func({{$kind.Data.Type}}, {{$kind.Data.Type}}) Boolean) (Boolean, error) {
+	if r == nil {
+		return Boolean(false), nil
+	}
+
+	switch right := r.(type) {
+		case {{$kind.Data.Name}}:
+			return f(e.Value(), right.Value()), nil
+		case *{{$kind.Data.Name}}:
+			return f(e.Value(), right.Value()), nil
+		default:
+			return false, fmt.Errorf("cannot cast %T (%#v) to {{$package}}.{{$kind.Data.Name}}", r, r)
+	}
+}
+{{end}}
+
+// Comparation methods
+
+{{if not (contains $kind.Data.Skip "Eq")}}
+// Eq returns true if the left {{$kind.Data.Name}} is equal to the right {{$kind.Data.Name}}.
+func (e {{$kind.Data.Name}}) Eq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right {{$kind.Data.Type}}) Boolean {
+		{{- if $kind.Data.Compare.Eq }}
+		return Boolean({{$kind.Data.Compare.Eq}})
+		{{- else}}
+		return Boolean(left == right)
+		{{- end}}
+	})
+}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "Neq")}}
+// Neq returns true if the left {{$kind.Data.Name}}
+// is not equal to the right {{$kind.Data.Name}}.
+func (e {{$kind.Data.Name}}) Neq(r Object) (Boolean, error) {
+	v, err := e.Eq(r)
+	if err != nil {
+		return Boolean(false), err
+	}
+	return !v, err
+}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "Less")}}
+// Less returns true if the left {{$kind.Data.Name}}
+// is less than the right {{$kind.Data.Name}}.
+func (e {{$kind.Data.Name}}) Less(r Object) (Boolean, error) {
+	{{- if contains $kind.Data.Compare.NotDefined "Less"}}
+	return false, errors.New("less than not defined on {{$kind.Data.Name}}")
+	{{- else}}
+	return e.compareTypes(r, func(left, right {{$kind.Data.Type}}) Boolean {
+		{{- if $kind.Data.Compare.Less }}
+		return Boolean({{$kind.Data.Compare.Less}})
+		{{- else}}
+		return Boolean(left < right)
+		{{- end}}
+	})
+	{{- end}}
+}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "LessEq")}}
+// LessEq returns true if the left {{$kind.Data.Name}}
+// is less than or equal to the right {{$kind.Data.Name}}.
+func (e {{$kind.Data.Name}}) LessEq(r Object) (Boolean, error) {
+	{{- if contains $kind.Data.Compare.NotDefined "LessEq"}}
+	return false, errors.New("less than or equal to not defined on {{$kind.Data.Name}}")
+	{{- else}}
+	return e.compareTypes(r, func(left, right {{$kind.Data.Type}}) Boolean {
+		{{- if $kind.Data.Compare.LessEq }}
+		return Boolean({{$kind.Data.Compare.LessEq}})
+		{{- else}}
+		return Boolean(left <= right)
+		{{- end}}
+	})
+	{{- end}}
+}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "Greater")}}
+// Greater returns true if the left {{$kind.Data.Name}}
+// is greter than the right {{$kind.Data.Name}}.
+func (e {{$kind.Data.Name}}) Greater(r Object) (Boolean, error) {
+	{{- if contains $kind.Data.Compare.NotDefined "Greater"}}
+	return false, errors.New("greater than not defined on {{$kind.Data.Name}}")
+	{{- else}}
+	return e.compareTypes(r, func(left, right {{$kind.Data.Type}}) Boolean {
+		{{- if $kind.Data.Compare.Greater }}
+		return Boolean({{$kind.Data.Compare.Greater}})
+		{{- else}}
+		return Boolean(left > right)
+		{{- end}}
+	})
+	{{- end}}
+}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "GreaterEq")}}
+// GreaterEq returns true if the left {{$kind.Data.Name}}
+// is greter than or equal to the right {{$kind.Data.Name}}.
+func (e {{$kind.Data.Name}}) GreaterEq(r Object) (Boolean, error) {
+	{{- if contains $kind.Data.Compare.NotDefined "GreaterEq"}}
+	return Boolean(false), errors.New("greater than or equal to not defined on {{$kind.Data.Name}}")
+	{{- else}}
+	return e.compareTypes(r, func(left, right {{$kind.Data.Type}}) Boolean {
+		{{- if $kind.Data.Compare.GreaterEq }}
+		return Boolean({{$kind.Data.Compare.GreaterEq}})
+		{{- else}}
+		return Boolean(left >= right)
+		{{- end}}
+	})
+	{{- end}}
+}
+{{end}}
+
+{{if not (contains $kind.Data.Skip "To")}}
+{{range .Casts}}
+{{- if not .NotImplemented }}
+// To{{.ToName}}Checked attempts to cast the {{$kind.Data.Name}} to a {{.ToName}}.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+{{- if .ToComment}}
+// {{.ToComment}}
+{{- end}}
+func (t {{$kind.Data.Name}}) To{{.ToName}}Checked() ({{.ToType}}, Boolean) {
+	{{- if .Overflow}}
+		var converted {{.ToName}}
+		{{- if .ViaBlock}}
+		converted = func() {{.ToName}} {
+			{{.ViaBlock}}
+		}()
+		{{- else if .Via}}
+		converted = {{.Via}}
+		{{- end}}
+		v, err := converted.To{{$kind.Data.Name}}().Eq(t)
+		return converted, Boolean(err == nil && v)
+	{{- else}}
+		return t.To{{.ToName}}(), true
+	{{- end}}
+}
+
+// To{{.ToName}} attempts to cast the {{$kind.Data.Name}} to a {{.ToName}}.
+// The result is not checked for an overflow.
+{{- if .ToComment}}
+// {{.ToComment}}
+{{- end}}
+// Use the To{{.ToName}}Checked version of this method if you need to check for
+// an overflow.
+func (t {{$kind.Data.Name}}) To{{.ToName}}() ({{.ToType}}) {
+	{{- if eq $kind.Data.Name .ToType}}
+		return t
+	{{- else}}
+		{{- if .ViaBlock}}
+			{{.ViaBlock}}
+		{{- else if .Via}}
+			return {{.Via}}
+		{{- end}}
+	{{- end}}
+}
+{{end}}
+{{end}}
+{{end}}
+
+{{end}}
+
+var (
+	{{- range $kind := $kinds}}
+	_ Object = (*{{$kind.Data.Name}})(nil)
+	{{- end}}
+)

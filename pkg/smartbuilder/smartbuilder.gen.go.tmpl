@@ -1,0 +1,75 @@
+// Copyright 2019 Nick Poorman
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{{$package := "smartbuilder"}}
+{{$objectPackage := "object"}}
+
+package {{$package}}
+
+import (
+	"fmt"
+
+	"github.com/apache/arrow/go/arrow"
+	"github.com/apache/arrow/go/arrow/array"
+	"github.com/gomem/gomem/internal/debug"
+	"github.com/gomem/gomem/pkg/collection"
+	"github.com/gomem/gomem/pkg/object"
+)
+
+{{$kinds := buildKinds .In}}
+
+// TODO(nickpoorman): Add the rest of the logical types.
+func (sb *SmartBuilder) appendValue(bldr array.Builder, v interface{}) error {
+	debug.Debug(fmt.Sprintf("appendValue: |%v| - %T\n", v, bldr))
+	switch b := bldr.(type) {
+
+    {{range $kind := $kinds}}
+	case *array.{{$kind.Data.Name}}Builder:
+		vT, ok := object.CastTo{{$kind.Data.Name}}(v);
+        if !ok {
+            return fmt.Errorf("cannot cast %T to {{$objectPackage}}.{{$kind.Data.Name}}", v)
+        }
+        b.Append(vT.Value())
+    {{end}}
+
+	case *array.ListBuilder:
+		b.Append(true)
+		sub := b.ValueBuilder()
+		v := reflect.ValueOf(v)
+		for i := 0; i < v.Len(); i++ {
+			sb.appendValue(sub, v.Index(i).Interface())
+		}
+
+	case *array.FixedSizeListBuilder:
+		b.Append(true)
+		sub := b.ValueBuilder()
+		v := reflect.ValueOf(v)
+		for i := 0; i < v.Len(); i++ {
+			sb.appendValue(sub, v.Index(i).Interface())
+		}
+
+	case *array.StructBuilder:
+		b.Append(true)
+		v := reflect.ValueOf(v)
+		for i := 0; i < b.NumField(); i++ {
+			f := b.FieldBuilder(i)
+			sb.appendValue(f, v.Field(i).Interface())
+		}
+
+	default:
+		return fmt.Errorf("builder/smartbuilder: unhandled Arrow builder type %T", b)
+	}
+
+	return nil
+}

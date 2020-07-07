@@ -1,0 +1,1682 @@
+[
+  {
+    "Name": "Int64",
+    "name": "int64",
+    "Type": "int64",
+    "Default": "0",
+    "MaxValue": "Int64(math.MaxInt64)",
+    "BitWidth": 64,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Int64"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int32",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Int64(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Int64(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Int64(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Date32",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Int64(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Int64(1) }; return Int64(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Uint64",
+    "name": "uint64",
+    "Type": "uint64",
+    "Default": "0",
+    "MaxValue": "Uint64(math.MaxUint64)",
+    "BitWidth": 64,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Uint64"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Uint64(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Uint64(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Uint64(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Date32",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Uint64(t.toU64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Uint64(1) }; return Uint64(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Int32",
+    "name": "int32",
+    "Type": "int32",
+    "Default": "0",
+    "BitWidth": 32,
+    "MaxValue": "Int32(math.MaxInt32)",
+    "Opt": {
+      "BufferBuilder": true
+    },
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Int32"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Int32(t)",
+        "Overflow": true
+      },
+      {
+        "From": "Int16",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Int32(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Int32(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Int32(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Date32",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "MonthInterval",
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Int32(1) }; return Int32(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Uint32",
+    "name": "uint32",
+    "Type": "uint32",
+    "Default": "0",
+    "MaxValue": "Uint32(math.MaxUint32)",
+    "BitWidth": 32,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Uint32"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Uint32(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Uint32(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Uint32(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Uint32(t.toU64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Uint32(1) }; return Uint32(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Float64",
+    "name": "float64",
+    "Type": "float64",
+    "Default": "0",
+    "MaxValue": "Float64(math.MaxFloat64)",
+    "BitWidth": 64,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Float64"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Float32",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Float16",
+        "Via": "Float64(t.tof32())"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Float64(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Float64(1) }; return Float64(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Float32",
+    "name": "float32",
+    "Type": "float32",
+    "Default": "0",
+    "MaxValue": "Float32(math.MaxFloat32)",
+    "BitWidth": 32,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Float32"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Float16",
+        "Via": "Float32(t.tof32())"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Float32(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Float32(1) }; return Float32(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Int16",
+    "name": "int16",
+    "Type": "int16",
+    "Default": "0",
+    "MaxValue": "Int16(math.MaxInt16)",
+    "BitWidth": 16,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Int16"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Int16(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Float16",
+        "Via": "Int16(t.tof32())"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Int16(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Int16(1) }; return Int16(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Uint16",
+    "name": "uint16",
+    "Type": "uint16",
+    "Default": "0",
+    "MaxValue": "Uint16(math.MaxUint16)",
+    "BitWidth": 16,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Uint16"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Uint16(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Uint16(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Uint16(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Uint16(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Uint16(1) }; return Uint16(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Int8",
+    "name": "int8",
+    "Type": "int8",
+    "Default": "0",
+    "MaxValue": "Int8(math.MaxInt8)",
+    "BitWidth": 8,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Int8"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Int8(t)",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Float32",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Float16",
+        "Via": "Int8(t.tof32())"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Int8(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Int8(1) }; return Int8(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Uint8",
+    "name": "uint8",
+    "Type": "uint8",
+    "Default": "0",
+    "MaxValue": "Uint8(math.MaxUint8)",
+    "BitWidth": 8,
+    "TestTypes": [
+      {
+        "DataType": "arrow.PrimitiveTypes.Uint8"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Uint8(t)",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Float32",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Float16",
+        "Via": "Uint8(t.tof32())"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Uint8(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Uint8(1) }; return Uint8(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Timestamp",
+    "name": "timestamp",
+    "Type": "arrow.Timestamp",
+    "InternalType": "int64",
+    "Default": "0",
+    "MaxValue": "Timestamp(math.MaxInt64)",
+    "BitWidth": 64,
+    "Opt": {
+      "Parametric": true
+    },
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.Timestamp_s",
+        "Name": "Timestamp_s",
+        "Builder": "arrow.Timestamp(int64(i))"
+      },
+      {
+        "DataType": "arrow.FixedWidthTypes.Timestamp_ms",
+        "Name": "Timestamp_ms",
+        "Builder": "arrow.Timestamp(int64(i))"
+      },
+      {
+        "DataType": "arrow.FixedWidthTypes.Timestamp_us",
+        "Name": "Timestamp_us",
+        "Builder": "arrow.Timestamp(int64(i))"
+      },
+      {
+        "DataType": "arrow.FixedWidthTypes.Timestamp_ns",
+        "Name": "Timestamp_ns",
+        "Builder": "arrow.Timestamp(int64(i))"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Timestamp(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Timestamp(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Timestamp(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Timestamp(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Timestamp(1) }; return Timestamp(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Time32",
+    "name": "time32",
+    "Type": "arrow.Time32",
+    "InternalType": "int32",
+    "Default": "0",
+    "MaxValue": "Time32(math.MaxInt32)",
+    "BitWidth": 32,
+    "Opt": {
+      "Parametric": true
+    },
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.Time32s",
+        "Name": "Time32s",
+        "Builder": "arrow.Time32(int32(i))"
+      },
+      {
+        "DataType": "arrow.FixedWidthTypes.Time32ms",
+        "Name": "Time32ms",
+        "Builder": "arrow.Time32(int32(i))"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Time32(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Time32(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Time32(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Time32(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Time32(1) }; return Time32(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Time64",
+    "name": "time64",
+    "Type": "arrow.Time64",
+    "InternalType": "int64",
+    "Default": "0",
+    "MaxValue": "Time64(math.MaxInt64)",
+    "BitWidth": 64,
+    "Opt": {
+      "Parametric": true
+    },
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.Time64us",
+        "Name": "Time64us",
+        "Builder": "arrow.Time64(int64(i))"
+      },
+      {
+        "DataType": "arrow.FixedWidthTypes.Time64ns",
+        "Name": "Time64ns",
+        "Builder": "arrow.Time64(int64(i))"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Time64(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Time64(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Time64(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Time64(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Time64(1) }; return Time64(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Date32",
+    "name": "date32",
+    "Type": "arrow.Date32",
+    "InternalType": "int32",
+    "Default": "0",
+    "MaxValue": "Date32(math.MaxInt32)",
+    "BitWidth": 32,
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.Date32",
+        "Builder": "arrow.Date32(int32(i))"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Date32(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Date32(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Date32(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Date32(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Date32(1) }; return Date32(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Date64",
+    "name": "date64",
+    "Type": "arrow.Date64",
+    "InternalType": "int64",
+    "Default": "0",
+    "MaxValue": "Date64(math.MaxInt64)",
+    "BitWidth": 64,
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.Date64",
+        "Builder": "arrow.Date64(int64(i))"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Date64(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float32",
+        "Via": "Date64(t)",
+        "Comment": "The result will be truncated. 123.567 => 123"
+      },
+      {
+        "From": "Float16",
+        "Via": "Date64(t.tof32())",
+        "Comment": "The result will be truncated. 3.5 => 3"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Date32",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Date64(t.toI64())"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Date64(1) }; return Date64(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Duration",
+    "name": "duration",
+    "Type": "arrow.Duration",
+    "InternalType": "int64",
+    "Default": "0",
+    "MaxValue": "Duration(math.MaxInt64)",
+    "BitWidth": 64,
+    "Opt": {
+      "Parametric": true
+    },
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.Duration_s",
+        "Name": "Duration_s",
+        "Builder": "arrow.Duration(int64(i))"
+      },
+      {
+        "DataType": "arrow.FixedWidthTypes.Duration_ms",
+        "Name": "Duration_ms",
+        "Builder": "arrow.Duration(int64(i))"
+      },
+      {
+        "DataType": "arrow.FixedWidthTypes.Duration_us",
+        "Name": "Duration_us",
+        "Builder": "arrow.Duration(int64(i))"
+      },
+      {
+        "DataType": "arrow.FixedWidthTypes.Duration_ns",
+        "Name": "Duration_ns",
+        "Builder": "arrow.Duration(int64(i))"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int64",
+        "Via": "Duration(arrow.Duration(t))"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Duration(1) }; return Duration(0);"
+      }
+    ]
+  },
+  {
+    "Name": "MonthInterval",
+    "name": "month_interval",
+    "Type": "arrow.MonthInterval",
+    "InternalType": "int32",
+    "Default": "0",
+    "MaxValue": "MonthInterval(math.MaxInt32)",
+    "BitWidth": 32,
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.MonthInterval",
+        "Builder": "arrow.MonthInterval(i)"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Int32",
+        "Via": "MonthInterval(arrow.MonthInterval(int32(t)))"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return MonthInterval(1) }; return MonthInterval(0);"
+      }
+    ]
+  },
+  {
+    "Name": "Float16",
+    "name": "float16",
+    "Type": "float16.Num",
+    "InternalType": "float32",
+    "Default": "Float16(float16.New(0))",
+    "MaxValue": "Float16(float16.New(65504))",
+    "BitWidth": 16,
+    "ValuesMethod": "Values",
+    "Compare": {
+      "Eq": "left.Uint16() == right.Uint16()",
+      "Less": "left.Uint16() < right.Uint16()",
+      "LessEq": "left.Uint16() <= right.Uint16()",
+      "Greater": "left.Uint16() > right.Uint16()",
+      "GreaterEq": "left.Uint16() >= right.Uint16()"
+    },
+    "TestConstructor": "Float16(float16.New(%s))",
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.Float16",
+        "Builder": "float16.New(float32(i))"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Float32",
+        "Via": "Float16(float16.New(float32(t)))"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return Float16(float16.New(1)) }; return Float16(float16.New(0));"
+      }
+    ]
+  },
+  {
+    "Name": "Decimal128",
+    "name": "decimal",
+    "Type": "decimal128.Num",
+    "InternalType": "decimal128.Num",
+    "Default": "Decimal128(decimal128.New(0, 0))",
+    "MaxValue": "Decimal128(decimal128.MaxDecimal128)",
+    "BitWidth": 16,
+    "ValuesMethod": "Values",
+    "Compare": {
+      "comment": "From: https://github.com/apache/arrow/blob/438a140142be423b1b2af2399567a0a8aeba9aa1/cpp/src/arrow/util/basic_decimal.cc#L546",
+      "Eq": "left.HighBits() == right.HighBits() && left.LowBits() == right.LowBits()",
+      "Less": "left.HighBits() < right.HighBits() || (left.HighBits() == right.HighBits() && left.LowBits() < right.LowBits())",
+      "LessEq": "!(right.HighBits() < left.HighBits() || (right.HighBits() == left.HighBits() && right.LowBits() < left.LowBits()))",
+      "Greater": "right.HighBits() < left.HighBits() || (right.HighBits() == left.HighBits() && right.LowBits() < left.LowBits())",
+      "GreaterEq": "!(left.HighBits() < right.HighBits() || (left.HighBits() == right.HighBits() && left.LowBits() < right.LowBits()))"
+    },
+    "TestConstructor": "Decimal128(decimal128.New(%s, %s))",
+    "TestTypes": [
+      {
+        "DataType": "&arrow.Decimal128Type{Precision: 1, Scale: 10}",
+        "Builder": "decimal128.New(int64(i), uint64(i))",
+        "WantValues": "[{0 0} {1 1} {2 2} {3 3} {4 4} {5 5} {6 6} {7 7} {8 8} (null)]"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Uint64",
+        "Via": "Decimal128(decimal128.FromU64(uint64(t)))"
+      },
+      {
+        "From": "Int64",
+        "Via": "Decimal128(decimal128.FromI64(int64(t)))"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return NewDecimal128FromU64(1) }; return NewDecimal128FromU64(0);"
+      }
+    ]
+  },
+  {
+    "Name": "DayTimeInterval",
+    "name": "day_time_interval",
+    "Type": "arrow.DayTimeInterval",
+    "InternalType": "arrow.DayTimeInterval",
+    "Default": "DayTimeInterval(arrow.DayTimeInterval{Days: 0, Milliseconds: 0})",
+    "MaxValue": "DayTimeInterval(arrow.DayTimeInterval{Days: math.MaxInt32, Milliseconds: math.MaxInt32})",
+    "BitWidth": 32,
+    "Compare": {
+      "Eq": "left.Days == right.Days && left.Milliseconds == right.Milliseconds",
+      "Less": "left.Days < right.Days && left.Milliseconds < right.Milliseconds",
+      "LessEq": "left.Days <= right.Days && left.Milliseconds <= right.Milliseconds",
+      "Greater": "left.Days > right.Days && left.Milliseconds > right.Milliseconds",
+      "GreaterEq": "left.Days >= right.Days && left.Milliseconds >= right.Milliseconds"
+    },
+    "TestConstructor": "DayTimeInterval(arrow.DayTimeInterval{Days: %s, Milliseconds: %s})",
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.DayTimeInterval",
+        "Builder": "arrow.DayTimeInterval{Days: int32(i), Milliseconds: int32(i * 2)}",
+        "WantValues": "[{0 0} {1 2} {2 4} {3 6} {4 8} {5 10} {6 12} {7 14} {8 16} (null)]"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return DayTimeInterval(arrow.DayTimeInterval{Days: 0, Milliseconds: 1}) }; return DayTimeInterval(arrow.DayTimeInterval{Days: 0, Milliseconds: 0});"
+      }
+    ]
+  },
+  {
+    "Name": "Boolean",
+    "name": "bool",
+    "Type": "bool",
+    "Default": "false",
+    "MaxValue": "Boolean(true)",
+    "BitWidth": 1,
+    "Skip": [
+      "Less",
+      "LessEq",
+      "Greater",
+      "GreaterEq"
+    ],
+    "Compare": {
+      "comment": "Compare 1 (true) and 0 (false)",
+      "Eq": "left == right"
+    },
+    "TestConstructor": "Boolean(true)",
+    "TestTypes": [
+      {
+        "DataType": "arrow.FixedWidthTypes.Boolean",
+        "Builder": "i%2 == 0",
+        "WantValues": "[true false true false true false true false true (null)]"
+      }
+    ],
+    "ExcludeGenerate": [
+      "valueiterator",
+      "chunkiterator"
+    ],
+    "CastTo": [
+      {
+        "From": "Boolean",
+        "Via": "t"
+      },
+      {
+        "From": "Int64",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Int32",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Uint32",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Float64",
+        "Via": "Boolean(t != 0.0)"
+      },
+      {
+        "From": "Float32",
+        "Via": "Boolean(t != 0.0)"
+      },
+      {
+        "From": "Int16",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Uint16",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Int8",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Uint8",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Timestamp",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Time32",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Time64",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Date32",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Date64",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Duration",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "MonthInterval",
+        "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Float16",
+        "Via": "Boolean(t.Uint16() != 0)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Boolean(t.Sign() != 0)"
+      },
+      {
+        "From": "DayTimeInterval",
+        "Via": "Boolean(t.Days != 0 || t.Milliseconds != 0)"
+      },
+      {
+        "From": "String",
+        "Via": "Boolean(t != \"\")"
+      },
+      {
+        "From": "Null",
+        "Via": "t.ToBoolean()"
+      }
+    ]
+  },
+  {
+    "Name": "String",
+    "name": "utf8",
+    "Type": "string",
+    "Default": "\"\"",
+    "TestConstructor": "String(\"%s\")",
+    "TestTypes": [
+      {
+        "DataType": "arrow.BinaryTypes.String",
+        "Builder": "strconv.Itoa(i)",
+        "WantValues": "[\"0\" \"1\" \"2\" \"3\" \"4\" \"5\" \"6\" \"7\" \"8\" (null)]"
+      }
+    ],
+    "ExcludeGenerate": [
+      "valueiterator",
+      "chunkiterator"
+    ]
+  }
+]

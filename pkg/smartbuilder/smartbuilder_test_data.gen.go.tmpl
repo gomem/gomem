@@ -1,0 +1,64 @@
+// Copyright 2019 Nick Poorman
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{{$objectPackage := "object"}}
+
+package smartbuilder
+
+import (
+	"strconv"
+
+	"github.com/apache/arrow/go/arrow"
+	"github.com/apache/arrow/go/arrow/decimal128"
+	"github.com/apache/arrow/go/arrow/float16"
+	"github.com/gomem/gomem/pkg/object"
+)
+
+type SmartBuilderTestCase struct {
+	Values  []interface{}
+	Dtype arrow.DataType
+	Want  string
+}
+
+// TODO: Add boolean, null
+func GenerateSmartBuilderTestCases() []SmartBuilderTestCase {
+	return []SmartBuilderTestCase{
+		{{- range $root := .In}}
+		{{- range $testType := $root.TestTypes}}
+		{
+			Values:  {{or $testType.Name $root.Name}}Gen(),
+			Dtype: {{$testType.DataType}},
+			Want: `col[0][col-{{$root.name}}]: {{if $testType.WantValues}}{{$testType.WantValues}}{{else}}[0 1 2 3 4 5 6 7 8 (null)]{{end}}`,
+		},
+		{{- end}}
+		{{- end}}
+	}
+}
+
+{{range $root := .In}}
+{{range $testType := $root.TestTypes}}
+func {{or $testType.Name $root.Name}}Gen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		{{- if $testType.Builder }}
+			vals[i] = {{$objectPackage}}.New{{$root.Name}}({{$testType.Builder}})
+		{{- else }}
+			vals[i] = {{$objectPackage}}.New{{$root.Name}}({{$root.Type}}(i))
+		{{- end }}
+	}
+	return vals
+}
+
+{{end}}
+{{end}}

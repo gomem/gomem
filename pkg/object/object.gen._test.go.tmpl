@@ -1,0 +1,427 @@
+// Copyright 2019 Nick Poorman
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{{$package := "object"}}
+
+package {{$package}}
+
+import (
+	"errors"
+	"fmt"
+	"testing"
+
+	"github.com/apache/arrow/go/arrow"
+	"github.com/apache/arrow/go/arrow/decimal128"
+	"github.com/apache/arrow/go/arrow/float16"
+)
+
+{{$kinds := buildKinds .In}}
+{{range $kind := $kinds}}
+func Test{{$kind.Data.Name}}ToBoolean(t *testing.T) {
+	cases := []struct {
+		Obj {{$kind.Data.Name}}
+		Want bool
+	}{
+		{ {{$kind.Data.Default}},false },
+		{{- if $kind.Data.TestConstructor }}
+		{ {{printfAll $kind.Data.TestConstructor 1}},true },
+		{ {{printfAll $kind.Data.TestConstructor 2}},true },
+		{{ else }}
+		{ {{printfAll "%s" 1}},true },
+		{ {{printfAll "%s" 2}},true },
+		{{end}}
+	}
+	for _, c := range cases {
+		if got, want := c.Obj.ToBoolean(), Boolean(c.Want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func Test{{$kind.Data.Name}}Eq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{$kind.Data.Name}}({{$kind.Data.Default}}), nil, true },
+		{{- if isStructBased (or $kind.Data.InternalType $kind.Data.Type)}}
+		{ func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), nil, true },
+		{{- if $kind.Data.TestConstructor }}
+		{ func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 1}}
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 2}}
+			return &o
+		}(), nil, false },
+		{{- end}}
+
+		{{- end}}
+	}
+	for _, c := range cases {
+		eq, err := c.left.Eq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := eq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func Test{{$kind.Data.Name}}Neq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{$kind.Data.Name}}({{$kind.Data.Default}}), nil, false },
+		{ {{$kind.Data.Name}}({{$kind.Data.Default}}), NewNull(), errors.New("cannot cast {{$package}}.Null ({{$package}}.Null{}) to {{$package}}.{{$kind.Data.Name}}"), false },
+		{{- if isStructBased (or $kind.Data.InternalType $kind.Data.Type)}}
+		{ func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), nil, false },
+		{ func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), NewNull(), errors.New("cannot cast {{$package}}.Null ({{$package}}.Null{}) to {{$package}}.{{$kind.Data.Name}}"), false },
+		{{- if $kind.Data.TestConstructor }}
+		{ func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 1}}
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 2}}
+			return &o
+		}(), nil, true },
+		{ func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 1}}
+			return &o
+		}(), NewNull(), errors.New("cannot cast {{$package}}.Null ({{$package}}.Null{}) to {{$package}}.{{$kind.Data.Name}}"), false },
+		{{- end}}
+
+		{{- end}}
+	}
+	for _, c := range cases {
+		neq, err := c.left.Neq(c.right)
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", c.err) {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := neq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func Test{{$kind.Data.Name}}Less(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{$kind.Data.Name}}({{$kind.Data.Default}}), nil, false },
+		{{- if isStructBased (or $kind.Data.InternalType $kind.Data.Type)}}
+		{ func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), nil, false },
+		{{- if $kind.Data.TestConstructor }}
+		{ func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 1}}
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 2}}
+			return &o
+		}(), nil, true },
+		{{- end}}
+
+		{{- end}}
+	}
+	for _, c := range cases {
+		less, err := c.left.Less(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := less, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func Test{{$kind.Data.Name}}LessEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{$kind.Data.Name}}({{$kind.Data.Default}}), nil, true },
+		{{- if isStructBased (or $kind.Data.InternalType $kind.Data.Type)}}
+		{ func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), nil, true },
+		{{- if $kind.Data.TestConstructor }}
+		{ func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 1}}
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 2}}
+			return &o
+		}(), nil, true },
+		{{- end}}
+
+		{{- end}}
+	}
+	for _, c := range cases {
+		lessEq, err := c.left.LessEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := lessEq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func Test{{$kind.Data.Name}}Greater(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{$kind.Data.Name}}({{$kind.Data.Default}}), nil, false },
+		{{- if isStructBased (or $kind.Data.InternalType $kind.Data.Type)}}
+		{ func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), nil, false },
+		{{- if $kind.Data.TestConstructor }}
+		{ func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 1}}
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 2}}
+			return &o
+		}(), nil, false },
+		{{- end}}
+
+		{{- end}}
+	}
+	for _, c := range cases {
+		greater, err := c.left.Greater(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greater, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func Test{{$kind.Data.Name}}GreaterEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{$kind.Data.Name}}({{$kind.Data.Default}}), nil, true },
+		{{- if isStructBased (or $kind.Data.InternalType $kind.Data.Type)}}
+		{ func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{$kind.Data.Name}}({{$kind.Data.Default}})
+			return &o
+		}(), nil, true },
+		{{- if $kind.Data.TestConstructor }}
+		{ func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 1}}
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := {{printfAll $kind.Data.TestConstructor 2}}
+			return &o
+		}(), nil, false },
+		{{- end}}
+
+		{{- end}}
+	}
+	for _, c := range cases {
+		greaterEq, err := c.left.GreaterEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greaterEq, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+{{range .Casts}}
+{{- if not .NotImplemented }}
+{{- if not .ReverseNotImplemented }}
+func Test{{$kind.Data.Name}}CastableTo{{.ToName}}(t *testing.T) {
+	cases := []struct {
+		o    CastableTo{{.ToName}}
+		want {{.ToName}}
+	}{
+		{{- if eq .ToName "String" }}
+			{{- if eq $kind.Data.Name "String" }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("") },
+			{{- else }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("false") },
+			{{ end }}
+		{{- else }}
+			{{- if .TestConstructor }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{printfAll .ToTestConstructor 0}} },
+			{{ else }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{.ToName}}({{.ToDefault}}) },
+			{{ end }}
+		{{- end }}
+	}
+	for _, c := range cases {
+		value := c.o.To{{.ToName}}()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethod{{$kind.Data.Name}}To{{.ToName}}(t *testing.T) {
+	cases := []struct {
+		o    {{$kind.Data.Name}}
+		want {{.ToName}}
+	}{
+		{{- if eq .ToName "String" }}
+			{{- if eq $kind.Data.Name "String" }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("") },
+			{{- else }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("false") },
+			{{ end }}
+		{{- else }}
+			{{- if .TestConstructor }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{printfAll .ToTestConstructor 0}} },
+			{{ else }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), {{.ToName}}({{.ToDefault}}) },
+			{{ end }}
+		{{- end }}
+	}
+	for _, c := range cases {
+		value := c.o.To{{.ToName}}()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethod{{$kind.Data.Name}}To{{.ToName}}Checked(t *testing.T) {
+	cases := []struct {
+		o    {{$kind.Data.Name}}
+	}{
+		{{- if eq $kind.Data.Name "String" }}
+			{ String("abc") },
+		{{- else }}
+			{ Max{{$kind.Data.Name}} },
+		{{- end }}
+	}
+	for _, c := range cases {
+		converted, ok := c.o.To{{.ToName}}Checked()
+		{{- if ne .ToName "Boolean"}}
+			if ok {
+				v, ok := converted.To{{$kind.Data.Name}}Checked()
+				if ok {
+					equal, err := v.Eq(c.o)
+					if err != nil {
+						t.Errorf("error checking for overflow overflow for {{$kind.Data.Name}} to {{.ToName}}: %v", err)
+					}
+					if err != nil || !equal {
+						t.Errorf("detected unhandled overflow for {{$kind.Data.Name}} to {{.ToName}} - %#v != %#v", v, c.o)
+					}
+				}
+			}
+		{{- else}}
+			if !ok {
+				t.Errorf("Boolean should not be returning an overflow: %#v $%v", converted, c.o)
+			}
+			if converted != Boolean(true) {
+				t.Errorf("Boolean should have been converted to Boolean(true): %#v $%v", converted, c.o)
+			}
+		{{- end}}
+	}
+}
+{{end}}
+{{end}}
+{{end}}
+
+{{end}}
