@@ -1,7 +1,4 @@
-# bullseye
-
-[![GoDoc](https://godoc.org/github.com/gomem/gomem?status.svg)](https://godoc.org/github.com/gomem/gomem)
-[![CircleCI](https://circleci.com/gh/gomem/gomem.svg?style=svg)](https://circleci.com/gh/gomem/gomem)
+# dataframe
 
 A DataFrame built on [Apache Arrow](https://github.com/apache/arrow/tree/master/go).
 
@@ -107,7 +104,3 @@ to submit a PR if find you need them. This library will let you know when you do
 - [ ] Implement all Arrow DataTypes.
 - [ ] Add a filter function to DataFrame.
 - [ ] Add an order by function to DataFrame.
-
-## License
-
-(c) 2019 Nick Poorman. Licensed under the Apache License, Version 2.0.
