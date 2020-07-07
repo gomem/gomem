@@ -21,4 +21,5 @@ require (
 	github.com/tidwall/gjson v1.6.0
 )
 
+// TODO(nickpoorman): Remove this once this PR is merged: https://github.com/apache/arrow/pull/7670
 replace github.com/apache/arrow/go/arrow => github.com/nickpoorman/arrow/go/arrow v0.0.0-20200707213152-f76d691be945
