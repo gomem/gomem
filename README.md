@@ -136,4 +136,4 @@ Pull requests are welcome!
 
 ## License
 
-(c) 2020 Nick Poorman. Licensed under the Apache License, Version 2.0.
+(c) 2020 [Nick Poorman](https://nickpoorman.com). Licensed under the Apache License, Version 2.0.
