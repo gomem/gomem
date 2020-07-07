@@ -2,11 +2,12 @@
 
 [![GoDoc](https://godoc.org/github.com/gomem/gomem?status.svg)](https://godoc.org/github.com/gomem/gomem)
 [![CircleCI](https://circleci.com/gh/gomem/gomem.svg?style=svg)](https://circleci.com/gh/gomem/gomem)
+[![License](https://img.shields.io/badge/license-Apache%202-blue)](LICENSE.txt)
 
-Various packages for working with Apache Arrow in Go.
+Packages for working with [Apache Arrow](https://arrow.apache.org/) in Go.
 
 Included in gomem is a DataFrame implementation. It uses
-[Apache Arrow](https://github.com/apache/arrow/tree/master/go)
+[Apache Arrow (Go)](https://github.com/apache/arrow/tree/master/go)
 under the hood to store an manipulate data in a columnar format.
 
 ## Packages
