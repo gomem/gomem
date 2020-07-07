@@ -1,5 +1,8 @@
 # gomem
 
+[![GoDoc](https://godoc.org/github.com/gomem/gomem?status.svg)](https://godoc.org/github.com/gomem/gomem)
+[![CircleCI](https://circleci.com/gh/gomem/gomem.svg?style=svg)](https://circleci.com/gh/gomem/gomem)
+
 Various packages for working with Apache Arrow in Go.
 
 Included in gomem is a DataFrame implementation. It uses
@@ -20,9 +23,6 @@ under the hood to store an manipulate data in a columnar format.
 ---
 
 ## dataframe
-
-[![GoDoc](https://godoc.org/github.com/gomem/gomem?status.svg)](https://godoc.org/github.com/gomem/gomem)
-[![CircleCI](https://circleci.com/gh/gomem/gomem.svg?style=svg)](https://circleci.com/gh/gomem/gomem)
 
 A DataFrame built on [Apache Arrow](https://github.com/apache/arrow/tree/master/go).
 
