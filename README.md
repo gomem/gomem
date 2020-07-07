@@ -11,14 +11,14 @@ under the hood to store an manipulate data in a columnar format.
 
 ## Packages
 
-| Tables                  | Description                                                            | Link                  |
-| ----------------------- | ---------------------------------------------------------------------- | --------------------- |
-| [dataframe](#dataframe) | A DataFrame implementation using Arrow.                                | [code](dataframe/)    |
-| collection              | Abstract access to Arrow arrays using gomem Objects.                   | [code](collection/)   |
-| iterator                | Iterators for iterating over Arrow arrays.                             | [code](iterator/)     |
-| logical                 | Abstract logical types.                                                | [code](logical/)      |
-| object                  | Abstract object type capable of automatically converting Object types. | [code](object/)       |
-| smartbuilder            | Abstract Arrow array builder.                                          | [code](smartbuilder/) |
+| Tables                  | Description                                                            | Link                      |
+| ----------------------- | ---------------------------------------------------------------------- | ------------------------- |
+| [dataframe](#dataframe) | A DataFrame implementation using Arrow.                                | [code](pkg/dataframe/)    |
+| collection              | Abstract access to Arrow arrays using gomem Objects.                   | [code](pkg/collection/)   |
+| iterator                | Iterators for iterating over Arrow arrays.                             | [code](pkg/iterator/)     |
+| logical                 | Abstract logical types.                                                | [code](pkg/logical/)      |
+| object                  | Abstract object type capable of automatically converting Object types. | [code](pkg/object/)       |
+| smartbuilder            | Abstract Arrow array builder.                                          | [code](pkg/smartbuilder/) |
 
 ---
 
