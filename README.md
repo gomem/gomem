@@ -86,7 +86,7 @@ go run main.go
 
 ## Arrow Array Usage
 
-See the [DataFrame tests](dataframe/dataframe_test.go) for extensive usage examples.
+See the [DataFrame tests](pkg/dataframe/dataframe_test.go) for extensive usage examples.
 
 ## Reference Counting
 
@@ -118,7 +118,7 @@ From the [arrow/go README](https://github.com/apache/arrow/blob/master/go/README
   when it no longer needs the object.
 
 _Note:_ You can write a test using `memory.NewCheckedAllocator` to assert that you have
-released all resources properly. See: [tests](https://github.com/gomem/gomem/blob/e0958263a91ec914aa4cd0a1b26e43aab29b4c74/dataframe/dataframe_test.go#L234)
+released all resources properly. See: [tests](https://github.com/gomem/gomem/blob/master/pkg/dataframe/dataframe_test.go#L117)
 
 ## TODO
 
