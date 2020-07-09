@@ -8,7 +8,7 @@ Packages for working with [Apache Arrow](https://arrow.apache.org/) in Go.
 
 Included in gomem is a DataFrame implementation. It uses
 [Apache Arrow (Go)](https://github.com/apache/arrow/tree/master/go)
-under the hood to store an manipulate data in a columnar format.
+under the hood to store and manipulate data in a columnar format.
 
 ## Packages
 
