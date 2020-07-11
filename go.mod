@@ -16,7 +16,4 @@ module github.com/gomem/gomem
 
 go 1.14
 
-require github.com/apache/arrow/go/arrow v0.0.0-20190920001900-00a3c47b1559
-
-// TODO(nickpoorman): Remove this once this PR is merged: https://github.com/apache/arrow/pull/7670
-replace github.com/apache/arrow/go/arrow => github.com/nickpoorman/arrow/go/arrow v0.0.0-20200707213152-f76d691be945
+require github.com/apache/arrow/go/arrow v0.0.0-20200711183337-7b49cbc23f22
