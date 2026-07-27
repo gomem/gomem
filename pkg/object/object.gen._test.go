@@ -23,6 +23,7 @@ import (
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
 	"github.com/apache/arrow-go/v18/arrow/float16"
 )
 
@@ -442,6 +443,63 @@ func TestMethodBooleanToDecimal128Checked(t *testing.T) {
 				}
 				if err != nil || !equal {
 					t.Errorf("detected unhandled overflow for Boolean to Decimal128 - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestBooleanCastableToDecimal256(t *testing.T) {
+	cases := []struct {
+		o    CastableToDecimal256
+		want Decimal256
+	}{
+		{Boolean(false), Decimal256(Decimal256(decimal256.Num{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToDecimal256()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodBooleanToDecimal256(t *testing.T) {
+	cases := []struct {
+		o    Boolean
+		want Decimal256
+	}{
+		{Boolean(false), Decimal256(Decimal256(decimal256.Num{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToDecimal256()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodBooleanToDecimal256Checked(t *testing.T) {
+	cases := []struct {
+		o Boolean
+	}{
+		{MaxBoolean},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToDecimal256Checked()
+		if ok {
+			v, ok := converted.ToBooleanChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for Boolean to Decimal256: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for Boolean to Decimal256 - %#v != %#v", v, c.o)
 				}
 			}
 		}
@@ -3791,6 +3849,432 @@ func TestMethodDecimal128ToUint64Checked(t *testing.T) {
 				}
 				if err != nil || !equal {
 					t.Errorf("detected unhandled overflow for Decimal128 to Uint64 - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestDecimal256ToBoolean(t *testing.T) {
+	cases := []struct {
+		Obj  Decimal256
+		Want bool
+	}{
+		{Decimal256(decimal256.Num{}), false},
+		{Decimal256(decimal256.FromI64(1)), true},
+		{Decimal256(decimal256.FromI64(2)), true},
+	}
+	for _, c := range cases {
+		if got, want := c.Obj.ToBoolean(), Boolean(c.Want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestDecimal256Eq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Decimal256(Decimal256(decimal256.Num{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(1))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(2))
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		eq, err := c.left.Eq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := eq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestDecimal256Neq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Decimal256(Decimal256(decimal256.Num{})), nil, false},
+		{Decimal256(Decimal256(decimal256.Num{})), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.Decimal256"), false},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.Decimal256"), false},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(1))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(2))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(1))
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.Decimal256"), false},
+	}
+	for _, c := range cases {
+		neq, err := c.left.Neq(c.right)
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", c.err) {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := neq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestDecimal256Less(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Decimal256(Decimal256(decimal256.Num{})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(1))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(2))
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		less, err := c.left.Less(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := less, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestDecimal256LessEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Decimal256(Decimal256(decimal256.Num{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(1))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(2))
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		lessEq, err := c.left.LessEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := lessEq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestDecimal256Greater(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Decimal256(Decimal256(decimal256.Num{})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(1))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(2))
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greater, err := c.left.Greater(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greater, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestDecimal256GreaterEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Decimal256(Decimal256(decimal256.Num{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(Decimal256(decimal256.Num{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(1))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Decimal256(decimal256.FromI64(2))
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greaterEq, err := c.left.GreaterEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greaterEq, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestDecimal256CastableToBoolean(t *testing.T) {
+	cases := []struct {
+		o    CastableToBoolean
+		want Boolean
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Boolean(false)},
+	}
+	for _, c := range cases {
+		value := c.o.ToBoolean()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodDecimal256ToBoolean(t *testing.T) {
+	cases := []struct {
+		o    Decimal256
+		want Boolean
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Boolean(false)},
+	}
+	for _, c := range cases {
+		value := c.o.ToBoolean()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodDecimal256ToBooleanChecked(t *testing.T) {
+	cases := []struct {
+		o Decimal256
+	}{
+		{MaxDecimal256},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToBooleanChecked()
+		if !ok {
+			t.Errorf("Boolean should not be returning an overflow: %#v $%v", converted, c.o)
+		}
+		if converted != Boolean(true) {
+			t.Errorf("Boolean should have been converted to Boolean(true): %#v $%v", converted, c.o)
+		}
+	}
+}
+
+func TestDecimal256CastableToInt64(t *testing.T) {
+	cases := []struct {
+		o    CastableToInt64
+		want Int64
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Int64(0)},
+	}
+	for _, c := range cases {
+		value := c.o.ToInt64()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodDecimal256ToInt64(t *testing.T) {
+	cases := []struct {
+		o    Decimal256
+		want Int64
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Int64(0)},
+	}
+	for _, c := range cases {
+		value := c.o.ToInt64()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodDecimal256ToInt64Checked(t *testing.T) {
+	cases := []struct {
+		o Decimal256
+	}{
+		{MaxDecimal256},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToInt64Checked()
+		if ok {
+			v, ok := converted.ToDecimal256Checked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for Decimal256 to Int64: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for Decimal256 to Int64 - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestDecimal256CastableToUint64(t *testing.T) {
+	cases := []struct {
+		o    CastableToUint64
+		want Uint64
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Uint64(0)},
+	}
+	for _, c := range cases {
+		value := c.o.ToUint64()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodDecimal256ToUint64(t *testing.T) {
+	cases := []struct {
+		o    Decimal256
+		want Uint64
+	}{
+		{Decimal256(Decimal256(decimal256.Num{})), Uint64(0)},
+	}
+	for _, c := range cases {
+		value := c.o.ToUint64()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodDecimal256ToUint64Checked(t *testing.T) {
+	cases := []struct {
+		o Decimal256
+	}{
+		{MaxDecimal256},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToUint64Checked()
+		if ok {
+			v, ok := converted.ToDecimal256Checked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for Decimal256 to Uint64: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for Decimal256 to Uint64 - %#v != %#v", v, c.o)
 				}
 			}
 		}
@@ -8911,6 +9395,63 @@ func TestMethodInt64ToDecimal128Checked(t *testing.T) {
 				}
 				if err != nil || !equal {
 					t.Errorf("detected unhandled overflow for Int64 to Decimal128 - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestInt64CastableToDecimal256(t *testing.T) {
+	cases := []struct {
+		o    CastableToDecimal256
+		want Decimal256
+	}{
+		{Int64(0), Decimal256(Decimal256(decimal256.Num{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToDecimal256()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodInt64ToDecimal256(t *testing.T) {
+	cases := []struct {
+		o    Int64
+		want Decimal256
+	}{
+		{Int64(0), Decimal256(Decimal256(decimal256.Num{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToDecimal256()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodInt64ToDecimal256Checked(t *testing.T) {
+	cases := []struct {
+		o Int64
+	}{
+		{MaxInt64},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToDecimal256Checked()
+		if ok {
+			v, ok := converted.ToInt64Checked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for Int64 to Decimal256: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for Int64 to Decimal256 - %#v != %#v", v, c.o)
 				}
 			}
 		}
@@ -16585,6 +17126,63 @@ func TestMethodUint64ToDecimal128Checked(t *testing.T) {
 				}
 				if err != nil || !equal {
 					t.Errorf("detected unhandled overflow for Uint64 to Decimal128 - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestUint64CastableToDecimal256(t *testing.T) {
+	cases := []struct {
+		o    CastableToDecimal256
+		want Decimal256
+	}{
+		{Uint64(0), Decimal256(Decimal256(decimal256.Num{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToDecimal256()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodUint64ToDecimal256(t *testing.T) {
+	cases := []struct {
+		o    Uint64
+		want Decimal256
+	}{
+		{Uint64(0), Decimal256(Decimal256(decimal256.Num{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToDecimal256()
+
+		if got, want := value, c.want; got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodUint64ToDecimal256Checked(t *testing.T) {
+	cases := []struct {
+		o Uint64
+	}{
+		{MaxUint64},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToDecimal256Checked()
+		if ok {
+			v, ok := converted.ToUint64Checked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for Uint64 to Decimal256: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for Uint64 to Decimal256 - %#v != %#v", v, c.o)
 				}
 			}
 		}

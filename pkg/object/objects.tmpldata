@@ -124,6 +124,10 @@
       {
         "From": "Uint8",
         "Via": "Boolean(t != 0)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Boolean(t.Sign() != 0)"
       }
     ]
   },
@@ -241,6 +245,10 @@
       {
         "From": "Uint8",
         "Via": "Date32(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Date32(t.toI64())"
       }
     ]
   },
@@ -358,6 +366,10 @@
       {
         "From": "Uint8",
         "Via": "Date64(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Date64(t.toI64())"
       }
     ]
   },
@@ -494,6 +506,11 @@
       },
       {
         "From": "Uint8",
+        "NotImplemented": true,
+        "Via": "DayTimeInterval(t)"
+      },
+      {
+        "From": "Decimal256",
         "NotImplemented": true,
         "Via": "DayTimeInterval(t)"
       }
@@ -635,8 +652,151 @@
         "From": "Uint8",
         "NotImplemented": true,
         "Via": "Decimal128(t)"
+      },
+      {
+        "From": "Decimal256",
+        "NotImplemented": true,
+        "Via": "Decimal128(t)"
       }
     ]
+  },
+  {
+    "Name": "Decimal256",
+    "name": "decimal256",
+    "Type": "decimal256.Num",
+    "Default": "Decimal256(decimal256.Num{})",
+    "BitWidth": 32,
+    "ValuesMethod": "Values",
+    "Compare": {
+      "Eq": "left.Cmp(right) == 0",
+      "Less": "left.Less(right)",
+      "LessEq": "left.LessEqual(right)",
+      "Greater": "left.Greater(right)",
+      "GreaterEq": "left.GreaterEqual(right)",
+      "comment": "decimal256.Num provides Less/Greater/Cmp natively (signed 256-bit comparison)."
+    },
+    "TestConstructor": "Decimal256(decimal256.FromI64(%s))",
+    "TestTypes": [
+      {
+        "Builder": "decimal256.FromI64(int64(i))",
+        "DataType": "&arrow.Decimal256Type{Precision: 38, Scale: 0}",
+        "WantValues": "[0 1 2 3 4 5 6 7 8 (null)]",
+        "InstantiatedType": "decimal(38, 0)"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "decimal128.Num",
+        "Via": "Decimal256(decimal256.FromDecimal128(t))"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return NewDecimal256FromU64(1) }; return NewDecimal256FromU64(0);"
+      },
+      {
+        "From": "Date32",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Date64",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "DayTimeInterval",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Decimal128",
+        "Via": "Decimal256(decimal256.FromDecimal128(t.Value()))"
+      },
+      {
+        "From": "Duration",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Float16",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Float32",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Float64",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Int16",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Int32",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Int64",
+        "Via": "Decimal256(decimal256.FromI64(int64(t)))"
+      },
+      {
+        "From": "Int8",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "MonthInterval",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "String",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Time32",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Time64",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Timestamp",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Uint16",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Uint32",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "Uint64",
+        "Via": "Decimal256(decimal256.FromU64(uint64(t)))"
+      },
+      {
+        "From": "Uint8",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      }
+    ],
+    "MaxValue": "Decimal256(decimal256.New(0x7FFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF))"
   },
   {
     "Name": "Duration",
@@ -782,6 +942,11 @@
         "From": "Uint8",
         "NotImplemented": true,
         "Via": "Duration(t)"
+      },
+      {
+        "From": "Decimal256",
+        "NotImplemented": true,
+        "Via": "Duration(t)"
       }
     ]
   },
@@ -921,6 +1086,11 @@
         "From": "Uint8",
         "NotImplemented": true,
         "Via": "Float16(t)"
+      },
+      {
+        "From": "Decimal256",
+        "NotImplemented": true,
+        "Via": "Float16(t)"
       }
     ]
   },
@@ -1034,6 +1204,10 @@
       {
         "From": "Uint8",
         "Via": "Float32(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Float32(t.toI64())"
       }
     ]
   },
@@ -1146,6 +1320,10 @@
       {
         "From": "Uint8",
         "Via": "Float64(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Float64(t.toI64())"
       }
     ]
   },
@@ -1266,6 +1444,10 @@
       {
         "From": "Uint8",
         "Via": "Int16(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Int16(t.toI64())"
       }
     ]
   },
@@ -1389,6 +1571,11 @@
       {
         "From": "Uint8",
         "Via": "Int32(t)"
+      },
+      {
+        "From": "Decimal256",
+        "NotImplemented": true,
+        "Via": "Int32(t)"
       }
     ]
   },
@@ -1510,6 +1697,11 @@
       {
         "From": "Uint8",
         "Via": "Int64(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Int64(t.toI64())",
+        "Overflow": true
       }
     ]
   },
@@ -1631,6 +1823,10 @@
       {
         "From": "Uint8",
         "Via": "Int8(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Int8(t.toI64())"
       }
     ]
   },
@@ -1759,6 +1955,11 @@
         "From": "Uint8",
         "NotImplemented": true,
         "Via": "MonthInterval(t)"
+      },
+      {
+        "From": "Decimal256",
+        "NotImplemented": true,
+        "Via": "MonthInterval(t)"
       }
     ]
   },
@@ -1871,6 +2072,10 @@
       {
         "From": "Uint8",
         "Via": "String(fmt.Sprintf(\"%d\", t))"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "String(fmt.Sprintf(\"%#v\", t))"
       }
     ]
   },
@@ -2002,6 +2207,10 @@
       {
         "From": "Uint8",
         "Via": "Time32(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Time32(t.toI64())"
       }
     ]
   },
@@ -2129,6 +2338,10 @@
       {
         "From": "Uint8",
         "Via": "Time64(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Time64(t.toI64())"
       }
     ]
   },
@@ -2266,6 +2479,10 @@
       {
         "From": "Uint8",
         "Via": "Timestamp(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Timestamp(t.toI64())"
       }
     ]
   },
@@ -2390,6 +2607,10 @@
       {
         "From": "Uint8",
         "Via": "Uint16(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Uint16(t.toI64())"
       }
     ]
   },
@@ -2511,6 +2732,10 @@
       {
         "From": "Uint8",
         "Via": "Uint32(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Uint32(t.toU64())"
       }
     ]
   },
@@ -2632,6 +2857,11 @@
       {
         "From": "Uint8",
         "Via": "Uint64(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Uint64(t.toU64())",
+        "Overflow": true
       }
     ]
   },
@@ -2756,6 +2986,10 @@
       {
         "From": "Uint8",
         "Via": "Uint8(t)"
+      },
+      {
+        "From": "Decimal256",
+        "Via": "Uint8(t.toI64())"
       }
     ]
   }

@@ -21,6 +21,7 @@ import (
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
 	"github.com/apache/arrow-go/v18/arrow/float16"
 	"github.com/gomem/gomem/pkg/object"
 )
@@ -58,6 +59,11 @@ func GenerateSmartBuilderTestCases() []SmartBuilderTestCase {
 			Values: Decimal128Gen(),
 			Dtype:  &arrow.Decimal128Type{Precision: 1, Scale: 10},
 			Want:   `col[0][col-decimal]: [0 2e+09 4e+09 6e+09 7e+09 9e+09 1e+10 1e+10 1e+10 (null)]`,
+		},
+		{
+			Values: Decimal256Gen(),
+			Dtype:  &arrow.Decimal256Type{Precision: 38, Scale: 0},
+			Want:   `col[0][col-decimal256]: [0 1 2 3 4 5 6 7 8 (null)]`,
 		},
 		{
 			Values: Duration_sGen(),
@@ -223,6 +229,14 @@ func Decimal128Gen() []interface{} {
 	vals := make([]interface{}, 9)
 	for i := range vals {
 		vals[i] = object.NewDecimal128(decimal128.New(int64(i), uint64(i)))
+	}
+	return vals
+}
+
+func Decimal256Gen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewDecimal256(decimal256.FromI64(int64(i)))
 	}
 	return vals
 }

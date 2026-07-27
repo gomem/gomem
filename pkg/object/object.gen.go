@@ -22,6 +22,7 @@ import (
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
 	"github.com/apache/arrow-go/v18/arrow/float16"
 )
 
@@ -31,6 +32,7 @@ var (
 	MaxDate64          = Date64(math.MaxInt64)
 	MaxDayTimeInterval = DayTimeInterval(arrow.DayTimeInterval{Days: math.MaxInt32, Milliseconds: math.MaxInt32})
 	MaxDecimal128      = Decimal128(decimal128.MaxDecimal128)
+	MaxDecimal256      = Decimal256(decimal256.New(0x7FFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF))
 	MaxDuration        = Duration(math.MaxInt64)
 	MaxFloat16         = Float16(float16.New(65504))
 	MaxFloat32         = Float32(math.MaxFloat32)
@@ -200,6 +202,12 @@ func CastToBoolean(v interface{}) (Boolean, bool) {
 	case Uint8:
 		t := pt
 		return Boolean(t != 0), true
+	case *Decimal256:
+		t := *pt
+		return Boolean(t.Sign() != 0), true
+	case Decimal256:
+		t := pt
+		return Boolean(t.Sign() != 0), true
 	default:
 		// Also handles when v is nil
 		return false, false
@@ -340,6 +348,24 @@ func (t Boolean) ToDecimal128() Decimal128 {
 		return NewDecimal128FromU64(1)
 	}
 	return NewDecimal128FromU64(0)
+}
+
+// ToDecimal256Checked attempts to cast the Boolean to a Decimal256.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Boolean) ToDecimal256Checked() (Decimal256, Boolean) {
+	return t.ToDecimal256(), true
+}
+
+// ToDecimal256 attempts to cast the Boolean to a Decimal256.
+// The result is not checked for an overflow.
+// Use the ToDecimal256Checked version of this method if you need to check for
+// an overflow.
+func (t Boolean) ToDecimal256() Decimal256 {
+	if t {
+		return NewDecimal256FromU64(1)
+	}
+	return NewDecimal256FromU64(0)
 }
 
 // ToDurationChecked attempts to cast the Boolean to a Duration.
@@ -782,6 +808,12 @@ func CastToDate32(v interface{}) (Date32, bool) {
 	case Uint8:
 		t := pt
 		return Date32(t), true
+	case *Decimal256:
+		t := *pt
+		return Date32(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Date32(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -1111,6 +1143,12 @@ func CastToDate64(v interface{}) (Date64, bool) {
 	case Uint8:
 		t := pt
 		return Date64(t), true
+	case *Decimal256:
+		t := *pt
+		return Date64(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Date64(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -1844,6 +1882,21 @@ func (t Decimal128) ToDecimal128() Decimal128 {
 	return t
 }
 
+// ToDecimal256Checked attempts to cast the Decimal128 to a Decimal256.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal128) ToDecimal256Checked() (Decimal256, Boolean) {
+	return t.ToDecimal256(), true
+}
+
+// ToDecimal256 attempts to cast the Decimal128 to a Decimal256.
+// The result is not checked for an overflow.
+// Use the ToDecimal256Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal128) ToDecimal256() Decimal256 {
+	return Decimal256(decimal256.FromDecimal128(t.Value()))
+}
+
 // ToFloat32Checked attempts to cast the Decimal128 to a Float32.
 // The second return value will be false if there was an overflow or any other loss of precision.
 // For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
@@ -2042,6 +2095,392 @@ func (t Decimal128) ToUint8Checked() (Uint8, Boolean) {
 // Use the ToUint8Checked version of this method if you need to check for
 // an overflow.
 func (t Decimal128) ToUint8() Uint8 {
+	return Uint8(t.toI64())
+}
+
+type CastableToDecimal256 interface {
+	ToDecimal256Checked() (Decimal256, Boolean)
+	ToDecimal256() Decimal256
+}
+
+// CastToDecimal256 takes an interface{} type or any Object type and
+// attempts to convert it to the Decimal256 Object type.
+func CastToDecimal256(v interface{}) (Decimal256, bool) {
+	switch pt := v.(type) {
+	case *Decimal256:
+		return *pt, true
+	case Decimal256:
+		return pt, true
+	case *decimal128.Num:
+		t := *pt
+		return Decimal256(decimal256.FromDecimal128(t)), true
+	case decimal128.Num:
+		t := pt
+		return Decimal256(decimal256.FromDecimal128(t)), true
+	case *Boolean:
+		t := *pt
+		return func(t Boolean) Decimal256 {
+			if t {
+				return NewDecimal256FromU64(1)
+			}
+			return NewDecimal256FromU64(0)
+		}(t), true
+	case Boolean:
+		t := pt
+		return func(t Boolean) Decimal256 {
+			if t {
+				return NewDecimal256FromU64(1)
+			}
+			return NewDecimal256FromU64(0)
+		}(t), true
+	case *Decimal128:
+		t := *pt
+		return Decimal256(decimal256.FromDecimal128(t.Value())), true
+	case Decimal128:
+		t := pt
+		return Decimal256(decimal256.FromDecimal128(t.Value())), true
+	case *Int64:
+		t := *pt
+		return Decimal256(decimal256.FromI64(int64(t))), true
+	case Int64:
+		t := pt
+		return Decimal256(decimal256.FromI64(int64(t))), true
+	case *Uint64:
+		t := *pt
+		return Decimal256(decimal256.FromU64(uint64(t))), true
+	case Uint64:
+		t := pt
+		return Decimal256(decimal256.FromU64(uint64(t))), true
+	default:
+		// Also handles when v is nil
+		return Decimal256(decimal256.Num{}), false
+	}
+}
+
+// NewDecimal256 creates a new Decimal256 object
+// from the given value provided as v.
+func NewDecimal256(v decimal256.Num) Decimal256 {
+	return Decimal256(v)
+}
+
+// Decimal256 has logic to apply to this type.
+type Decimal256 decimal256.Num
+
+// Value returns the underlying value in it's native type.
+func (e Decimal256) Value() decimal256.Num {
+	return decimal256.Num(e)
+}
+
+// compare takes the left and right objects and applies the comparator function to them.
+func (e Decimal256) compareTypes(r Object, f func(decimal256.Num, decimal256.Num) Boolean) (Boolean, error) {
+	if r == nil {
+		return Boolean(false), nil
+	}
+
+	switch right := r.(type) {
+	case Decimal256:
+		return f(e.Value(), right.Value()), nil
+	case *Decimal256:
+		return f(e.Value(), right.Value()), nil
+	default:
+		return false, fmt.Errorf("cannot cast %T (%#v) to object.Decimal256", r, r)
+	}
+}
+
+// Comparation methods
+
+// Eq returns true if the left Decimal256 is equal to the right Decimal256.
+func (e Decimal256) Eq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right decimal256.Num) Boolean {
+		return Boolean(left.Cmp(right) == 0)
+	})
+}
+
+// Neq returns true if the left Decimal256
+// is not equal to the right Decimal256.
+func (e Decimal256) Neq(r Object) (Boolean, error) {
+	v, err := e.Eq(r)
+	if err != nil {
+		return Boolean(false), err
+	}
+	return !v, err
+}
+
+// Less returns true if the left Decimal256
+// is less than the right Decimal256.
+func (e Decimal256) Less(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right decimal256.Num) Boolean {
+		return Boolean(left.Less(right))
+	})
+}
+
+// LessEq returns true if the left Decimal256
+// is less than or equal to the right Decimal256.
+func (e Decimal256) LessEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right decimal256.Num) Boolean {
+		return Boolean(left.LessEqual(right))
+	})
+}
+
+// Greater returns true if the left Decimal256
+// is greter than the right Decimal256.
+func (e Decimal256) Greater(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right decimal256.Num) Boolean {
+		return Boolean(left.Greater(right))
+	})
+}
+
+// GreaterEq returns true if the left Decimal256
+// is greter than or equal to the right Decimal256.
+func (e Decimal256) GreaterEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right decimal256.Num) Boolean {
+		return Boolean(left.GreaterEqual(right))
+	})
+}
+
+// ToBooleanChecked attempts to cast the Decimal256 to a Boolean.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToBooleanChecked() (Boolean, Boolean) {
+	return t.ToBoolean(), true
+}
+
+// ToBoolean attempts to cast the Decimal256 to a Boolean.
+// The result is not checked for an overflow.
+// Use the ToBooleanChecked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToBoolean() Boolean {
+	return Boolean(t.Sign() != 0)
+}
+
+// ToDate32Checked attempts to cast the Decimal256 to a Date32.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToDate32Checked() (Date32, Boolean) {
+	return t.ToDate32(), true
+}
+
+// ToDate32 attempts to cast the Decimal256 to a Date32.
+// The result is not checked for an overflow.
+// Use the ToDate32Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToDate32() Date32 {
+	return Date32(t.toI64())
+}
+
+// ToDate64Checked attempts to cast the Decimal256 to a Date64.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToDate64Checked() (Date64, Boolean) {
+	return t.ToDate64(), true
+}
+
+// ToDate64 attempts to cast the Decimal256 to a Date64.
+// The result is not checked for an overflow.
+// Use the ToDate64Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToDate64() Date64 {
+	return Date64(t.toI64())
+}
+
+// ToFloat32Checked attempts to cast the Decimal256 to a Float32.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToFloat32Checked() (Float32, Boolean) {
+	return t.ToFloat32(), true
+}
+
+// ToFloat32 attempts to cast the Decimal256 to a Float32.
+// The result is not checked for an overflow.
+// Use the ToFloat32Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToFloat32() Float32 {
+	return Float32(t.toI64())
+}
+
+// ToFloat64Checked attempts to cast the Decimal256 to a Float64.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToFloat64Checked() (Float64, Boolean) {
+	return t.ToFloat64(), true
+}
+
+// ToFloat64 attempts to cast the Decimal256 to a Float64.
+// The result is not checked for an overflow.
+// Use the ToFloat64Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToFloat64() Float64 {
+	return Float64(t.toI64())
+}
+
+// ToInt16Checked attempts to cast the Decimal256 to a Int16.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToInt16Checked() (Int16, Boolean) {
+	return t.ToInt16(), true
+}
+
+// ToInt16 attempts to cast the Decimal256 to a Int16.
+// The result is not checked for an overflow.
+// Use the ToInt16Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToInt16() Int16 {
+	return Int16(t.toI64())
+}
+
+// ToInt64Checked attempts to cast the Decimal256 to a Int64.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToInt64Checked() (Int64, Boolean) {
+	var converted Int64
+	converted = Int64(t.toI64())
+	v, err := converted.ToDecimal256().Eq(t)
+	return converted, Boolean(err == nil && v)
+}
+
+// ToInt64 attempts to cast the Decimal256 to a Int64.
+// The result is not checked for an overflow.
+// Use the ToInt64Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToInt64() Int64 {
+	return Int64(t.toI64())
+}
+
+// ToInt8Checked attempts to cast the Decimal256 to a Int8.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToInt8Checked() (Int8, Boolean) {
+	return t.ToInt8(), true
+}
+
+// ToInt8 attempts to cast the Decimal256 to a Int8.
+// The result is not checked for an overflow.
+// Use the ToInt8Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToInt8() Int8 {
+	return Int8(t.toI64())
+}
+
+// ToStringChecked attempts to cast the Decimal256 to a String.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToStringChecked() (String, Boolean) {
+	return t.ToString(), true
+}
+
+// ToString attempts to cast the Decimal256 to a String.
+// The result is not checked for an overflow.
+// Use the ToStringChecked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToString() String {
+	return String(fmt.Sprintf("%#v", t))
+}
+
+// ToTime32Checked attempts to cast the Decimal256 to a Time32.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToTime32Checked() (Time32, Boolean) {
+	return t.ToTime32(), true
+}
+
+// ToTime32 attempts to cast the Decimal256 to a Time32.
+// The result is not checked for an overflow.
+// Use the ToTime32Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToTime32() Time32 {
+	return Time32(t.toI64())
+}
+
+// ToTime64Checked attempts to cast the Decimal256 to a Time64.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToTime64Checked() (Time64, Boolean) {
+	return t.ToTime64(), true
+}
+
+// ToTime64 attempts to cast the Decimal256 to a Time64.
+// The result is not checked for an overflow.
+// Use the ToTime64Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToTime64() Time64 {
+	return Time64(t.toI64())
+}
+
+// ToTimestampChecked attempts to cast the Decimal256 to a Timestamp.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToTimestampChecked() (Timestamp, Boolean) {
+	return t.ToTimestamp(), true
+}
+
+// ToTimestamp attempts to cast the Decimal256 to a Timestamp.
+// The result is not checked for an overflow.
+// Use the ToTimestampChecked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToTimestamp() Timestamp {
+	return Timestamp(t.toI64())
+}
+
+// ToUint16Checked attempts to cast the Decimal256 to a Uint16.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToUint16Checked() (Uint16, Boolean) {
+	return t.ToUint16(), true
+}
+
+// ToUint16 attempts to cast the Decimal256 to a Uint16.
+// The result is not checked for an overflow.
+// Use the ToUint16Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToUint16() Uint16 {
+	return Uint16(t.toI64())
+}
+
+// ToUint32Checked attempts to cast the Decimal256 to a Uint32.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToUint32Checked() (Uint32, Boolean) {
+	return t.ToUint32(), true
+}
+
+// ToUint32 attempts to cast the Decimal256 to a Uint32.
+// The result is not checked for an overflow.
+// Use the ToUint32Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToUint32() Uint32 {
+	return Uint32(t.toU64())
+}
+
+// ToUint64Checked attempts to cast the Decimal256 to a Uint64.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToUint64Checked() (Uint64, Boolean) {
+	var converted Uint64
+	converted = Uint64(t.toU64())
+	v, err := converted.ToDecimal256().Eq(t)
+	return converted, Boolean(err == nil && v)
+}
+
+// ToUint64 attempts to cast the Decimal256 to a Uint64.
+// The result is not checked for an overflow.
+// Use the ToUint64Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToUint64() Uint64 {
+	return Uint64(t.toU64())
+}
+
+// ToUint8Checked attempts to cast the Decimal256 to a Uint8.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Decimal256) ToUint8Checked() (Uint8, Boolean) {
+	return t.ToUint8(), true
+}
+
+// ToUint8 attempts to cast the Decimal256 to a Uint8.
+// The result is not checked for an overflow.
+// Use the ToUint8Checked version of this method if you need to check for
+// an overflow.
+func (t Decimal256) ToUint8() Uint8 {
 	return Uint8(t.toI64())
 }
 
@@ -2977,6 +3416,12 @@ func CastToFloat32(v interface{}) (Float32, bool) {
 	case Uint8:
 		t := pt
 		return Float32(t), true
+	case *Decimal256:
+		t := *pt
+		return Float32(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Float32(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -3524,6 +3969,12 @@ func CastToFloat64(v interface{}) (Float64, bool) {
 	case Uint8:
 		t := pt
 		return Float64(t), true
+	case *Decimal256:
+		t := *pt
+		return Float64(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Float64(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -4062,6 +4513,12 @@ func CastToInt16(v interface{}) (Int16, bool) {
 	case Uint8:
 		t := pt
 		return Int16(t), true
+	case *Decimal256:
+		t := *pt
+		return Int16(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Int16(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -5047,6 +5504,12 @@ func CastToInt64(v interface{}) (Int64, bool) {
 	case Uint8:
 		t := pt
 		return Int64(t), true
+	case *Decimal256:
+		t := *pt
+		return Int64(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Int64(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -5195,6 +5658,21 @@ func (t Int64) ToDecimal128Checked() (Decimal128, Boolean) {
 // an overflow.
 func (t Int64) ToDecimal128() Decimal128 {
 	return Decimal128(decimal128.FromI64(int64(t)))
+}
+
+// ToDecimal256Checked attempts to cast the Int64 to a Decimal256.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Int64) ToDecimal256Checked() (Decimal256, Boolean) {
+	return t.ToDecimal256(), true
+}
+
+// ToDecimal256 attempts to cast the Int64 to a Decimal256.
+// The result is not checked for an overflow.
+// Use the ToDecimal256Checked version of this method if you need to check for
+// an overflow.
+func (t Int64) ToDecimal256() Decimal256 {
+	return Decimal256(decimal256.FromI64(int64(t)))
 }
 
 // ToDurationChecked attempts to cast the Int64 to a Duration.
@@ -5574,6 +6052,12 @@ func CastToInt8(v interface{}) (Int8, bool) {
 	case Uint8:
 		t := pt
 		return Int8(t), true
+	case *Decimal256:
+		t := *pt
+		return Int8(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Int8(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -6249,6 +6733,12 @@ func CastToString(v interface{}) (String, bool) {
 	case Uint8:
 		t := pt
 		return String(fmt.Sprintf("%d", t)), true
+	case *Decimal256:
+		t := *pt
+		return String(fmt.Sprintf("%#v", t)), true
+	case Decimal256:
+		t := pt
+		return String(fmt.Sprintf("%#v", t)), true
 	default:
 		// Also handles when v is nil
 		return "", false
@@ -6497,6 +6987,12 @@ func CastToTime32(v interface{}) (Time32, bool) {
 	case Uint8:
 		t := pt
 		return Time32(t), true
+	case *Decimal256:
+		t := *pt
+		return Time32(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Time32(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -6982,6 +7478,12 @@ func CastToTime64(v interface{}) (Time64, bool) {
 	case Uint8:
 		t := pt
 		return Time64(t), true
+	case *Decimal256:
+		t := *pt
+		return Time64(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Time64(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -7476,6 +7978,12 @@ func CastToTimestamp(v interface{}) (Timestamp, bool) {
 	case Uint8:
 		t := pt
 		return Timestamp(t), true
+	case *Decimal256:
+		t := *pt
+		return Timestamp(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Timestamp(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -7970,6 +8478,12 @@ func CastToUint16(v interface{}) (Uint16, bool) {
 	case Uint8:
 		t := pt
 		return Uint16(t), true
+	case *Decimal256:
+		t := *pt
+		return Uint16(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Uint16(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -8446,6 +8960,12 @@ func CastToUint32(v interface{}) (Uint32, bool) {
 	case Uint8:
 		t := pt
 		return Uint32(t), true
+	case *Decimal256:
+		t := *pt
+		return Uint32(t.toU64()), true
+	case Decimal256:
+		t := pt
+		return Uint32(t.toU64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -8931,6 +9451,12 @@ func CastToUint64(v interface{}) (Uint64, bool) {
 	case Uint8:
 		t := pt
 		return Uint64(t), true
+	case *Decimal256:
+		t := *pt
+		return Uint64(t.toU64()), true
+	case Decimal256:
+		t := pt
+		return Uint64(t.toU64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -9076,6 +9602,21 @@ func (t Uint64) ToDecimal128Checked() (Decimal128, Boolean) {
 // an overflow.
 func (t Uint64) ToDecimal128() Decimal128 {
 	return Decimal128(decimal128.FromU64(uint64(t)))
+}
+
+// ToDecimal256Checked attempts to cast the Uint64 to a Decimal256.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Uint64) ToDecimal256Checked() (Decimal256, Boolean) {
+	return t.ToDecimal256(), true
+}
+
+// ToDecimal256 attempts to cast the Uint64 to a Decimal256.
+// The result is not checked for an overflow.
+// Use the ToDecimal256Checked version of this method if you need to check for
+// an overflow.
+func (t Uint64) ToDecimal256() Decimal256 {
+	return Decimal256(decimal256.FromU64(uint64(t)))
 }
 
 // ToFloat32Checked attempts to cast the Uint64 to a Float32.
@@ -9428,6 +9969,12 @@ func CastToUint8(v interface{}) (Uint8, bool) {
 	case Uint64:
 		t := pt
 		return Uint8(t), true
+	case *Decimal256:
+		t := *pt
+		return Uint8(t.toI64()), true
+	case Decimal256:
+		t := pt
+		return Uint8(t.toI64()), true
 	default:
 		// Also handles when v is nil
 		return 0, false
@@ -9776,6 +10323,7 @@ var (
 	_ Object = (*Date64)(nil)
 	_ Object = (*DayTimeInterval)(nil)
 	_ Object = (*Decimal128)(nil)
+	_ Object = (*Decimal256)(nil)
 	_ Object = (*Duration)(nil)
 	_ Object = (*Float16)(nil)
 	_ Object = (*Float32)(nil)

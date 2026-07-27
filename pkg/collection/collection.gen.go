@@ -158,6 +158,33 @@ func (c *Decimal128Collection) AppendObject(v object.Object) error {
 	return nil
 }
 
+// NewDecimal256Collection creates a new Decimal256 collection builder.
+func NewDecimal256Collection(builder *array.Decimal256Builder) *Decimal256Collection {
+	return &Decimal256Collection{
+		builder: builder,
+	}
+}
+
+// Decimal256Collection has logic to apply to this type.
+type Decimal256Collection struct {
+	builder *array.Decimal256Builder
+}
+
+func (c *Decimal256Collection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToDecimal256(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.Decimal256", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
 // NewDurationCollection creates a new Duration collection builder.
 func NewDurationCollection(builder *array.DurationBuilder) *DurationCollection {
 	return &DurationCollection{
@@ -623,6 +650,7 @@ var (
 	_ Collection = (*Date64Collection)(nil)
 	_ Collection = (*DayTimeIntervalCollection)(nil)
 	_ Collection = (*Decimal128Collection)(nil)
+	_ Collection = (*Decimal256Collection)(nil)
 	_ Collection = (*DurationCollection)(nil)
 	_ Collection = (*Float16Collection)(nil)
 	_ Collection = (*Float32Collection)(nil)

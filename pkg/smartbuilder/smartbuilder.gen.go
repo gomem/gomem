@@ -65,6 +65,13 @@ func (sb *SmartBuilder) appendValue(bldr array.Builder, v interface{}) error {
 		}
 		b.Append(vT.Value())
 
+	case *array.Decimal256Builder:
+		vT, ok := object.CastToDecimal256(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.Decimal256", v)
+		}
+		b.Append(vT.Value())
+
 	case *array.DurationBuilder:
 		vT, ok := object.CastToDuration(v)
 		if !ok {

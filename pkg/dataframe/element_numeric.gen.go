@@ -22,6 +22,7 @@ import (
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
 	"github.com/apache/arrow-go/v18/arrow/float16"
 )
 
@@ -603,6 +604,127 @@ func (e Decimal128Element) String() string {
 
 // IsNil returns true when the underlying value is nil.
 func (e Decimal128Element) IsNil() bool {
+	return e.v == nil
+}
+
+// Decimal256Element has logic to apply to this type.
+type Decimal256Element struct {
+	v interface{}
+}
+
+// NewDecimal256Element creates a new Decimal256Element logic wrapper
+// from the given value provided as v.
+func NewDecimal256Element(v interface{}) *Decimal256Element {
+	return &Decimal256Element{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e Decimal256Element) compare(r Element, f func(left, right decimal256.Num) bool) (bool, error) {
+	rE, ok := r.(*Decimal256Element)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to Decimal256Element", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.(decimal256.Num)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a decimal256.Num", e.v)
+	}
+	rv, rok := rE.v.(decimal256.Num)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a decimal256.Num", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left Decimal256Element is equal to the right Decimal256Element.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e Decimal256Element) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.Cmp(right) == 0
+	})
+}
+
+// EqStrict returns true if the left Decimal256Element is equal to the right Decimal256Element.
+// When both are nil EqStrict returns true.
+func (e Decimal256Element) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.Cmp(right) == 0
+	})
+}
+
+// Neq returns true if the left Decimal256Element
+// is not equal to the right Decimal256Element.
+func (e Decimal256Element) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left Decimal256Element
+// is less than the right Decimal256Element.
+func (e Decimal256Element) Less(r Element) (bool, error) {
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.Less(right)
+	})
+}
+
+// LessEq returns true if the left Decimal256Element
+// is less than or equal to the right Decimal256Element.
+func (e Decimal256Element) LessEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.LessEqual(right)
+	})
+}
+
+// Greater returns true if the left Decimal256Element
+// is greter than the right Decimal256Element.
+func (e Decimal256Element) Greater(r Element) (bool, error) {
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.Greater(right)
+	})
+}
+
+// GreaterEq returns true if the left Decimal256Element
+// is greter than or equal to the right Decimal256Element.
+func (e Decimal256Element) GreaterEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.GreaterEqual(right)
+	})
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this Decimal256Element.
+func (e Decimal256Element) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e Decimal256Element) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e Decimal256Element) IsNil() bool {
 	return e.v == nil
 }
 

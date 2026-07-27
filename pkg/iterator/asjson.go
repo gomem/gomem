@@ -16,6 +16,7 @@ package iterator
 
 import (
 	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
 	"github.com/apache/arrow-go/v18/arrow/float16"
 	"github.com/gomem/gomem/pkg/object"
 )
@@ -105,6 +106,11 @@ func decimal128AsJSON(v interface{}) (interface{}, error) {
 	// TODO: cleanup (remove)
 	// return types.Signed128BitInteger{Lo: d128.LowBits(), Hi: d128.HighBits()}, nil
 	return object.Decimal128(d128), nil
+}
+
+func decimal256AsJSON(v interface{}) (interface{}, error) {
+	d256 := v.(decimal256.Num)
+	return object.Decimal256(d256), nil
 }
 
 func dayTimeIntervalAsJSON(v interface{}) (interface{}, error) {
