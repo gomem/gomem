@@ -19,6 +19,7 @@ package object
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/apache/arrow-go/v18/arrow"
@@ -180,7 +181,7 @@ func TestBooleanCastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -196,7 +197,7 @@ func TestMethodBooleanToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -231,7 +232,7 @@ func TestBooleanCastableToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -247,7 +248,7 @@ func TestMethodBooleanToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -288,7 +289,7 @@ func TestBooleanCastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -304,7 +305,7 @@ func TestMethodBooleanToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -345,7 +346,7 @@ func TestBooleanCastableToDayTimeInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDayTimeInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -361,7 +362,7 @@ func TestMethodBooleanToDayTimeInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDayTimeInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -402,7 +403,7 @@ func TestBooleanCastableToDecimal128(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal128()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -418,7 +419,7 @@ func TestMethodBooleanToDecimal128(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal128()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -459,7 +460,7 @@ func TestBooleanCastableToDecimal256(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal256()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -475,7 +476,7 @@ func TestMethodBooleanToDecimal256(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal256()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -516,7 +517,7 @@ func TestBooleanCastableToDuration(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDuration()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -532,7 +533,7 @@ func TestMethodBooleanToDuration(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDuration()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -573,7 +574,7 @@ func TestBooleanCastableToFloat16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -589,7 +590,7 @@ func TestMethodBooleanToFloat16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -630,7 +631,7 @@ func TestBooleanCastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -646,7 +647,7 @@ func TestMethodBooleanToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -687,7 +688,7 @@ func TestBooleanCastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -703,7 +704,7 @@ func TestMethodBooleanToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -744,7 +745,7 @@ func TestBooleanCastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -760,7 +761,7 @@ func TestMethodBooleanToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -801,7 +802,7 @@ func TestBooleanCastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -817,7 +818,7 @@ func TestMethodBooleanToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -858,7 +859,7 @@ func TestBooleanCastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -874,7 +875,7 @@ func TestMethodBooleanToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -915,7 +916,7 @@ func TestBooleanCastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -931,7 +932,7 @@ func TestMethodBooleanToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -972,7 +973,7 @@ func TestBooleanCastableToMonthInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToMonthInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -988,7 +989,7 @@ func TestMethodBooleanToMonthInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToMonthInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1029,7 +1030,7 @@ func TestBooleanCastableToString(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToString()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1045,7 +1046,7 @@ func TestMethodBooleanToString(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToString()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1086,7 +1087,7 @@ func TestBooleanCastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1102,7 +1103,7 @@ func TestMethodBooleanToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1143,7 +1144,7 @@ func TestBooleanCastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1159,7 +1160,7 @@ func TestMethodBooleanToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1200,7 +1201,7 @@ func TestBooleanCastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1216,7 +1217,7 @@ func TestMethodBooleanToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1257,7 +1258,7 @@ func TestBooleanCastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1273,7 +1274,7 @@ func TestMethodBooleanToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1314,7 +1315,7 @@ func TestBooleanCastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1330,7 +1331,7 @@ func TestMethodBooleanToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1371,7 +1372,7 @@ func TestBooleanCastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1387,7 +1388,7 @@ func TestMethodBooleanToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1428,7 +1429,7 @@ func TestBooleanCastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1444,7 +1445,7 @@ func TestMethodBooleanToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1628,7 +1629,7 @@ func TestDate32CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1644,7 +1645,7 @@ func TestMethodDate32ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1679,7 +1680,7 @@ func TestDate32CastableToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1695,7 +1696,7 @@ func TestMethodDate32ToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1736,7 +1737,7 @@ func TestDate32CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1752,7 +1753,7 @@ func TestMethodDate32ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1793,7 +1794,7 @@ func TestDate32CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1809,7 +1810,7 @@ func TestMethodDate32ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1850,7 +1851,7 @@ func TestDate32CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1866,7 +1867,7 @@ func TestMethodDate32ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1907,7 +1908,7 @@ func TestDate32CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -1923,7 +1924,7 @@ func TestMethodDate32ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2107,7 +2108,7 @@ func TestDate64CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2123,7 +2124,7 @@ func TestMethodDate64ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2158,7 +2159,7 @@ func TestDate64CastableToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2174,7 +2175,7 @@ func TestMethodDate64ToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2215,7 +2216,7 @@ func TestDate64CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2231,7 +2232,7 @@ func TestMethodDate64ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2272,7 +2273,7 @@ func TestDate64CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2288,7 +2289,7 @@ func TestMethodDate64ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2329,7 +2330,7 @@ func TestDate64CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2345,7 +2346,7 @@ func TestMethodDate64ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2386,7 +2387,7 @@ func TestDate64CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2402,7 +2403,7 @@ func TestMethodDate64ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2443,7 +2444,7 @@ func TestDate64CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2459,7 +2460,7 @@ func TestMethodDate64ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2500,7 +2501,7 @@ func TestDate64CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2516,7 +2517,7 @@ func TestMethodDate64ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2557,7 +2558,7 @@ func TestDate64CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2573,7 +2574,7 @@ func TestMethodDate64ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2614,7 +2615,7 @@ func TestDate64CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2630,7 +2631,7 @@ func TestMethodDate64ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2671,7 +2672,7 @@ func TestDate64CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2687,7 +2688,7 @@ func TestMethodDate64ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2728,7 +2729,7 @@ func TestDate64CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2744,7 +2745,7 @@ func TestMethodDate64ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2785,7 +2786,7 @@ func TestDate64CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2801,7 +2802,7 @@ func TestMethodDate64ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2842,7 +2843,7 @@ func TestDate64CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2858,7 +2859,7 @@ func TestMethodDate64ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2899,7 +2900,7 @@ func TestDate64CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2915,7 +2916,7 @@ func TestMethodDate64ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2956,7 +2957,7 @@ func TestDate64CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -2972,7 +2973,7 @@ func TestMethodDate64ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3274,7 +3275,7 @@ func TestDayTimeIntervalCastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3290,7 +3291,7 @@ func TestMethodDayTimeIntervalToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3325,7 +3326,7 @@ func TestDayTimeIntervalCastableToDayTimeInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDayTimeInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3341,7 +3342,7 @@ func TestMethodDayTimeIntervalToDayTimeInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDayTimeInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3643,7 +3644,7 @@ func TestDecimal128CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3659,7 +3660,7 @@ func TestMethodDecimal128ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3694,7 +3695,7 @@ func TestDecimal128CastableToDecimal128(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal128()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3710,7 +3711,7 @@ func TestMethodDecimal128ToDecimal128(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal128()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3751,7 +3752,7 @@ func TestDecimal128CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3767,7 +3768,7 @@ func TestMethodDecimal128ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3808,7 +3809,7 @@ func TestDecimal128CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -3824,7 +3825,7 @@ func TestMethodDecimal128ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4126,7 +4127,7 @@ func TestDecimal256CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4142,7 +4143,7 @@ func TestMethodDecimal256ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4177,7 +4178,7 @@ func TestDecimal256CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4193,7 +4194,7 @@ func TestMethodDecimal256ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4234,7 +4235,7 @@ func TestDecimal256CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4250,7 +4251,7 @@ func TestMethodDecimal256ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4434,7 +4435,7 @@ func TestDurationCastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4450,7 +4451,7 @@ func TestMethodDurationToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4485,7 +4486,7 @@ func TestDurationCastableToDuration(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDuration()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4501,7 +4502,7 @@ func TestMethodDurationToDuration(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDuration()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4542,7 +4543,7 @@ func TestDurationCastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4558,7 +4559,7 @@ func TestMethodDurationToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4742,7 +4743,7 @@ func TestFloat16CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4758,7 +4759,7 @@ func TestMethodFloat16ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4793,7 +4794,7 @@ func TestFloat16CastableToFloat16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4809,7 +4810,7 @@ func TestMethodFloat16ToFloat16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4850,7 +4851,7 @@ func TestFloat16CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -4866,7 +4867,7 @@ func TestMethodFloat16ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5050,7 +5051,7 @@ func TestFloat32CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5066,7 +5067,7 @@ func TestMethodFloat32ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5101,7 +5102,7 @@ func TestFloat32CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5117,7 +5118,7 @@ func TestMethodFloat32ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5158,7 +5159,7 @@ func TestFloat32CastableToFloat16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5174,7 +5175,7 @@ func TestMethodFloat32ToFloat16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5215,7 +5216,7 @@ func TestFloat32CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5231,7 +5232,7 @@ func TestMethodFloat32ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5272,7 +5273,7 @@ func TestFloat32CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5288,7 +5289,7 @@ func TestMethodFloat32ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5329,7 +5330,7 @@ func TestFloat32CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5345,7 +5346,7 @@ func TestMethodFloat32ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5386,7 +5387,7 @@ func TestFloat32CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5402,7 +5403,7 @@ func TestMethodFloat32ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5443,7 +5444,7 @@ func TestFloat32CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5459,7 +5460,7 @@ func TestMethodFloat32ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5500,7 +5501,7 @@ func TestFloat32CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5516,7 +5517,7 @@ func TestMethodFloat32ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5557,7 +5558,7 @@ func TestFloat32CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5573,7 +5574,7 @@ func TestMethodFloat32ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5614,7 +5615,7 @@ func TestFloat32CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5630,7 +5631,7 @@ func TestMethodFloat32ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5671,7 +5672,7 @@ func TestFloat32CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5687,7 +5688,7 @@ func TestMethodFloat32ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5728,7 +5729,7 @@ func TestFloat32CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5744,7 +5745,7 @@ func TestMethodFloat32ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5785,7 +5786,7 @@ func TestFloat32CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5801,7 +5802,7 @@ func TestMethodFloat32ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5842,7 +5843,7 @@ func TestFloat32CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5858,7 +5859,7 @@ func TestMethodFloat32ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5899,7 +5900,7 @@ func TestFloat32CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -5915,7 +5916,7 @@ func TestMethodFloat32ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6099,7 +6100,7 @@ func TestFloat64CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6115,7 +6116,7 @@ func TestMethodFloat64ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6150,7 +6151,7 @@ func TestFloat64CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6166,7 +6167,7 @@ func TestMethodFloat64ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6207,7 +6208,7 @@ func TestFloat64CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6223,7 +6224,7 @@ func TestMethodFloat64ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6264,7 +6265,7 @@ func TestFloat64CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6280,7 +6281,7 @@ func TestMethodFloat64ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6321,7 +6322,7 @@ func TestFloat64CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6337,7 +6338,7 @@ func TestMethodFloat64ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6378,7 +6379,7 @@ func TestFloat64CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6394,7 +6395,7 @@ func TestMethodFloat64ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6435,7 +6436,7 @@ func TestFloat64CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6451,7 +6452,7 @@ func TestMethodFloat64ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6492,7 +6493,7 @@ func TestFloat64CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6508,7 +6509,7 @@ func TestMethodFloat64ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6549,7 +6550,7 @@ func TestFloat64CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6565,7 +6566,7 @@ func TestMethodFloat64ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6606,7 +6607,7 @@ func TestFloat64CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6622,7 +6623,7 @@ func TestMethodFloat64ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6663,7 +6664,7 @@ func TestFloat64CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6679,7 +6680,7 @@ func TestMethodFloat64ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6720,7 +6721,7 @@ func TestFloat64CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6736,7 +6737,7 @@ func TestMethodFloat64ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6777,7 +6778,7 @@ func TestFloat64CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6793,7 +6794,7 @@ func TestMethodFloat64ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6834,7 +6835,7 @@ func TestFloat64CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6850,7 +6851,7 @@ func TestMethodFloat64ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6891,7 +6892,7 @@ func TestFloat64CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -6907,7 +6908,7 @@ func TestMethodFloat64ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7091,7 +7092,7 @@ func TestInt16CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7107,7 +7108,7 @@ func TestMethodInt16ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7142,7 +7143,7 @@ func TestInt16CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7158,7 +7159,7 @@ func TestMethodInt16ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7199,7 +7200,7 @@ func TestInt16CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7215,7 +7216,7 @@ func TestMethodInt16ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7256,7 +7257,7 @@ func TestInt16CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7272,7 +7273,7 @@ func TestMethodInt16ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7313,7 +7314,7 @@ func TestInt16CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7329,7 +7330,7 @@ func TestMethodInt16ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7370,7 +7371,7 @@ func TestInt16CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7386,7 +7387,7 @@ func TestMethodInt16ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7427,7 +7428,7 @@ func TestInt16CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7443,7 +7444,7 @@ func TestMethodInt16ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7484,7 +7485,7 @@ func TestInt16CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7500,7 +7501,7 @@ func TestMethodInt16ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7541,7 +7542,7 @@ func TestInt16CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7557,7 +7558,7 @@ func TestMethodInt16ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7598,7 +7599,7 @@ func TestInt16CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7614,7 +7615,7 @@ func TestMethodInt16ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7655,7 +7656,7 @@ func TestInt16CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7671,7 +7672,7 @@ func TestMethodInt16ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7712,7 +7713,7 @@ func TestInt16CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7728,7 +7729,7 @@ func TestMethodInt16ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7769,7 +7770,7 @@ func TestInt16CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7785,7 +7786,7 @@ func TestMethodInt16ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7826,7 +7827,7 @@ func TestInt16CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7842,7 +7843,7 @@ func TestMethodInt16ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7883,7 +7884,7 @@ func TestInt16CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -7899,7 +7900,7 @@ func TestMethodInt16ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8083,7 +8084,7 @@ func TestInt32CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8099,7 +8100,7 @@ func TestMethodInt32ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8134,7 +8135,7 @@ func TestInt32CastableToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8150,7 +8151,7 @@ func TestMethodInt32ToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8191,7 +8192,7 @@ func TestInt32CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8207,7 +8208,7 @@ func TestMethodInt32ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8248,7 +8249,7 @@ func TestInt32CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8264,7 +8265,7 @@ func TestMethodInt32ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8305,7 +8306,7 @@ func TestInt32CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8321,7 +8322,7 @@ func TestMethodInt32ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8362,7 +8363,7 @@ func TestInt32CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8378,7 +8379,7 @@ func TestMethodInt32ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8419,7 +8420,7 @@ func TestInt32CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8435,7 +8436,7 @@ func TestMethodInt32ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8476,7 +8477,7 @@ func TestInt32CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8492,7 +8493,7 @@ func TestMethodInt32ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8533,7 +8534,7 @@ func TestInt32CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8549,7 +8550,7 @@ func TestMethodInt32ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8590,7 +8591,7 @@ func TestInt32CastableToMonthInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToMonthInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8606,7 +8607,7 @@ func TestMethodInt32ToMonthInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToMonthInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8647,7 +8648,7 @@ func TestInt32CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8663,7 +8664,7 @@ func TestMethodInt32ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8704,7 +8705,7 @@ func TestInt32CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8720,7 +8721,7 @@ func TestMethodInt32ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8761,7 +8762,7 @@ func TestInt32CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8777,7 +8778,7 @@ func TestMethodInt32ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8818,7 +8819,7 @@ func TestInt32CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8834,7 +8835,7 @@ func TestMethodInt32ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8875,7 +8876,7 @@ func TestInt32CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8891,7 +8892,7 @@ func TestMethodInt32ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8932,7 +8933,7 @@ func TestInt32CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8948,7 +8949,7 @@ func TestMethodInt32ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -8989,7 +8990,7 @@ func TestInt32CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9005,7 +9006,7 @@ func TestMethodInt32ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9189,7 +9190,7 @@ func TestInt64CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9205,7 +9206,7 @@ func TestMethodInt64ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9240,7 +9241,7 @@ func TestInt64CastableToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9256,7 +9257,7 @@ func TestMethodInt64ToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9297,7 +9298,7 @@ func TestInt64CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9313,7 +9314,7 @@ func TestMethodInt64ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9354,7 +9355,7 @@ func TestInt64CastableToDecimal128(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal128()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9370,7 +9371,7 @@ func TestMethodInt64ToDecimal128(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal128()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9411,7 +9412,7 @@ func TestInt64CastableToDecimal256(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal256()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9427,7 +9428,7 @@ func TestMethodInt64ToDecimal256(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal256()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9468,7 +9469,7 @@ func TestInt64CastableToDuration(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDuration()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9484,7 +9485,7 @@ func TestMethodInt64ToDuration(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDuration()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9525,7 +9526,7 @@ func TestInt64CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9541,7 +9542,7 @@ func TestMethodInt64ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9582,7 +9583,7 @@ func TestInt64CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9598,7 +9599,7 @@ func TestMethodInt64ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9639,7 +9640,7 @@ func TestInt64CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9655,7 +9656,7 @@ func TestMethodInt64ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9696,7 +9697,7 @@ func TestInt64CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9712,7 +9713,7 @@ func TestMethodInt64ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9753,7 +9754,7 @@ func TestInt64CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9769,7 +9770,7 @@ func TestMethodInt64ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9810,7 +9811,7 @@ func TestInt64CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9826,7 +9827,7 @@ func TestMethodInt64ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9867,7 +9868,7 @@ func TestInt64CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9883,7 +9884,7 @@ func TestMethodInt64ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9924,7 +9925,7 @@ func TestInt64CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9940,7 +9941,7 @@ func TestMethodInt64ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9981,7 +9982,7 @@ func TestInt64CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -9997,7 +9998,7 @@ func TestMethodInt64ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10038,7 +10039,7 @@ func TestInt64CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10054,7 +10055,7 @@ func TestMethodInt64ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10095,7 +10096,7 @@ func TestInt64CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10111,7 +10112,7 @@ func TestMethodInt64ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10152,7 +10153,7 @@ func TestInt64CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10168,7 +10169,7 @@ func TestMethodInt64ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10209,7 +10210,7 @@ func TestInt64CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10225,7 +10226,7 @@ func TestMethodInt64ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10409,7 +10410,7 @@ func TestInt8CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10425,7 +10426,7 @@ func TestMethodInt8ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10460,7 +10461,7 @@ func TestInt8CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10476,7 +10477,7 @@ func TestMethodInt8ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10517,7 +10518,7 @@ func TestInt8CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10533,7 +10534,7 @@ func TestMethodInt8ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10574,7 +10575,7 @@ func TestInt8CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10590,7 +10591,7 @@ func TestMethodInt8ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10631,7 +10632,7 @@ func TestInt8CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10647,7 +10648,7 @@ func TestMethodInt8ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10688,7 +10689,7 @@ func TestInt8CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10704,7 +10705,7 @@ func TestMethodInt8ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10745,7 +10746,7 @@ func TestInt8CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10761,7 +10762,7 @@ func TestMethodInt8ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10802,7 +10803,7 @@ func TestInt8CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10818,7 +10819,7 @@ func TestMethodInt8ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10859,7 +10860,7 @@ func TestInt8CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10875,7 +10876,7 @@ func TestMethodInt8ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10916,7 +10917,7 @@ func TestInt8CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10932,7 +10933,7 @@ func TestMethodInt8ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10973,7 +10974,7 @@ func TestInt8CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -10989,7 +10990,7 @@ func TestMethodInt8ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11030,7 +11031,7 @@ func TestInt8CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11046,7 +11047,7 @@ func TestMethodInt8ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11087,7 +11088,7 @@ func TestInt8CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11103,7 +11104,7 @@ func TestMethodInt8ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11144,7 +11145,7 @@ func TestInt8CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11160,7 +11161,7 @@ func TestMethodInt8ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11201,7 +11202,7 @@ func TestInt8CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11217,7 +11218,7 @@ func TestMethodInt8ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11401,7 +11402,7 @@ func TestMonthIntervalCastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11417,7 +11418,7 @@ func TestMethodMonthIntervalToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11452,7 +11453,7 @@ func TestMonthIntervalCastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11468,7 +11469,7 @@ func TestMethodMonthIntervalToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11509,7 +11510,7 @@ func TestMonthIntervalCastableToMonthInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToMonthInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11525,7 +11526,7 @@ func TestMethodMonthIntervalToMonthInterval(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToMonthInterval()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11709,7 +11710,7 @@ func TestStringCastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11725,7 +11726,7 @@ func TestMethodStringToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11760,7 +11761,7 @@ func TestStringCastableToString(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToString()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11776,7 +11777,7 @@ func TestMethodStringToString(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToString()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11801,6 +11802,177 @@ func TestMethodStringToStringChecked(t *testing.T) {
 				}
 				if err != nil || !equal {
 					t.Errorf("detected unhandled overflow for String to String - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestStringCastableToBinary(t *testing.T) {
+	cases := []struct {
+		o    CastableToBinary
+		want Binary
+	}{
+		{String(""), Binary(Binary([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToBinary()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodStringToBinary(t *testing.T) {
+	cases := []struct {
+		o    String
+		want Binary
+	}{
+		{String(""), Binary(Binary([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToBinary()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodStringToBinaryChecked(t *testing.T) {
+	cases := []struct {
+		o String
+	}{
+		{String("abc")},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToBinaryChecked()
+		if ok {
+			v, ok := converted.ToStringChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for String to Binary: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for String to Binary - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestStringCastableToFixedSizeBinary(t *testing.T) {
+	cases := []struct {
+		o    CastableToFixedSizeBinary
+		want FixedSizeBinary
+	}{
+		{String(""), FixedSizeBinary(FixedSizeBinary([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToFixedSizeBinary()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodStringToFixedSizeBinary(t *testing.T) {
+	cases := []struct {
+		o    String
+		want FixedSizeBinary
+	}{
+		{String(""), FixedSizeBinary(FixedSizeBinary([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToFixedSizeBinary()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodStringToFixedSizeBinaryChecked(t *testing.T) {
+	cases := []struct {
+		o String
+	}{
+		{String("abc")},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToFixedSizeBinaryChecked()
+		if ok {
+			v, ok := converted.ToStringChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for String to FixedSizeBinary: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for String to FixedSizeBinary - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestStringCastableToLargeString(t *testing.T) {
+	cases := []struct {
+		o    CastableToLargeString
+		want LargeString
+	}{
+		{String(""), LargeString(LargeString(""))},
+	}
+	for _, c := range cases {
+		value := c.o.ToLargeString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodStringToLargeString(t *testing.T) {
+	cases := []struct {
+		o    String
+		want LargeString
+	}{
+		{String(""), LargeString(LargeString(""))},
+	}
+	for _, c := range cases {
+		value := c.o.ToLargeString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodStringToLargeStringChecked(t *testing.T) {
+	cases := []struct {
+		o String
+	}{
+		{String("abc")},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToLargeStringChecked()
+		if ok {
+			v, ok := converted.ToStringChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for String to LargeString: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for String to LargeString - %#v != %#v", v, c.o)
 				}
 			}
 		}
@@ -11960,7 +12132,7 @@ func TestTime32CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -11976,7 +12148,7 @@ func TestMethodTime32ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12011,7 +12183,7 @@ func TestTime32CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12027,7 +12199,7 @@ func TestMethodTime32ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12068,7 +12240,7 @@ func TestTime32CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12084,7 +12256,7 @@ func TestMethodTime32ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12125,7 +12297,7 @@ func TestTime32CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12141,7 +12313,7 @@ func TestMethodTime32ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12182,7 +12354,7 @@ func TestTime32CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12198,7 +12370,7 @@ func TestMethodTime32ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12239,7 +12411,7 @@ func TestTime32CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12255,7 +12427,7 @@ func TestMethodTime32ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12296,7 +12468,7 @@ func TestTime32CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12312,7 +12484,7 @@ func TestMethodTime32ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12353,7 +12525,7 @@ func TestTime32CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12369,7 +12541,7 @@ func TestMethodTime32ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12410,7 +12582,7 @@ func TestTime32CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12426,7 +12598,7 @@ func TestMethodTime32ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12467,7 +12639,7 @@ func TestTime32CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12483,7 +12655,7 @@ func TestMethodTime32ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12524,7 +12696,7 @@ func TestTime32CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12540,7 +12712,7 @@ func TestMethodTime32ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12581,7 +12753,7 @@ func TestTime32CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12597,7 +12769,7 @@ func TestMethodTime32ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12638,7 +12810,7 @@ func TestTime32CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12654,7 +12826,7 @@ func TestMethodTime32ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12695,7 +12867,7 @@ func TestTime32CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12711,7 +12883,7 @@ func TestMethodTime32ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12752,7 +12924,7 @@ func TestTime32CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12768,7 +12940,7 @@ func TestMethodTime32ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12952,7 +13124,7 @@ func TestTime64CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -12968,7 +13140,7 @@ func TestMethodTime64ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13003,7 +13175,7 @@ func TestTime64CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13019,7 +13191,7 @@ func TestMethodTime64ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13060,7 +13232,7 @@ func TestTime64CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13076,7 +13248,7 @@ func TestMethodTime64ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13117,7 +13289,7 @@ func TestTime64CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13133,7 +13305,7 @@ func TestMethodTime64ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13174,7 +13346,7 @@ func TestTime64CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13190,7 +13362,7 @@ func TestMethodTime64ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13231,7 +13403,7 @@ func TestTime64CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13247,7 +13419,7 @@ func TestMethodTime64ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13288,7 +13460,7 @@ func TestTime64CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13304,7 +13476,7 @@ func TestMethodTime64ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13345,7 +13517,7 @@ func TestTime64CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13361,7 +13533,7 @@ func TestMethodTime64ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13402,7 +13574,7 @@ func TestTime64CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13418,7 +13590,7 @@ func TestMethodTime64ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13459,7 +13631,7 @@ func TestTime64CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13475,7 +13647,7 @@ func TestMethodTime64ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13516,7 +13688,7 @@ func TestTime64CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13532,7 +13704,7 @@ func TestMethodTime64ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13573,7 +13745,7 @@ func TestTime64CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13589,7 +13761,7 @@ func TestMethodTime64ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13630,7 +13802,7 @@ func TestTime64CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13646,7 +13818,7 @@ func TestMethodTime64ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13687,7 +13859,7 @@ func TestTime64CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13703,7 +13875,7 @@ func TestMethodTime64ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13744,7 +13916,7 @@ func TestTime64CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13760,7 +13932,7 @@ func TestMethodTime64ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13944,7 +14116,7 @@ func TestTimestampCastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13960,7 +14132,7 @@ func TestMethodTimestampToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -13995,7 +14167,7 @@ func TestTimestampCastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14011,7 +14183,7 @@ func TestMethodTimestampToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14052,7 +14224,7 @@ func TestTimestampCastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14068,7 +14240,7 @@ func TestMethodTimestampToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14109,7 +14281,7 @@ func TestTimestampCastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14125,7 +14297,7 @@ func TestMethodTimestampToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14166,7 +14338,7 @@ func TestTimestampCastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14182,7 +14354,7 @@ func TestMethodTimestampToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14223,7 +14395,7 @@ func TestTimestampCastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14239,7 +14411,7 @@ func TestMethodTimestampToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14280,7 +14452,7 @@ func TestTimestampCastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14296,7 +14468,7 @@ func TestMethodTimestampToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14337,7 +14509,7 @@ func TestTimestampCastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14353,7 +14525,7 @@ func TestMethodTimestampToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14394,7 +14566,7 @@ func TestTimestampCastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14410,7 +14582,7 @@ func TestMethodTimestampToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14451,7 +14623,7 @@ func TestTimestampCastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14467,7 +14639,7 @@ func TestMethodTimestampToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14508,7 +14680,7 @@ func TestTimestampCastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14524,7 +14696,7 @@ func TestMethodTimestampToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14565,7 +14737,7 @@ func TestTimestampCastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14581,7 +14753,7 @@ func TestMethodTimestampToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14622,7 +14794,7 @@ func TestTimestampCastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14638,7 +14810,7 @@ func TestMethodTimestampToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14679,7 +14851,7 @@ func TestTimestampCastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14695,7 +14867,7 @@ func TestMethodTimestampToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14736,7 +14908,7 @@ func TestTimestampCastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14752,7 +14924,7 @@ func TestMethodTimestampToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14936,7 +15108,7 @@ func TestUint16CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14952,7 +15124,7 @@ func TestMethodUint16ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -14987,7 +15159,7 @@ func TestUint16CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15003,7 +15175,7 @@ func TestMethodUint16ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15044,7 +15216,7 @@ func TestUint16CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15060,7 +15232,7 @@ func TestMethodUint16ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15101,7 +15273,7 @@ func TestUint16CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15117,7 +15289,7 @@ func TestMethodUint16ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15158,7 +15330,7 @@ func TestUint16CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15174,7 +15346,7 @@ func TestMethodUint16ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15215,7 +15387,7 @@ func TestUint16CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15231,7 +15403,7 @@ func TestMethodUint16ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15272,7 +15444,7 @@ func TestUint16CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15288,7 +15460,7 @@ func TestMethodUint16ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15329,7 +15501,7 @@ func TestUint16CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15345,7 +15517,7 @@ func TestMethodUint16ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15386,7 +15558,7 @@ func TestUint16CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15402,7 +15574,7 @@ func TestMethodUint16ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15443,7 +15615,7 @@ func TestUint16CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15459,7 +15631,7 @@ func TestMethodUint16ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15500,7 +15672,7 @@ func TestUint16CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15516,7 +15688,7 @@ func TestMethodUint16ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15557,7 +15729,7 @@ func TestUint16CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15573,7 +15745,7 @@ func TestMethodUint16ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15614,7 +15786,7 @@ func TestUint16CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15630,7 +15802,7 @@ func TestMethodUint16ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15671,7 +15843,7 @@ func TestUint16CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15687,7 +15859,7 @@ func TestMethodUint16ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15728,7 +15900,7 @@ func TestUint16CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15744,7 +15916,7 @@ func TestMethodUint16ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15928,7 +16100,7 @@ func TestUint32CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15944,7 +16116,7 @@ func TestMethodUint32ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15979,7 +16151,7 @@ func TestUint32CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -15995,7 +16167,7 @@ func TestMethodUint32ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16036,7 +16208,7 @@ func TestUint32CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16052,7 +16224,7 @@ func TestMethodUint32ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16093,7 +16265,7 @@ func TestUint32CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16109,7 +16281,7 @@ func TestMethodUint32ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16150,7 +16322,7 @@ func TestUint32CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16166,7 +16338,7 @@ func TestMethodUint32ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16207,7 +16379,7 @@ func TestUint32CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16223,7 +16395,7 @@ func TestMethodUint32ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16264,7 +16436,7 @@ func TestUint32CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16280,7 +16452,7 @@ func TestMethodUint32ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16321,7 +16493,7 @@ func TestUint32CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16337,7 +16509,7 @@ func TestMethodUint32ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16378,7 +16550,7 @@ func TestUint32CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16394,7 +16566,7 @@ func TestMethodUint32ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16435,7 +16607,7 @@ func TestUint32CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16451,7 +16623,7 @@ func TestMethodUint32ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16492,7 +16664,7 @@ func TestUint32CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16508,7 +16680,7 @@ func TestMethodUint32ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16549,7 +16721,7 @@ func TestUint32CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16565,7 +16737,7 @@ func TestMethodUint32ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16606,7 +16778,7 @@ func TestUint32CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16622,7 +16794,7 @@ func TestMethodUint32ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16663,7 +16835,7 @@ func TestUint32CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16679,7 +16851,7 @@ func TestMethodUint32ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16720,7 +16892,7 @@ func TestUint32CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16736,7 +16908,7 @@ func TestMethodUint32ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16920,7 +17092,7 @@ func TestUint64CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16936,7 +17108,7 @@ func TestMethodUint64ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16971,7 +17143,7 @@ func TestUint64CastableToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -16987,7 +17159,7 @@ func TestMethodUint64ToDate32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17028,7 +17200,7 @@ func TestUint64CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17044,7 +17216,7 @@ func TestMethodUint64ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17085,7 +17257,7 @@ func TestUint64CastableToDecimal128(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal128()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17101,7 +17273,7 @@ func TestMethodUint64ToDecimal128(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal128()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17142,7 +17314,7 @@ func TestUint64CastableToDecimal256(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal256()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17158,7 +17330,7 @@ func TestMethodUint64ToDecimal256(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDecimal256()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17199,7 +17371,7 @@ func TestUint64CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17215,7 +17387,7 @@ func TestMethodUint64ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17256,7 +17428,7 @@ func TestUint64CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17272,7 +17444,7 @@ func TestMethodUint64ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17313,7 +17485,7 @@ func TestUint64CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17329,7 +17501,7 @@ func TestMethodUint64ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17370,7 +17542,7 @@ func TestUint64CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17386,7 +17558,7 @@ func TestMethodUint64ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17427,7 +17599,7 @@ func TestUint64CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17443,7 +17615,7 @@ func TestMethodUint64ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17484,7 +17656,7 @@ func TestUint64CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17500,7 +17672,7 @@ func TestMethodUint64ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17541,7 +17713,7 @@ func TestUint64CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17557,7 +17729,7 @@ func TestMethodUint64ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17598,7 +17770,7 @@ func TestUint64CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17614,7 +17786,7 @@ func TestMethodUint64ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17655,7 +17827,7 @@ func TestUint64CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17671,7 +17843,7 @@ func TestMethodUint64ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17712,7 +17884,7 @@ func TestUint64CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17728,7 +17900,7 @@ func TestMethodUint64ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17769,7 +17941,7 @@ func TestUint64CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17785,7 +17957,7 @@ func TestMethodUint64ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17826,7 +17998,7 @@ func TestUint64CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17842,7 +18014,7 @@ func TestMethodUint64ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17883,7 +18055,7 @@ func TestUint64CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -17899,7 +18071,7 @@ func TestMethodUint64ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18083,7 +18255,7 @@ func TestUint8CastableToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18099,7 +18271,7 @@ func TestMethodUint8ToBoolean(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToBoolean()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18134,7 +18306,7 @@ func TestUint8CastableToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18150,7 +18322,7 @@ func TestMethodUint8ToDate64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToDate64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18191,7 +18363,7 @@ func TestUint8CastableToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18207,7 +18379,7 @@ func TestMethodUint8ToFloat32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18248,7 +18420,7 @@ func TestUint8CastableToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18264,7 +18436,7 @@ func TestMethodUint8ToFloat64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToFloat64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18305,7 +18477,7 @@ func TestUint8CastableToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18321,7 +18493,7 @@ func TestMethodUint8ToInt16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18362,7 +18534,7 @@ func TestUint8CastableToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18378,7 +18550,7 @@ func TestMethodUint8ToInt32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18419,7 +18591,7 @@ func TestUint8CastableToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18435,7 +18607,7 @@ func TestMethodUint8ToInt64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18476,7 +18648,7 @@ func TestUint8CastableToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18492,7 +18664,7 @@ func TestMethodUint8ToInt8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToInt8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18533,7 +18705,7 @@ func TestUint8CastableToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18549,7 +18721,7 @@ func TestMethodUint8ToTime32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18590,7 +18762,7 @@ func TestUint8CastableToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18606,7 +18778,7 @@ func TestMethodUint8ToTime64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTime64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18647,7 +18819,7 @@ func TestUint8CastableToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18663,7 +18835,7 @@ func TestMethodUint8ToTimestamp(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToTimestamp()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18704,7 +18876,7 @@ func TestUint8CastableToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18720,7 +18892,7 @@ func TestMethodUint8ToUint16(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint16()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18761,7 +18933,7 @@ func TestUint8CastableToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18777,7 +18949,7 @@ func TestMethodUint8ToUint32(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint32()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18818,7 +18990,7 @@ func TestUint8CastableToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18834,7 +19006,7 @@ func TestMethodUint8ToUint64(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint64()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18875,7 +19047,7 @@ func TestUint8CastableToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18891,7 +19063,7 @@ func TestMethodUint8ToUint8(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.ToUint8()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -18916,6 +19088,1013 @@ func TestMethodUint8ToUint8Checked(t *testing.T) {
 				}
 				if err != nil || !equal {
 					t.Errorf("detected unhandled overflow for Uint8 to Uint8 - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestBinaryToBoolean(t *testing.T) {
+	cases := []struct {
+		Obj  Binary
+		Want bool
+	}{
+		{Binary([]byte{}), false},
+		{Binary([]byte{byte(1)}), true},
+		{Binary([]byte{byte(2)}), true},
+	}
+	for _, c := range cases {
+		if got, want := c.Obj.ToBoolean(), Boolean(c.Want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Binary(Binary([]byte{})), Binary(Binary([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		eq, err := c.left.Eq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := eq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryNeq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Binary(Binary([]byte{})), Binary(Binary([]byte{})), nil, false},
+		{Binary(Binary([]byte{})), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.Binary"), false},
+		{func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.Binary"), false},
+		{func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(1)})
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.Binary"), false},
+	}
+	for _, c := range cases {
+		neq, err := c.left.Neq(c.right)
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", c.err) {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := neq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryLess(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Binary(Binary([]byte{})), Binary(Binary([]byte{})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		less, err := c.left.Less(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := less, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryLessEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Binary(Binary([]byte{})), Binary(Binary([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		lessEq, err := c.left.LessEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := lessEq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryGreater(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Binary(Binary([]byte{})), Binary(Binary([]byte{})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greater, err := c.left.Greater(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greater, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestBinaryGreaterEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{Binary(Binary([]byte{})), Binary(Binary([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary(Binary([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := Binary([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greaterEq, err := c.left.GreaterEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greaterEq, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestBinaryCastableToString(t *testing.T) {
+	cases := []struct {
+		o    CastableToString
+		want String
+	}{
+		{Binary(Binary([]byte{})), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodBinaryToString(t *testing.T) {
+	cases := []struct {
+		o    Binary
+		want String
+	}{
+		{Binary(Binary([]byte{})), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodBinaryToStringChecked(t *testing.T) {
+	cases := []struct {
+		o Binary
+	}{
+		{MaxBinary},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToStringChecked()
+		if ok {
+			v, ok := converted.ToBinaryChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for Binary to String: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for Binary to String - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestBinaryCastableToBinary(t *testing.T) {
+	cases := []struct {
+		o    CastableToBinary
+		want Binary
+	}{
+		{Binary(Binary([]byte{})), Binary(Binary([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToBinary()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodBinaryToBinary(t *testing.T) {
+	cases := []struct {
+		o    Binary
+		want Binary
+	}{
+		{Binary(Binary([]byte{})), Binary(Binary([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToBinary()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodBinaryToBinaryChecked(t *testing.T) {
+	cases := []struct {
+		o Binary
+	}{
+		{MaxBinary},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToBinaryChecked()
+		if ok {
+			v, ok := converted.ToBinaryChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for Binary to Binary: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for Binary to Binary - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestFixedSizeBinaryToBoolean(t *testing.T) {
+	cases := []struct {
+		Obj  FixedSizeBinary
+		Want bool
+	}{
+		{FixedSizeBinary([]byte{}), false},
+		{FixedSizeBinary([]byte{byte(1)}), true},
+		{FixedSizeBinary([]byte{byte(2)}), true},
+	}
+	for _, c := range cases {
+		if got, want := c.Obj.ToBoolean(), Boolean(c.Want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestFixedSizeBinaryEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), FixedSizeBinary(FixedSizeBinary([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		eq, err := c.left.Eq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := eq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestFixedSizeBinaryNeq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), FixedSizeBinary(FixedSizeBinary([]byte{})), nil, false},
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.FixedSizeBinary"), false},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.FixedSizeBinary"), false},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(1)})
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.FixedSizeBinary"), false},
+	}
+	for _, c := range cases {
+		neq, err := c.left.Neq(c.right)
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", c.err) {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := neq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestFixedSizeBinaryLess(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), FixedSizeBinary(FixedSizeBinary([]byte{})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		less, err := c.left.Less(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := less, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestFixedSizeBinaryLessEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), FixedSizeBinary(FixedSizeBinary([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		lessEq, err := c.left.LessEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := lessEq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestFixedSizeBinaryGreater(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), FixedSizeBinary(FixedSizeBinary([]byte{})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greater, err := c.left.Greater(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greater, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestFixedSizeBinaryGreaterEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), FixedSizeBinary(FixedSizeBinary([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary(FixedSizeBinary([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := FixedSizeBinary([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greaterEq, err := c.left.GreaterEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greaterEq, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestFixedSizeBinaryCastableToString(t *testing.T) {
+	cases := []struct {
+		o    CastableToString
+		want String
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodFixedSizeBinaryToString(t *testing.T) {
+	cases := []struct {
+		o    FixedSizeBinary
+		want String
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodFixedSizeBinaryToStringChecked(t *testing.T) {
+	cases := []struct {
+		o FixedSizeBinary
+	}{
+		{MaxFixedSizeBinary},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToStringChecked()
+		if ok {
+			v, ok := converted.ToFixedSizeBinaryChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for FixedSizeBinary to String: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for FixedSizeBinary to String - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestFixedSizeBinaryCastableToFixedSizeBinary(t *testing.T) {
+	cases := []struct {
+		o    CastableToFixedSizeBinary
+		want FixedSizeBinary
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), FixedSizeBinary(FixedSizeBinary([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToFixedSizeBinary()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodFixedSizeBinaryToFixedSizeBinary(t *testing.T) {
+	cases := []struct {
+		o    FixedSizeBinary
+		want FixedSizeBinary
+	}{
+		{FixedSizeBinary(FixedSizeBinary([]byte{})), FixedSizeBinary(FixedSizeBinary([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToFixedSizeBinary()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodFixedSizeBinaryToFixedSizeBinaryChecked(t *testing.T) {
+	cases := []struct {
+		o FixedSizeBinary
+	}{
+		{MaxFixedSizeBinary},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToFixedSizeBinaryChecked()
+		if ok {
+			v, ok := converted.ToFixedSizeBinaryChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for FixedSizeBinary to FixedSizeBinary: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for FixedSizeBinary to FixedSizeBinary - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestLargeStringToBoolean(t *testing.T) {
+	cases := []struct {
+		Obj  LargeString
+		Want bool
+	}{
+		{LargeString(""), false},
+		{LargeString("%v"), true},
+		{LargeString("%v"), true},
+	}
+	for _, c := range cases {
+		if got, want := c.Obj.ToBoolean(), Boolean(c.Want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestLargeStringEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{LargeString(LargeString("")), LargeString(LargeString("")), nil, true},
+	}
+	for _, c := range cases {
+		eq, err := c.left.Eq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := eq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestLargeStringNeq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{LargeString(LargeString("")), LargeString(LargeString("")), nil, false},
+		{LargeString(LargeString("")), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.LargeString"), false},
+	}
+	for _, c := range cases {
+		neq, err := c.left.Neq(c.right)
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", c.err) {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := neq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestLargeStringLess(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{LargeString(LargeString("")), LargeString(LargeString("")), nil, false},
+	}
+	for _, c := range cases {
+		less, err := c.left.Less(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := less, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestLargeStringLessEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{LargeString(LargeString("")), LargeString(LargeString("")), nil, true},
+	}
+	for _, c := range cases {
+		lessEq, err := c.left.LessEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := lessEq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestLargeStringGreater(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{LargeString(LargeString("")), LargeString(LargeString("")), nil, false},
+	}
+	for _, c := range cases {
+		greater, err := c.left.Greater(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greater, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestLargeStringGreaterEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{LargeString(LargeString("")), LargeString(LargeString("")), nil, true},
+	}
+	for _, c := range cases {
+		greaterEq, err := c.left.GreaterEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greaterEq, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestLargeStringCastableToString(t *testing.T) {
+	cases := []struct {
+		o    CastableToString
+		want String
+	}{
+		{LargeString(LargeString("")), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodLargeStringToString(t *testing.T) {
+	cases := []struct {
+		o    LargeString
+		want String
+	}{
+		{LargeString(LargeString("")), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodLargeStringToStringChecked(t *testing.T) {
+	cases := []struct {
+		o LargeString
+	}{
+		{MaxLargeString},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToStringChecked()
+		if ok {
+			v, ok := converted.ToLargeStringChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for LargeString to String: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for LargeString to String - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestLargeStringCastableToLargeString(t *testing.T) {
+	cases := []struct {
+		o    CastableToLargeString
+		want LargeString
+	}{
+		{LargeString(LargeString("")), LargeString(LargeString(""))},
+	}
+	for _, c := range cases {
+		value := c.o.ToLargeString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodLargeStringToLargeString(t *testing.T) {
+	cases := []struct {
+		o    LargeString
+		want LargeString
+	}{
+		{LargeString(LargeString("")), LargeString(LargeString(""))},
+	}
+	for _, c := range cases {
+		value := c.o.ToLargeString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodLargeStringToLargeStringChecked(t *testing.T) {
+	cases := []struct {
+		o LargeString
+	}{
+		{MaxLargeString},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToLargeStringChecked()
+		if ok {
+			v, ok := converted.ToLargeStringChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for LargeString to LargeString: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for LargeString to LargeString - %#v != %#v", v, c.o)
 				}
 			}
 		}

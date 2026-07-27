@@ -644,6 +644,87 @@ func (c *Uint8Collection) AppendObject(v object.Object) error {
 	return nil
 }
 
+// NewBinaryCollection creates a new Binary collection builder.
+func NewBinaryCollection(builder *array.BinaryBuilder) *BinaryCollection {
+	return &BinaryCollection{
+		builder: builder,
+	}
+}
+
+// BinaryCollection has logic to apply to this type.
+type BinaryCollection struct {
+	builder *array.BinaryBuilder
+}
+
+func (c *BinaryCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToBinary(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.Binary", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
+// NewFixedSizeBinaryCollection creates a new FixedSizeBinary collection builder.
+func NewFixedSizeBinaryCollection(builder *array.FixedSizeBinaryBuilder) *FixedSizeBinaryCollection {
+	return &FixedSizeBinaryCollection{
+		builder: builder,
+	}
+}
+
+// FixedSizeBinaryCollection has logic to apply to this type.
+type FixedSizeBinaryCollection struct {
+	builder *array.FixedSizeBinaryBuilder
+}
+
+func (c *FixedSizeBinaryCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToFixedSizeBinary(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.FixedSizeBinary", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
+// NewLargeStringCollection creates a new LargeString collection builder.
+func NewLargeStringCollection(builder *array.LargeStringBuilder) *LargeStringCollection {
+	return &LargeStringCollection{
+		builder: builder,
+	}
+}
+
+// LargeStringCollection has logic to apply to this type.
+type LargeStringCollection struct {
+	builder *array.LargeStringBuilder
+}
+
+func (c *LargeStringCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToLargeString(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.LargeString", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
 var (
 	_ Collection = (*BooleanCollection)(nil)
 	_ Collection = (*Date32Collection)(nil)
@@ -668,4 +749,7 @@ var (
 	_ Collection = (*Uint32Collection)(nil)
 	_ Collection = (*Uint64Collection)(nil)
 	_ Collection = (*Uint8Collection)(nil)
+	_ Collection = (*BinaryCollection)(nil)
+	_ Collection = (*FixedSizeBinaryCollection)(nil)
+	_ Collection = (*LargeStringCollection)(nil)
 )

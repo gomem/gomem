@@ -19,6 +19,7 @@ package {{$package}}
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/apache/arrow-go/v18/arrow"
@@ -336,8 +337,10 @@ func Test{{$kind.Data.Name}}CastableTo{{.ToName}}(t *testing.T) {
 		{{- if eq .ToName "String" }}
 			{{- if eq $kind.Data.Name "String" }}
 				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("") },
-			{{- else }}
+			{{- else if eq $kind.Data.Name "Boolean" }}
 				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("false") },
+			{{- else }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("") },
 			{{ end }}
 		{{- else }}
 			{{- if .TestConstructor }}
@@ -350,7 +353,7 @@ func Test{{$kind.Data.Name}}CastableTo{{.ToName}}(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.To{{.ToName}}()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}
@@ -364,8 +367,10 @@ func TestMethod{{$kind.Data.Name}}To{{.ToName}}(t *testing.T) {
 		{{- if eq .ToName "String" }}
 			{{- if eq $kind.Data.Name "String" }}
 				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("") },
-			{{- else }}
+			{{- else if eq $kind.Data.Name "Boolean" }}
 				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("false") },
+			{{- else }}
+				{ {{$kind.Data.Name}}({{$kind.Data.Default}}), String("") },
 			{{ end }}
 		{{- else }}
 			{{- if .TestConstructor }}
@@ -378,7 +383,7 @@ func TestMethod{{$kind.Data.Name}}To{{.ToName}}(t *testing.T) {
 	for _, c := range cases {
 		value := c.o.To{{.ToName}}()
 
-		if got, want := value, c.want; got != want {
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("\ngot=%v\nwant=%v", got, want)
 		}
 	}

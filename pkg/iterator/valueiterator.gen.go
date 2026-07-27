@@ -123,6 +123,15 @@ func NewValueIterator(column *arrow.Column) ValueIterator {
 	case *arrow.Uint8Type:
 		return NewUint8ValueIterator(column)
 
+	case *arrow.BinaryType:
+		return NewBinaryValueIterator(column)
+
+	case *arrow.FixedSizeBinaryType:
+		return NewFixedSizeBinaryValueIterator(column)
+
+	case *arrow.LargeStringType:
+		return NewLargeStringValueIterator(column)
+
 	case *arrow.ListType:
 		return NewListValueIterator(column)
 

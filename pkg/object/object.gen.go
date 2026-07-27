@@ -17,6 +17,7 @@
 package object
 
 import (
+	"bytes"
 	"fmt"
 	"math"
 
@@ -49,6 +50,9 @@ var (
 	MaxUint32          = Uint32(math.MaxUint32)
 	MaxUint64          = Uint64(math.MaxUint64)
 	MaxUint8           = Uint8(math.MaxUint8)
+	MaxBinary          = Binary([]byte{0xff})
+	MaxFixedSizeBinary = FixedSizeBinary([]byte{0xff})
+	MaxLargeString     = LargeString("z")
 )
 
 type CastableToBoolean interface {
@@ -208,6 +212,44 @@ func CastToBoolean(v interface{}) (Boolean, bool) {
 	case Decimal256:
 		t := pt
 		return Boolean(t.Sign() != 0), true
+	case *Binary:
+		t := *pt
+		return func(t Binary) Boolean {
+			if len(t) > 0 {
+				return Boolean(true)
+			}
+			return Boolean(false)
+		}(t), true
+	case Binary:
+		t := pt
+		return func(t Binary) Boolean {
+			if len(t) > 0 {
+				return Boolean(true)
+			}
+			return Boolean(false)
+		}(t), true
+	case *FixedSizeBinary:
+		t := *pt
+		return func(t FixedSizeBinary) Boolean {
+			if len(t) > 0 {
+				return Boolean(true)
+			}
+			return Boolean(false)
+		}(t), true
+	case FixedSizeBinary:
+		t := pt
+		return func(t FixedSizeBinary) Boolean {
+			if len(t) > 0 {
+				return Boolean(true)
+			}
+			return Boolean(false)
+		}(t), true
+	case *LargeString:
+		t := *pt
+		return Boolean(t != ""), true
+	case LargeString:
+		t := pt
+		return Boolean(t != ""), true
 	default:
 		// Also handles when v is nil
 		return false, false
@@ -6739,6 +6781,24 @@ func CastToString(v interface{}) (String, bool) {
 	case Decimal256:
 		t := pt
 		return String(fmt.Sprintf("%#v", t)), true
+	case *Binary:
+		t := *pt
+		return String(string(t)), true
+	case Binary:
+		t := pt
+		return String(string(t)), true
+	case *FixedSizeBinary:
+		t := *pt
+		return String(string(t)), true
+	case FixedSizeBinary:
+		t := pt
+		return String(string(t)), true
+	case *LargeString:
+		t := *pt
+		return String(t), true
+	case LargeString:
+		t := pt
+		return String(t), true
 	default:
 		// Also handles when v is nil
 		return "", false
@@ -6854,6 +6914,51 @@ func (t String) ToStringChecked() (String, Boolean) {
 // an overflow.
 func (t String) ToString() String {
 	return t
+}
+
+// ToBinaryChecked attempts to cast the String to a Binary.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t String) ToBinaryChecked() (Binary, Boolean) {
+	return t.ToBinary(), true
+}
+
+// ToBinary attempts to cast the String to a Binary.
+// The result is not checked for an overflow.
+// Use the ToBinaryChecked version of this method if you need to check for
+// an overflow.
+func (t String) ToBinary() Binary {
+	return Binary([]byte(t))
+}
+
+// ToFixedSizeBinaryChecked attempts to cast the String to a FixedSizeBinary.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t String) ToFixedSizeBinaryChecked() (FixedSizeBinary, Boolean) {
+	return t.ToFixedSizeBinary(), true
+}
+
+// ToFixedSizeBinary attempts to cast the String to a FixedSizeBinary.
+// The result is not checked for an overflow.
+// Use the ToFixedSizeBinaryChecked version of this method if you need to check for
+// an overflow.
+func (t String) ToFixedSizeBinary() FixedSizeBinary {
+	return FixedSizeBinary([]byte(t))
+}
+
+// ToLargeStringChecked attempts to cast the String to a LargeString.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t String) ToLargeStringChecked() (LargeString, Boolean) {
+	return t.ToLargeString(), true
+}
+
+// ToLargeString attempts to cast the String to a LargeString.
+// The result is not checked for an overflow.
+// Use the ToLargeStringChecked version of this method if you need to check for
+// an overflow.
+func (t String) ToLargeString() LargeString {
+	return LargeString(string(t))
 }
 
 type CastableToTime32 interface {
@@ -10317,6 +10422,504 @@ func (t Uint8) ToUint8() Uint8 {
 	return t
 }
 
+type CastableToBinary interface {
+	ToBinaryChecked() (Binary, Boolean)
+	ToBinary() Binary
+}
+
+// CastToBinary takes an interface{} type or any Object type and
+// attempts to convert it to the Binary Object type.
+func CastToBinary(v interface{}) (Binary, bool) {
+	switch pt := v.(type) {
+	case *Binary:
+		return *pt, true
+	case Binary:
+		return pt, true
+	case *[]byte:
+		t := *pt
+		return Binary(t), true
+	case []byte:
+		t := pt
+		return Binary(t), true
+	case *String:
+		t := *pt
+		return Binary([]byte(t)), true
+	case String:
+		t := pt
+		return Binary([]byte(t)), true
+	default:
+		// Also handles when v is nil
+		return Binary([]byte{}), false
+	}
+}
+
+// NewBinary creates a new Binary object
+// from the given value provided as v.
+func NewBinary(v []byte) Binary {
+	return Binary(v)
+}
+
+// Binary has logic to apply to this type.
+type Binary []byte
+
+// Value returns the underlying value in it's native type.
+func (e Binary) Value() []byte {
+	return []byte(e)
+}
+
+// compare takes the left and right objects and applies the comparator function to them.
+func (e Binary) compareTypes(r Object, f func([]byte, []byte) Boolean) (Boolean, error) {
+	if r == nil {
+		return Boolean(false), nil
+	}
+
+	switch right := r.(type) {
+	case Binary:
+		return f(e.Value(), right.Value()), nil
+	case *Binary:
+		return f(e.Value(), right.Value()), nil
+	default:
+		return false, fmt.Errorf("cannot cast %T (%#v) to object.Binary", r, r)
+	}
+}
+
+// Comparation methods
+
+// Eq returns true if the left Binary is equal to the right Binary.
+func (e Binary) Eq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Equal(left, right))
+	})
+}
+
+// Neq returns true if the left Binary
+// is not equal to the right Binary.
+func (e Binary) Neq(r Object) (Boolean, error) {
+	v, err := e.Eq(r)
+	if err != nil {
+		return Boolean(false), err
+	}
+	return !v, err
+}
+
+// Less returns true if the left Binary
+// is less than the right Binary.
+func (e Binary) Less(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) < 0)
+	})
+}
+
+// LessEq returns true if the left Binary
+// is less than or equal to the right Binary.
+func (e Binary) LessEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) <= 0)
+	})
+}
+
+// Greater returns true if the left Binary
+// is greter than the right Binary.
+func (e Binary) Greater(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) > 0)
+	})
+}
+
+// GreaterEq returns true if the left Binary
+// is greter than or equal to the right Binary.
+func (e Binary) GreaterEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) >= 0)
+	})
+}
+
+// ToBooleanChecked attempts to cast the Binary to a Boolean.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Binary) ToBooleanChecked() (Boolean, Boolean) {
+	return t.ToBoolean(), true
+}
+
+// ToBoolean attempts to cast the Binary to a Boolean.
+// The result is not checked for an overflow.
+// Use the ToBooleanChecked version of this method if you need to check for
+// an overflow.
+func (t Binary) ToBoolean() Boolean {
+	if len(t) > 0 {
+		return Boolean(true)
+	}
+	return Boolean(false)
+}
+
+// ToStringChecked attempts to cast the Binary to a String.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Binary) ToStringChecked() (String, Boolean) {
+	return t.ToString(), true
+}
+
+// ToString attempts to cast the Binary to a String.
+// The result is not checked for an overflow.
+// Use the ToStringChecked version of this method if you need to check for
+// an overflow.
+func (t Binary) ToString() String {
+	return String(string(t))
+}
+
+// ToBinaryChecked attempts to cast the Binary to a Binary.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Binary) ToBinaryChecked() (Binary, Boolean) {
+	return t.ToBinary(), true
+}
+
+// ToBinary attempts to cast the Binary to a Binary.
+// The result is not checked for an overflow.
+// Use the ToBinaryChecked version of this method if you need to check for
+// an overflow.
+func (t Binary) ToBinary() Binary {
+	return t
+}
+
+// ToFixedSizeBinaryChecked attempts to cast the Binary to a FixedSizeBinary.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Binary) ToFixedSizeBinaryChecked() (FixedSizeBinary, Boolean) {
+	return t.ToFixedSizeBinary(), true
+}
+
+// ToFixedSizeBinary attempts to cast the Binary to a FixedSizeBinary.
+// The result is not checked for an overflow.
+// Use the ToFixedSizeBinaryChecked version of this method if you need to check for
+// an overflow.
+func (t Binary) ToFixedSizeBinary() FixedSizeBinary {
+	return FixedSizeBinary([]byte(t))
+}
+
+type CastableToFixedSizeBinary interface {
+	ToFixedSizeBinaryChecked() (FixedSizeBinary, Boolean)
+	ToFixedSizeBinary() FixedSizeBinary
+}
+
+// CastToFixedSizeBinary takes an interface{} type or any Object type and
+// attempts to convert it to the FixedSizeBinary Object type.
+func CastToFixedSizeBinary(v interface{}) (FixedSizeBinary, bool) {
+	switch pt := v.(type) {
+	case *FixedSizeBinary:
+		return *pt, true
+	case FixedSizeBinary:
+		return pt, true
+	case *[]byte:
+		t := *pt
+		return FixedSizeBinary(t), true
+	case []byte:
+		t := pt
+		return FixedSizeBinary(t), true
+	case *Binary:
+		t := *pt
+		return FixedSizeBinary([]byte(t)), true
+	case Binary:
+		t := pt
+		return FixedSizeBinary([]byte(t)), true
+	case *String:
+		t := *pt
+		return FixedSizeBinary([]byte(t)), true
+	case String:
+		t := pt
+		return FixedSizeBinary([]byte(t)), true
+	default:
+		// Also handles when v is nil
+		return FixedSizeBinary([]byte{}), false
+	}
+}
+
+// NewFixedSizeBinary creates a new FixedSizeBinary object
+// from the given value provided as v.
+func NewFixedSizeBinary(v []byte) FixedSizeBinary {
+	return FixedSizeBinary(v)
+}
+
+// FixedSizeBinary has logic to apply to this type.
+type FixedSizeBinary []byte
+
+// Value returns the underlying value in it's native type.
+func (e FixedSizeBinary) Value() []byte {
+	return []byte(e)
+}
+
+// compare takes the left and right objects and applies the comparator function to them.
+func (e FixedSizeBinary) compareTypes(r Object, f func([]byte, []byte) Boolean) (Boolean, error) {
+	if r == nil {
+		return Boolean(false), nil
+	}
+
+	switch right := r.(type) {
+	case FixedSizeBinary:
+		return f(e.Value(), right.Value()), nil
+	case *FixedSizeBinary:
+		return f(e.Value(), right.Value()), nil
+	default:
+		return false, fmt.Errorf("cannot cast %T (%#v) to object.FixedSizeBinary", r, r)
+	}
+}
+
+// Comparation methods
+
+// Eq returns true if the left FixedSizeBinary is equal to the right FixedSizeBinary.
+func (e FixedSizeBinary) Eq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Equal(left, right))
+	})
+}
+
+// Neq returns true if the left FixedSizeBinary
+// is not equal to the right FixedSizeBinary.
+func (e FixedSizeBinary) Neq(r Object) (Boolean, error) {
+	v, err := e.Eq(r)
+	if err != nil {
+		return Boolean(false), err
+	}
+	return !v, err
+}
+
+// Less returns true if the left FixedSizeBinary
+// is less than the right FixedSizeBinary.
+func (e FixedSizeBinary) Less(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) < 0)
+	})
+}
+
+// LessEq returns true if the left FixedSizeBinary
+// is less than or equal to the right FixedSizeBinary.
+func (e FixedSizeBinary) LessEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) <= 0)
+	})
+}
+
+// Greater returns true if the left FixedSizeBinary
+// is greter than the right FixedSizeBinary.
+func (e FixedSizeBinary) Greater(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) > 0)
+	})
+}
+
+// GreaterEq returns true if the left FixedSizeBinary
+// is greter than or equal to the right FixedSizeBinary.
+func (e FixedSizeBinary) GreaterEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) >= 0)
+	})
+}
+
+// ToBooleanChecked attempts to cast the FixedSizeBinary to a Boolean.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t FixedSizeBinary) ToBooleanChecked() (Boolean, Boolean) {
+	return t.ToBoolean(), true
+}
+
+// ToBoolean attempts to cast the FixedSizeBinary to a Boolean.
+// The result is not checked for an overflow.
+// Use the ToBooleanChecked version of this method if you need to check for
+// an overflow.
+func (t FixedSizeBinary) ToBoolean() Boolean {
+	if len(t) > 0 {
+		return Boolean(true)
+	}
+	return Boolean(false)
+}
+
+// ToStringChecked attempts to cast the FixedSizeBinary to a String.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t FixedSizeBinary) ToStringChecked() (String, Boolean) {
+	return t.ToString(), true
+}
+
+// ToString attempts to cast the FixedSizeBinary to a String.
+// The result is not checked for an overflow.
+// Use the ToStringChecked version of this method if you need to check for
+// an overflow.
+func (t FixedSizeBinary) ToString() String {
+	return String(string(t))
+}
+
+// ToFixedSizeBinaryChecked attempts to cast the FixedSizeBinary to a FixedSizeBinary.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t FixedSizeBinary) ToFixedSizeBinaryChecked() (FixedSizeBinary, Boolean) {
+	return t.ToFixedSizeBinary(), true
+}
+
+// ToFixedSizeBinary attempts to cast the FixedSizeBinary to a FixedSizeBinary.
+// The result is not checked for an overflow.
+// Use the ToFixedSizeBinaryChecked version of this method if you need to check for
+// an overflow.
+func (t FixedSizeBinary) ToFixedSizeBinary() FixedSizeBinary {
+	return t
+}
+
+type CastableToLargeString interface {
+	ToLargeStringChecked() (LargeString, Boolean)
+	ToLargeString() LargeString
+}
+
+// CastToLargeString takes an interface{} type or any Object type and
+// attempts to convert it to the LargeString Object type.
+func CastToLargeString(v interface{}) (LargeString, bool) {
+	switch pt := v.(type) {
+	case *LargeString:
+		return *pt, true
+	case LargeString:
+		return pt, true
+	case *string:
+		t := *pt
+		return LargeString(t), true
+	case string:
+		t := pt
+		return LargeString(t), true
+	case *String:
+		t := *pt
+		return LargeString(string(t)), true
+	case String:
+		t := pt
+		return LargeString(string(t)), true
+	default:
+		// Also handles when v is nil
+		return LargeString(""), false
+	}
+}
+
+// NewLargeString creates a new LargeString object
+// from the given value provided as v.
+func NewLargeString(v string) LargeString {
+	return LargeString(v)
+}
+
+// LargeString has logic to apply to this type.
+type LargeString string
+
+// Value returns the underlying value in it's native type.
+func (e LargeString) Value() string {
+	return string(e)
+}
+
+// compare takes the left and right objects and applies the comparator function to them.
+func (e LargeString) compareTypes(r Object, f func(string, string) Boolean) (Boolean, error) {
+	if r == nil {
+		return Boolean(false), nil
+	}
+
+	switch right := r.(type) {
+	case LargeString:
+		return f(e.Value(), right.Value()), nil
+	case *LargeString:
+		return f(e.Value(), right.Value()), nil
+	default:
+		return false, fmt.Errorf("cannot cast %T (%#v) to object.LargeString", r, r)
+	}
+}
+
+// Comparation methods
+
+// Eq returns true if the left LargeString is equal to the right LargeString.
+func (e LargeString) Eq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left == right)
+	})
+}
+
+// Neq returns true if the left LargeString
+// is not equal to the right LargeString.
+func (e LargeString) Neq(r Object) (Boolean, error) {
+	v, err := e.Eq(r)
+	if err != nil {
+		return Boolean(false), err
+	}
+	return !v, err
+}
+
+// Less returns true if the left LargeString
+// is less than the right LargeString.
+func (e LargeString) Less(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left < right)
+	})
+}
+
+// LessEq returns true if the left LargeString
+// is less than or equal to the right LargeString.
+func (e LargeString) LessEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left <= right)
+	})
+}
+
+// Greater returns true if the left LargeString
+// is greter than the right LargeString.
+func (e LargeString) Greater(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left > right)
+	})
+}
+
+// GreaterEq returns true if the left LargeString
+// is greter than or equal to the right LargeString.
+func (e LargeString) GreaterEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left >= right)
+	})
+}
+
+// ToBooleanChecked attempts to cast the LargeString to a Boolean.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t LargeString) ToBooleanChecked() (Boolean, Boolean) {
+	return t.ToBoolean(), true
+}
+
+// ToBoolean attempts to cast the LargeString to a Boolean.
+// The result is not checked for an overflow.
+// Use the ToBooleanChecked version of this method if you need to check for
+// an overflow.
+func (t LargeString) ToBoolean() Boolean {
+	return Boolean(t != "")
+}
+
+// ToStringChecked attempts to cast the LargeString to a String.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t LargeString) ToStringChecked() (String, Boolean) {
+	return t.ToString(), true
+}
+
+// ToString attempts to cast the LargeString to a String.
+// The result is not checked for an overflow.
+// Use the ToStringChecked version of this method if you need to check for
+// an overflow.
+func (t LargeString) ToString() String {
+	return String(t)
+}
+
+// ToLargeStringChecked attempts to cast the LargeString to a LargeString.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t LargeString) ToLargeStringChecked() (LargeString, Boolean) {
+	return t.ToLargeString(), true
+}
+
+// ToLargeString attempts to cast the LargeString to a LargeString.
+// The result is not checked for an overflow.
+// Use the ToLargeStringChecked version of this method if you need to check for
+// an overflow.
+func (t LargeString) ToLargeString() LargeString {
+	return t
+}
+
 var (
 	_ Object = (*Boolean)(nil)
 	_ Object = (*Date32)(nil)
@@ -10341,4 +10944,7 @@ var (
 	_ Object = (*Uint32)(nil)
 	_ Object = (*Uint64)(nil)
 	_ Object = (*Uint8)(nil)
+	_ Object = (*Binary)(nil)
+	_ Object = (*FixedSizeBinary)(nil)
+	_ Object = (*LargeString)(nil)
 )

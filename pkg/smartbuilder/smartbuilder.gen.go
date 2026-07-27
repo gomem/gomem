@@ -191,6 +191,27 @@ func (sb *SmartBuilder) appendValue(bldr array.Builder, v interface{}) error {
 		}
 		b.Append(vT.Value())
 
+	case *array.BinaryBuilder:
+		vT, ok := object.CastToBinary(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.Binary", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.FixedSizeBinaryBuilder:
+		vT, ok := object.CastToFixedSizeBinary(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.FixedSizeBinary", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.LargeStringBuilder:
+		vT, ok := object.CastToLargeString(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.LargeString", v)
+		}
+		b.Append(vT.Value())
+
 	case *array.ListBuilder:
 		b.Append(true)
 		sub := b.ValueBuilder()

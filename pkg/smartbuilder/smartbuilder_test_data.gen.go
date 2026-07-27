@@ -190,6 +190,21 @@ func GenerateSmartBuilderTestCases() []SmartBuilderTestCase {
 			Dtype:  arrow.PrimitiveTypes.Uint8,
 			Want:   `col[0][col-uint8]: [0 1 2 3 4 5 6 7 8 (null)]`,
 		},
+		{
+			Values: BinaryGen(),
+			Dtype:  arrow.BinaryTypes.Binary,
+			Want:   `col[0][col-binary]: ["a" "b" "c" "d" "e" "f" "g" "h" "i" (null)]`,
+		},
+		{
+			Values: FixedSizeBinaryGen(),
+			Dtype:  &arrow.FixedSizeBinaryType{ByteWidth: 1},
+			Want:   `col[0][col-fixed_size_binary]: ["a" "b" "c" "d" "e" "f" "g" "h" "i" (null)]`,
+		},
+		{
+			Values: LargeStringGen(),
+			Dtype:  arrow.BinaryTypes.LargeString,
+			Want:   `col[0][col-large_utf8]: ["0" "1" "2" "3" "4" "5" "6" "7" "8" (null)]`,
+		},
 	}
 }
 
@@ -437,6 +452,30 @@ func Uint8Gen() []interface{} {
 	vals := make([]interface{}, 9)
 	for i := range vals {
 		vals[i] = object.NewUint8(uint8(i))
+	}
+	return vals
+}
+
+func BinaryGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewBinary([]byte{byte('a' + i)})
+	}
+	return vals
+}
+
+func FixedSizeBinaryGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewFixedSizeBinary([]byte{byte('a' + i)})
+	}
+	return vals
+}
+
+func LargeStringGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewLargeString(strconv.Itoa(i))
 	}
 	return vals
 }

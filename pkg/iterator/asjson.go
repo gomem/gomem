@@ -129,6 +129,20 @@ func stringAsJSON(v interface{}) (interface{}, error) {
 	return v, nil
 }
 
+func binaryAsJSON(v interface{}) (interface{}, error) {
+	// Render binary values as their string form so they marshal as JSON strings
+	// rather than being base64-encoded by encoding/json.
+	return string(v.([]byte)), nil
+}
+
+func fixedSizeBinaryAsJSON(v interface{}) (interface{}, error) {
+	return string(v.([]byte)), nil
+}
+
+func largeStringAsJSON(v interface{}) (interface{}, error) {
+	return v, nil
+}
+
 // func fixedSizeBinary(v interface{}) (interface{}, error) {
 // 	// TODO(nickpoorman): Verify this is correct....
 // 	// dt := dtype.(*arrow.FixedSizeBinaryType)
