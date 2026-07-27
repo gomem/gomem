@@ -146,3 +146,37 @@ func TestLargeStringCastFromPrimitives(t *testing.T) {
 		}
 	})
 }
+
+func TestStringView(t *testing.T) {
+	v := NewStringView("hello")
+	if v.Value() != "hello" {
+		t.Errorf("Value: got=%q", v.Value())
+	}
+	a := NewStringView("apple")
+	b := NewStringView("banana")
+	lt, _ := a.Less(b)
+	if !bool(lt) {
+		t.Error("apple < banana should be true")
+	}
+	eq, _ := a.Eq(NewStringView("apple"))
+	if !bool(eq) {
+		t.Error("apple == apple should be true")
+	}
+}
+
+func TestBinaryView(t *testing.T) {
+	v := NewBinaryView([]byte{1, 2, 3})
+	if len(v.Value()) != 3 || v.Value()[0] != 1 {
+		t.Errorf("Value: got=%v", v.Value())
+	}
+	a := NewBinaryView([]byte("abc"))
+	b := NewBinaryView([]byte("abd"))
+	lt, _ := a.Less(b)
+	if !bool(lt) {
+		t.Error("abc < abd should be true")
+	}
+	eq, _ := a.Eq(NewBinaryView([]byte("abc")))
+	if !bool(eq) {
+		t.Error("abc == abc should be true")
+	}
+}
