@@ -487,6 +487,127 @@ func (e DayTimeIntervalElement) IsNil() bool {
 	return e.v == nil
 }
 
+// MonthDayNanoIntervalElement has logic to apply to this type.
+type MonthDayNanoIntervalElement struct {
+	v interface{}
+}
+
+// NewMonthDayNanoIntervalElement creates a new MonthDayNanoIntervalElement logic wrapper
+// from the given value provided as v.
+func NewMonthDayNanoIntervalElement(v interface{}) *MonthDayNanoIntervalElement {
+	return &MonthDayNanoIntervalElement{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e MonthDayNanoIntervalElement) compare(r Element, f func(left, right arrow.MonthDayNanoInterval) bool) (bool, error) {
+	rE, ok := r.(*MonthDayNanoIntervalElement)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to MonthDayNanoIntervalElement", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.(arrow.MonthDayNanoInterval)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a arrow.MonthDayNanoInterval", e.v)
+	}
+	rv, rok := rE.v.(arrow.MonthDayNanoInterval)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a arrow.MonthDayNanoInterval", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left MonthDayNanoIntervalElement is equal to the right MonthDayNanoIntervalElement.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e MonthDayNanoIntervalElement) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Months == right.Months && left.Days == right.Days && left.Nanoseconds == right.Nanoseconds
+	})
+}
+
+// EqStrict returns true if the left MonthDayNanoIntervalElement is equal to the right MonthDayNanoIntervalElement.
+// When both are nil EqStrict returns true.
+func (e MonthDayNanoIntervalElement) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Months == right.Months && left.Days == right.Days && left.Nanoseconds == right.Nanoseconds
+	})
+}
+
+// Neq returns true if the left MonthDayNanoIntervalElement
+// is not equal to the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left MonthDayNanoIntervalElement
+// is less than the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) Less(r Element) (bool, error) {
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Cmp(right) < 0
+	})
+}
+
+// LessEq returns true if the left MonthDayNanoIntervalElement
+// is less than or equal to the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) LessEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Cmp(right) <= 0
+	})
+}
+
+// Greater returns true if the left MonthDayNanoIntervalElement
+// is greter than the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) Greater(r Element) (bool, error) {
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Cmp(right) > 0
+	})
+}
+
+// GreaterEq returns true if the left MonthDayNanoIntervalElement
+// is greter than or equal to the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) GreaterEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Cmp(right) >= 0
+	})
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e MonthDayNanoIntervalElement) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e MonthDayNanoIntervalElement) IsNil() bool {
+	return e.v == nil
+}
+
 // Decimal128Element has logic to apply to this type.
 type Decimal128Element struct {
 	v interface{}

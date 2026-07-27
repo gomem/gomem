@@ -131,6 +131,33 @@ func (c *DayTimeIntervalCollection) AppendObject(v object.Object) error {
 	return nil
 }
 
+// NewMonthDayNanoIntervalCollection creates a new MonthDayNanoInterval collection builder.
+func NewMonthDayNanoIntervalCollection(builder *array.MonthDayNanoIntervalBuilder) *MonthDayNanoIntervalCollection {
+	return &MonthDayNanoIntervalCollection{
+		builder: builder,
+	}
+}
+
+// MonthDayNanoIntervalCollection has logic to apply to this type.
+type MonthDayNanoIntervalCollection struct {
+	builder *array.MonthDayNanoIntervalBuilder
+}
+
+func (c *MonthDayNanoIntervalCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToMonthDayNanoInterval(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.MonthDayNanoInterval", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
 // NewDecimal128Collection creates a new Decimal128 collection builder.
 func NewDecimal128Collection(builder *array.Decimal128Builder) *Decimal128Collection {
 	return &Decimal128Collection{
@@ -730,6 +757,7 @@ var (
 	_ Collection = (*Date32Collection)(nil)
 	_ Collection = (*Date64Collection)(nil)
 	_ Collection = (*DayTimeIntervalCollection)(nil)
+	_ Collection = (*MonthDayNanoIntervalCollection)(nil)
 	_ Collection = (*Decimal128Collection)(nil)
 	_ Collection = (*Decimal256Collection)(nil)
 	_ Collection = (*DurationCollection)(nil)

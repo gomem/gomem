@@ -393,6 +393,63 @@ func TestMethodBooleanToDayTimeIntervalChecked(t *testing.T) {
 	}
 }
 
+func TestBooleanCastableToMonthDayNanoInterval(t *testing.T) {
+	cases := []struct {
+		o    CastableToMonthDayNanoInterval
+		want MonthDayNanoInterval
+	}{
+		{Boolean(false), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToMonthDayNanoInterval()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodBooleanToMonthDayNanoInterval(t *testing.T) {
+	cases := []struct {
+		o    Boolean
+		want MonthDayNanoInterval
+	}{
+		{Boolean(false), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToMonthDayNanoInterval()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodBooleanToMonthDayNanoIntervalChecked(t *testing.T) {
+	cases := []struct {
+		o Boolean
+	}{
+		{MaxBoolean},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToMonthDayNanoIntervalChecked()
+		if ok {
+			v, ok := converted.ToBooleanChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for Boolean to MonthDayNanoInterval: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for Boolean to MonthDayNanoInterval - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
 func TestBooleanCastableToDecimal128(t *testing.T) {
 	cases := []struct {
 		o    CastableToDecimal128
@@ -3367,6 +3424,375 @@ func TestMethodDayTimeIntervalToDayTimeIntervalChecked(t *testing.T) {
 				}
 				if err != nil || !equal {
 					t.Errorf("detected unhandled overflow for DayTimeInterval to DayTimeInterval - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalToBoolean(t *testing.T) {
+	cases := []struct {
+		Obj  MonthDayNanoInterval
+		Want bool
+	}{
+		{MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}), false},
+		{MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1, Days: 1, Nanoseconds: 1}), true},
+		{MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 2, Days: 2, Nanoseconds: 2}), true},
+	}
+	for _, c := range cases {
+		if got, want := c.Obj.ToBoolean(), Boolean(c.Want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1, Days: 1, Nanoseconds: 1})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 2, Days: 2, Nanoseconds: 2})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		eq, err := c.left.Eq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := eq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalNeq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), nil, false},
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.MonthDayNanoInterval"), false},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.MonthDayNanoInterval"), false},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1, Days: 1, Nanoseconds: 1})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 2, Days: 2, Nanoseconds: 2})
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1, Days: 1, Nanoseconds: 1})
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.MonthDayNanoInterval"), false},
+	}
+	for _, c := range cases {
+		neq, err := c.left.Neq(c.right)
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", c.err) {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := neq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalLess(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1, Days: 1, Nanoseconds: 1})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 2, Days: 2, Nanoseconds: 2})
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		less, err := c.left.Less(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := less, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalLessEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1, Days: 1, Nanoseconds: 1})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 2, Days: 2, Nanoseconds: 2})
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		lessEq, err := c.left.LessEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := lessEq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalGreater(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1, Days: 1, Nanoseconds: 1})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 2, Days: 2, Nanoseconds: 2})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greater, err := c.left.Greater(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greater, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalGreaterEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1, Days: 1, Nanoseconds: 1})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 2, Days: 2, Nanoseconds: 2})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greaterEq, err := c.left.GreaterEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greaterEq, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalCastableToBoolean(t *testing.T) {
+	cases := []struct {
+		o    CastableToBoolean
+		want Boolean
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), Boolean(false)},
+	}
+	for _, c := range cases {
+		value := c.o.ToBoolean()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodMonthDayNanoIntervalToBoolean(t *testing.T) {
+	cases := []struct {
+		o    MonthDayNanoInterval
+		want Boolean
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), Boolean(false)},
+	}
+	for _, c := range cases {
+		value := c.o.ToBoolean()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodMonthDayNanoIntervalToBooleanChecked(t *testing.T) {
+	cases := []struct {
+		o MonthDayNanoInterval
+	}{
+		{MaxMonthDayNanoInterval},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToBooleanChecked()
+		if !ok {
+			t.Errorf("Boolean should not be returning an overflow: %#v $%v", converted, c.o)
+		}
+		if converted != Boolean(true) {
+			t.Errorf("Boolean should have been converted to Boolean(true): %#v $%v", converted, c.o)
+		}
+	}
+}
+
+func TestMonthDayNanoIntervalCastableToMonthDayNanoInterval(t *testing.T) {
+	cases := []struct {
+		o    CastableToMonthDayNanoInterval
+		want MonthDayNanoInterval
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToMonthDayNanoInterval()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodMonthDayNanoIntervalToMonthDayNanoInterval(t *testing.T) {
+	cases := []struct {
+		o    MonthDayNanoInterval
+		want MonthDayNanoInterval
+	}{
+		{MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})), MonthDayNanoInterval(MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToMonthDayNanoInterval()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodMonthDayNanoIntervalToMonthDayNanoIntervalChecked(t *testing.T) {
+	cases := []struct {
+		o MonthDayNanoInterval
+	}{
+		{MaxMonthDayNanoInterval},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToMonthDayNanoIntervalChecked()
+		if ok {
+			v, ok := converted.ToMonthDayNanoIntervalChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for MonthDayNanoInterval to MonthDayNanoInterval: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for MonthDayNanoInterval to MonthDayNanoInterval - %#v != %#v", v, c.o)
 				}
 			}
 		}

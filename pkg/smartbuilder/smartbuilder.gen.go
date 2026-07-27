@@ -58,6 +58,13 @@ func (sb *SmartBuilder) appendValue(bldr array.Builder, v interface{}) error {
 		}
 		b.Append(vT.Value())
 
+	case *array.MonthDayNanoIntervalBuilder:
+		vT, ok := object.CastToMonthDayNanoInterval(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.MonthDayNanoInterval", v)
+		}
+		b.Append(vT.Value())
+
 	case *array.Decimal128Builder:
 		vT, ok := object.CastToDecimal128(v)
 		if !ok {

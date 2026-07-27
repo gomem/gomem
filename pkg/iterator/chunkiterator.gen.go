@@ -342,6 +342,113 @@ func (cr *DayTimeIntervalChunkIterator) Release() {
 	}
 }
 
+// MonthDayNanoIntervalChunkIterator is an iterator for reading an Arrow Column value by value.
+type MonthDayNanoIntervalChunkIterator struct {
+	refCount int64
+	col      *arrow.Column
+
+	// Things Chunked maintains. We're going to maintain it ourselves.
+	chunks []*array.MonthDayNanoInterval // cache the chunks on this iterator
+	length int64                         // this isn't set right on Chunked so we won't rely on it there. Instead we keep the correct value here.
+	nulls  int64
+	dtype  arrow.DataType
+
+	// Things we need to maintain for the iterator
+	currentIndex int                         // current chunk
+	currentChunk *array.MonthDayNanoInterval // current chunk
+}
+
+// NewMonthDayNanoIntervalChunkIterator creates a new MonthDayNanoIntervalChunkIterator for reading an Arrow Column.
+func NewMonthDayNanoIntervalChunkIterator(col *arrow.Column) *MonthDayNanoIntervalChunkIterator {
+	col.Retain()
+
+	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
+	columnChunks := col.Data().Chunks()
+	chunks := make([]*array.MonthDayNanoInterval, len(columnChunks))
+	var length int64
+	var nulls int64
+
+	for i, chunk := range columnChunks {
+		// Keep our own refs to chunks
+		chunks[i] = chunk.(*array.MonthDayNanoInterval)
+		// Retain the chunk
+		chunks[i].Retain()
+
+		// Keep our own counters instead of Chunked's
+		length += int64(chunk.Len())
+		nulls += int64(chunk.NullN())
+	}
+
+	return &MonthDayNanoIntervalChunkIterator{
+		refCount: 1,
+		col:      col,
+
+		chunks: chunks,
+		length: length,
+		nulls:  nulls,
+		dtype:  col.DataType(),
+
+		currentIndex: 0,
+		currentChunk: nil,
+	}
+}
+
+// Chunk will return the current chunk that the iterator is on.
+func (cr *MonthDayNanoIntervalChunkIterator) Chunk() *array.MonthDayNanoInterval {
+	return cr.currentChunk
+}
+
+// ChunkValues returns the underlying []arrow.MonthDayNanoInterval chunk values.
+// Keep in mind the []arrow.MonthDayNanoInterval type might not be able
+// to account for nil values. You must check for those explicitly via the chunk.
+func (cr *MonthDayNanoIntervalChunkIterator) ChunkValues() []arrow.MonthDayNanoInterval {
+
+	return cr.Chunk().MonthDayNanoIntervalValues()
+
+}
+
+// Next moves the iterator to the next chunk. This will return false
+// when there are no more chunks.
+func (cr *MonthDayNanoIntervalChunkIterator) Next() bool {
+	if cr.currentIndex >= len(cr.chunks) {
+		return false
+	}
+
+	if cr.currentChunk != nil {
+		cr.currentChunk.Release()
+	}
+
+	cr.currentChunk = cr.chunks[cr.currentIndex]
+	cr.currentChunk.Retain()
+	cr.currentIndex++
+
+	return true
+}
+
+// Retain keeps a reference to the MonthDayNanoIntervalChunkIterator
+func (cr *MonthDayNanoIntervalChunkIterator) Retain() {
+	atomic.AddInt64(&cr.refCount, 1)
+}
+
+// Release removes a reference to the MonthDayNanoIntervalChunkIterator
+func (cr *MonthDayNanoIntervalChunkIterator) Release() {
+	debug.Assert(atomic.LoadInt64(&cr.refCount) > 0, "too many releases")
+	ref := atomic.AddInt64(&cr.refCount, -1)
+	if ref == 0 {
+		cr.col.Release()
+		for i := range cr.chunks {
+			cr.chunks[i].Release()
+		}
+		if cr.currentChunk != nil {
+			cr.currentChunk.Release()
+			cr.currentChunk = nil
+		}
+		cr.col = nil
+		cr.chunks = nil
+		cr.dtype = nil
+	}
+}
+
 // Decimal128ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Decimal128ChunkIterator struct {
 	refCount int64

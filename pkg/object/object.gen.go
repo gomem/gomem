@@ -28,31 +28,32 @@ import (
 )
 
 var (
-	MaxBoolean         = Boolean(true)
-	MaxDate32          = Date32(math.MaxInt32)
-	MaxDate64          = Date64(math.MaxInt64)
-	MaxDayTimeInterval = DayTimeInterval(arrow.DayTimeInterval{Days: math.MaxInt32, Milliseconds: math.MaxInt32})
-	MaxDecimal128      = Decimal128(decimal128.MaxDecimal128)
-	MaxDecimal256      = Decimal256(decimal256.New(0x7FFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF))
-	MaxDuration        = Duration(math.MaxInt64)
-	MaxFloat16         = Float16(float16.New(65504))
-	MaxFloat32         = Float32(math.MaxFloat32)
-	MaxFloat64         = Float64(math.MaxFloat64)
-	MaxInt16           = Int16(math.MaxInt16)
-	MaxInt32           = Int32(math.MaxInt32)
-	MaxInt64           = Int64(math.MaxInt64)
-	MaxInt8            = Int8(math.MaxInt8)
-	MaxMonthInterval   = MonthInterval(math.MaxInt32)
-	MaxTime32          = Time32(math.MaxInt32)
-	MaxTime64          = Time64(math.MaxInt64)
-	MaxTimestamp       = Timestamp(math.MaxInt64)
-	MaxUint16          = Uint16(math.MaxUint16)
-	MaxUint32          = Uint32(math.MaxUint32)
-	MaxUint64          = Uint64(math.MaxUint64)
-	MaxUint8           = Uint8(math.MaxUint8)
-	MaxBinary          = Binary([]byte{0xff})
-	MaxFixedSizeBinary = FixedSizeBinary([]byte{0xff})
-	MaxLargeString     = LargeString("z")
+	MaxBoolean              = Boolean(true)
+	MaxDate32               = Date32(math.MaxInt32)
+	MaxDate64               = Date64(math.MaxInt64)
+	MaxDayTimeInterval      = DayTimeInterval(arrow.DayTimeInterval{Days: math.MaxInt32, Milliseconds: math.MaxInt32})
+	MaxMonthDayNanoInterval = MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: math.MaxInt32, Days: math.MaxInt32, Nanoseconds: math.MaxInt64})
+	MaxDecimal128           = Decimal128(decimal128.MaxDecimal128)
+	MaxDecimal256           = Decimal256(decimal256.New(0x7FFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF))
+	MaxDuration             = Duration(math.MaxInt64)
+	MaxFloat16              = Float16(float16.New(65504))
+	MaxFloat32              = Float32(math.MaxFloat32)
+	MaxFloat64              = Float64(math.MaxFloat64)
+	MaxInt16                = Int16(math.MaxInt16)
+	MaxInt32                = Int32(math.MaxInt32)
+	MaxInt64                = Int64(math.MaxInt64)
+	MaxInt8                 = Int8(math.MaxInt8)
+	MaxMonthInterval        = MonthInterval(math.MaxInt32)
+	MaxTime32               = Time32(math.MaxInt32)
+	MaxTime64               = Time64(math.MaxInt64)
+	MaxTimestamp            = Timestamp(math.MaxInt64)
+	MaxUint16               = Uint16(math.MaxUint16)
+	MaxUint32               = Uint32(math.MaxUint32)
+	MaxUint64               = Uint64(math.MaxUint64)
+	MaxUint8                = Uint8(math.MaxUint8)
+	MaxBinary               = Binary([]byte{0xff})
+	MaxFixedSizeBinary      = FixedSizeBinary([]byte{0xff})
+	MaxLargeString          = LargeString("z")
 )
 
 type CastableToBoolean interface {
@@ -250,6 +251,12 @@ func CastToBoolean(v interface{}) (Boolean, bool) {
 	case LargeString:
 		t := pt
 		return Boolean(t != ""), true
+	case *MonthDayNanoInterval:
+		t := *pt
+		return Boolean(t.Months != 0 || t.Days != 0 || t.Nanoseconds != 0), true
+	case MonthDayNanoInterval:
+		t := pt
+		return Boolean(t.Months != 0 || t.Days != 0 || t.Nanoseconds != 0), true
 	default:
 		// Also handles when v is nil
 		return false, false
@@ -372,6 +379,24 @@ func (t Boolean) ToDayTimeInterval() DayTimeInterval {
 		return DayTimeInterval(arrow.DayTimeInterval{Days: 0, Milliseconds: 1})
 	}
 	return DayTimeInterval(arrow.DayTimeInterval{Days: 0, Milliseconds: 0})
+}
+
+// ToMonthDayNanoIntervalChecked attempts to cast the Boolean to a MonthDayNanoInterval.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Boolean) ToMonthDayNanoIntervalChecked() (MonthDayNanoInterval, Boolean) {
+	return t.ToMonthDayNanoInterval(), true
+}
+
+// ToMonthDayNanoInterval attempts to cast the Boolean to a MonthDayNanoInterval.
+// The result is not checked for an overflow.
+// Use the ToMonthDayNanoIntervalChecked version of this method if you need to check for
+// an overflow.
+func (t Boolean) ToMonthDayNanoInterval() MonthDayNanoInterval {
+	if t {
+		return MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1})
+	}
+	return MonthDayNanoInterval(arrow.MonthDayNanoInterval{})
 }
 
 // ToDecimal128Checked attempts to cast the Boolean to a Decimal128.
@@ -1727,6 +1752,173 @@ func (t DayTimeInterval) ToStringChecked() (String, Boolean) {
 // Use the ToStringChecked version of this method if you need to check for
 // an overflow.
 func (t DayTimeInterval) ToString() String {
+	return String(fmt.Sprintf("%#v", t))
+}
+
+type CastableToMonthDayNanoInterval interface {
+	ToMonthDayNanoIntervalChecked() (MonthDayNanoInterval, Boolean)
+	ToMonthDayNanoInterval() MonthDayNanoInterval
+}
+
+// CastToMonthDayNanoInterval takes an interface{} type or any Object type and
+// attempts to convert it to the MonthDayNanoInterval Object type.
+func CastToMonthDayNanoInterval(v interface{}) (MonthDayNanoInterval, bool) {
+	switch pt := v.(type) {
+	case *MonthDayNanoInterval:
+		return *pt, true
+	case MonthDayNanoInterval:
+		return pt, true
+	case *arrow.MonthDayNanoInterval:
+		t := *pt
+		return MonthDayNanoInterval(t), true
+	case arrow.MonthDayNanoInterval:
+		t := pt
+		return MonthDayNanoInterval(t), true
+	case *Boolean:
+		t := *pt
+		return func(t Boolean) MonthDayNanoInterval {
+			if t {
+				return MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1})
+			}
+			return MonthDayNanoInterval(arrow.MonthDayNanoInterval{})
+		}(t), true
+	case Boolean:
+		t := pt
+		return func(t Boolean) MonthDayNanoInterval {
+			if t {
+				return MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1})
+			}
+			return MonthDayNanoInterval(arrow.MonthDayNanoInterval{})
+		}(t), true
+	default:
+		// Also handles when v is nil
+		return MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0}), false
+	}
+}
+
+// NewMonthDayNanoInterval creates a new MonthDayNanoInterval object
+// from the given value provided as v.
+func NewMonthDayNanoInterval(v arrow.MonthDayNanoInterval) MonthDayNanoInterval {
+	return MonthDayNanoInterval(v)
+}
+
+// MonthDayNanoInterval has logic to apply to this type.
+type MonthDayNanoInterval arrow.MonthDayNanoInterval
+
+// Value returns the underlying value in it's native type.
+func (e MonthDayNanoInterval) Value() arrow.MonthDayNanoInterval {
+	return arrow.MonthDayNanoInterval(e)
+}
+
+// compare takes the left and right objects and applies the comparator function to them.
+func (e MonthDayNanoInterval) compareTypes(r Object, f func(arrow.MonthDayNanoInterval, arrow.MonthDayNanoInterval) Boolean) (Boolean, error) {
+	if r == nil {
+		return Boolean(false), nil
+	}
+
+	switch right := r.(type) {
+	case MonthDayNanoInterval:
+		return f(e.Value(), right.Value()), nil
+	case *MonthDayNanoInterval:
+		return f(e.Value(), right.Value()), nil
+	default:
+		return false, fmt.Errorf("cannot cast %T (%#v) to object.MonthDayNanoInterval", r, r)
+	}
+}
+
+// Comparation methods
+
+// Eq returns true if the left MonthDayNanoInterval is equal to the right MonthDayNanoInterval.
+func (e MonthDayNanoInterval) Eq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right arrow.MonthDayNanoInterval) Boolean {
+		return Boolean(left.Months == right.Months && left.Days == right.Days && left.Nanoseconds == right.Nanoseconds)
+	})
+}
+
+// Neq returns true if the left MonthDayNanoInterval
+// is not equal to the right MonthDayNanoInterval.
+func (e MonthDayNanoInterval) Neq(r Object) (Boolean, error) {
+	v, err := e.Eq(r)
+	if err != nil {
+		return Boolean(false), err
+	}
+	return !v, err
+}
+
+// Less returns true if the left MonthDayNanoInterval
+// is less than the right MonthDayNanoInterval.
+func (e MonthDayNanoInterval) Less(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right arrow.MonthDayNanoInterval) Boolean {
+		return Boolean(left.Cmp(right) < 0)
+	})
+}
+
+// LessEq returns true if the left MonthDayNanoInterval
+// is less than or equal to the right MonthDayNanoInterval.
+func (e MonthDayNanoInterval) LessEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right arrow.MonthDayNanoInterval) Boolean {
+		return Boolean(left.Cmp(right) <= 0)
+	})
+}
+
+// Greater returns true if the left MonthDayNanoInterval
+// is greter than the right MonthDayNanoInterval.
+func (e MonthDayNanoInterval) Greater(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right arrow.MonthDayNanoInterval) Boolean {
+		return Boolean(left.Cmp(right) > 0)
+	})
+}
+
+// GreaterEq returns true if the left MonthDayNanoInterval
+// is greter than or equal to the right MonthDayNanoInterval.
+func (e MonthDayNanoInterval) GreaterEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right arrow.MonthDayNanoInterval) Boolean {
+		return Boolean(left.Cmp(right) >= 0)
+	})
+}
+
+// ToBooleanChecked attempts to cast the MonthDayNanoInterval to a Boolean.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t MonthDayNanoInterval) ToBooleanChecked() (Boolean, Boolean) {
+	return t.ToBoolean(), true
+}
+
+// ToBoolean attempts to cast the MonthDayNanoInterval to a Boolean.
+// The result is not checked for an overflow.
+// Use the ToBooleanChecked version of this method if you need to check for
+// an overflow.
+func (t MonthDayNanoInterval) ToBoolean() Boolean {
+	return Boolean(t.Months != 0 || t.Days != 0 || t.Nanoseconds != 0)
+}
+
+// ToMonthDayNanoIntervalChecked attempts to cast the MonthDayNanoInterval to a MonthDayNanoInterval.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t MonthDayNanoInterval) ToMonthDayNanoIntervalChecked() (MonthDayNanoInterval, Boolean) {
+	return t.ToMonthDayNanoInterval(), true
+}
+
+// ToMonthDayNanoInterval attempts to cast the MonthDayNanoInterval to a MonthDayNanoInterval.
+// The result is not checked for an overflow.
+// Use the ToMonthDayNanoIntervalChecked version of this method if you need to check for
+// an overflow.
+func (t MonthDayNanoInterval) ToMonthDayNanoInterval() MonthDayNanoInterval {
+	return t
+}
+
+// ToStringChecked attempts to cast the MonthDayNanoInterval to a String.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t MonthDayNanoInterval) ToStringChecked() (String, Boolean) {
+	return t.ToString(), true
+}
+
+// ToString attempts to cast the MonthDayNanoInterval to a String.
+// The result is not checked for an overflow.
+// Use the ToStringChecked version of this method if you need to check for
+// an overflow.
+func (t MonthDayNanoInterval) ToString() String {
 	return String(fmt.Sprintf("%#v", t))
 }
 
@@ -6799,6 +6991,12 @@ func CastToString(v interface{}) (String, bool) {
 	case LargeString:
 		t := pt
 		return String(t), true
+	case *MonthDayNanoInterval:
+		t := *pt
+		return String(fmt.Sprintf("%#v", t)), true
+	case MonthDayNanoInterval:
+		t := pt
+		return String(fmt.Sprintf("%#v", t)), true
 	default:
 		// Also handles when v is nil
 		return "", false
@@ -10925,6 +11123,7 @@ var (
 	_ Object = (*Date32)(nil)
 	_ Object = (*Date64)(nil)
 	_ Object = (*DayTimeInterval)(nil)
+	_ Object = (*MonthDayNanoInterval)(nil)
 	_ Object = (*Decimal128)(nil)
 	_ Object = (*Decimal256)(nil)
 	_ Object = (*Duration)(nil)

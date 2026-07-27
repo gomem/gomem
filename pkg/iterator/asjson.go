@@ -117,6 +117,10 @@ func dayTimeIntervalAsJSON(v interface{}) (interface{}, error) {
 	return v, nil
 }
 
+func monthDayNanoIntervalAsJSON(v interface{}) (interface{}, error) {
+	return v, nil
+}
+
 func nullAsJSON(v interface{}) (interface{}, error) {
 	return nil, nil
 }

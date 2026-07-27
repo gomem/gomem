@@ -56,6 +56,11 @@ func GenerateSmartBuilderTestCases() []SmartBuilderTestCase {
 			Want:   `col[0][col-day_time_interval]: [{0 0} {1 2} {2 4} {3 6} {4 8} {5 10} {6 12} {7 14} {8 16} (null)]`,
 		},
 		{
+			Values: MonthDayNanoIntervalGen(),
+			Dtype:  arrow.FixedWidthTypes.MonthDayNanoInterval,
+			Want:   `col[0][col-month_day_nano_interval]: [{0 0 0} {1 2 3} {2 4 6} {3 6 9} {4 8 12} {5 10 15} {6 12 18} {7 14 21} {8 16 24} (null)]`,
+		},
+		{
 			Values: Decimal128Gen(),
 			Dtype:  &arrow.Decimal128Type{Precision: 1, Scale: 10},
 			Want:   `col[0][col-decimal]: [0 2e+09 4e+09 6e+09 7e+09 9e+09 1e+10 1e+10 1e+10 (null)]`,
@@ -236,6 +241,14 @@ func DayTimeIntervalGen() []interface{} {
 	vals := make([]interface{}, 9)
 	for i := range vals {
 		vals[i] = object.NewDayTimeInterval(arrow.DayTimeInterval{Days: int32(i), Milliseconds: int32(i * 2)})
+	}
+	return vals
+}
+
+func MonthDayNanoIntervalGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewMonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: int32(i), Days: int32(i * 2), Nanoseconds: int64(i * 3)})
 	}
 	return vals
 }

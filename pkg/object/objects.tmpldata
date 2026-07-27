@@ -140,6 +140,10 @@
       {
         "From": "LargeString",
         "Via": "Boolean(t != \"\")"
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "Via": "Boolean(t.Months != 0 || t.Days != 0 || t.Nanoseconds != 0)"
       }
     ]
   },
@@ -276,6 +280,11 @@
         "From": "LargeString",
         "Via": "Date32(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Date32(t)"
       }
     ]
   },
@@ -412,6 +421,11 @@
         "From": "LargeString",
         "Via": "Date64(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Date64(t)"
       }
     ]
   },
@@ -570,6 +584,180 @@
         "From": "LargeString",
         "Via": "DayTimeInterval(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "Via": "DayTimeInterval(t)",
+        "NotImplemented": true
+      }
+    ]
+  },
+  {
+    "Name": "MonthDayNanoInterval",
+    "name": "month_day_nano_interval",
+    "Type": "arrow.MonthDayNanoInterval",
+    "InternalType": "arrow.MonthDayNanoInterval",
+    "Default": "MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 0, Days: 0, Nanoseconds: 0})",
+    "MaxValue": "MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: math.MaxInt32, Days: math.MaxInt32, Nanoseconds: math.MaxInt64})",
+    "BitWidth": 32,
+    "Compare": {
+      "Eq": "left.Months == right.Months && left.Days == right.Days && left.Nanoseconds == right.Nanoseconds",
+      "Less": "left.Cmp(right) < 0",
+      "LessEq": "left.Cmp(right) <= 0",
+      "Greater": "left.Cmp(right) > 0",
+      "GreaterEq": "left.Cmp(right) >= 0",
+      "comment": "arrow.MonthDayNanoInterval.Cmp compares (Months, Days, Nanoseconds) lexicographically."
+    },
+    "TestConstructor": "MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: %s, Days: %s, Nanoseconds: %s})",
+    "TestTypes": [
+      {
+        "Builder": "arrow.MonthDayNanoInterval{Months: int32(i), Days: int32(i * 2), Nanoseconds: int64(i * 3)}",
+        "DataType": "arrow.FixedWidthTypes.MonthDayNanoInterval",
+        "WantValues": "[{0 0 0} {1 2 3} {2 4 6} {3 6 9} {4 8 12} {5 10 15} {6 12 18} {7 14 21} {8 16 24} (null)]"
+      }
+    ],
+    "CastTo": [
+      {
+        "From": "arrow.MonthDayNanoInterval",
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Boolean",
+        "ViaBlock": "if t { return MonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: 1}) }; return MonthDayNanoInterval(arrow.MonthDayNanoInterval{});"
+      },
+      {
+        "From": "Boolean",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Date32",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Date64",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "DayTimeInterval",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Decimal128",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Decimal256",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Duration",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Float16",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Float32",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Float64",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Int16",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Int32",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Int64",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Int8",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "MonthInterval",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "String",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Time32",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Time64",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Timestamp",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Uint16",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Uint32",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Uint64",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Uint8",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "Binary",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "FixedSizeBinary",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "LargeString",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
       }
     ]
   },
@@ -729,6 +917,11 @@
         "From": "LargeString",
         "Via": "Decimal128(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Decimal128(t)"
       }
     ]
   },
@@ -881,6 +1074,11 @@
         "From": "LargeString",
         "Via": "Decimal256(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
       }
     ],
     "MaxValue": "Decimal256(decimal256.New(0x7FFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF))"
@@ -1049,6 +1247,11 @@
         "From": "LargeString",
         "Via": "Duration(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Duration(t)"
       }
     ]
   },
@@ -1208,6 +1411,11 @@
         "From": "LargeString",
         "Via": "Float16(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Float16(t)"
       }
     ]
   },
@@ -1340,6 +1548,11 @@
         "From": "LargeString",
         "Via": "Float32(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Float32(t)"
       }
     ]
   },
@@ -1471,6 +1684,11 @@
         "From": "LargeString",
         "Via": "Float64(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Float64(t)"
       }
     ]
   },
@@ -1610,6 +1828,11 @@
         "From": "LargeString",
         "Via": "Int16(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Int16(t)"
       }
     ]
   },
@@ -1753,6 +1976,11 @@
         "From": "LargeString",
         "Via": "Int32(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Int32(t)"
       }
     ]
   },
@@ -1894,6 +2122,11 @@
         "From": "LargeString",
         "Via": "Int64(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Int64(t)"
       }
     ]
   },
@@ -2034,6 +2267,11 @@
         "From": "LargeString",
         "Via": "Int8(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Int8(t)"
       }
     ]
   },
@@ -2182,6 +2420,11 @@
         "From": "LargeString",
         "Via": "MonthInterval(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "MonthInterval(t)"
       }
     ]
   },
@@ -2310,6 +2553,10 @@
       {
         "From": "LargeString",
         "Via": "String(t)"
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "Via": "String(fmt.Sprintf(\"%#v\", t))"
       }
     ]
   },
@@ -2460,6 +2707,11 @@
         "From": "LargeString",
         "Via": "Time32(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Time32(t)"
       }
     ]
   },
@@ -2606,6 +2858,11 @@
         "From": "LargeString",
         "Via": "Time64(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Time64(t)"
       }
     ]
   },
@@ -2762,6 +3019,11 @@
         "From": "LargeString",
         "Via": "Timestamp(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Timestamp(t)"
       }
     ]
   },
@@ -2905,6 +3167,11 @@
         "From": "LargeString",
         "Via": "Uint16(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Uint16(t)"
       }
     ]
   },
@@ -3045,6 +3312,11 @@
         "From": "LargeString",
         "Via": "Uint32(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Uint32(t)"
       }
     ]
   },
@@ -3186,6 +3458,11 @@
         "From": "LargeString",
         "Via": "Uint64(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Uint64(t)"
       }
     ]
   },
@@ -3329,6 +3606,11 @@
         "From": "LargeString",
         "Via": "Uint8(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Uint8(t)"
       }
     ]
   },
@@ -3489,6 +3771,11 @@
         "From": "LargeString",
         "Via": "Binary(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Binary(t)"
       }
     ],
     "MaxValue": "Binary([]byte{0xff})"
@@ -3650,6 +3937,11 @@
         "From": "LargeString",
         "Via": "FixedSizeBinary(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "FixedSizeBinary(t)"
       }
     ]
   },
@@ -3795,6 +4087,11 @@
       },
       {
         "From": "Uint8",
+        "NotImplemented": true,
+        "Via": "LargeString(t)"
+      },
+      {
+        "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "LargeString(t)"
       }
