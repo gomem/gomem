@@ -75,7 +75,8 @@ func CastElement(dtype arrow.DataType, v interface{}) Element {
 		return NewUint64Element(v)
 	case *arrow.Int64Type:
 		return NewInt64Element(v)
-	// case arrow.HALF_FLOAT: // TODO: implement?
+	case *arrow.Float16Type:
+		return NewFloat16Element(v)
 	case *arrow.Float32Type:
 		return NewFloat32Element(v)
 	case *arrow.Float64Type:
@@ -84,8 +85,34 @@ func CastElement(dtype arrow.DataType, v interface{}) Element {
 		return NewDate32Element(v)
 	case *arrow.Date64Type:
 		return NewDate64Element(v)
-		// case *arrow.StringType: // TODO: implement
-
+	case *arrow.Time32Type:
+		return NewTime32Element(v)
+	case *arrow.Time64Type:
+		return NewTime64Element(v)
+	case *arrow.TimestampType:
+		return NewTimestampElement(v)
+	case *arrow.DurationType:
+		return NewDurationElement(v)
+	case *arrow.MonthIntervalType:
+		return NewMonthIntervalElement(v)
+	case *arrow.DayTimeIntervalType:
+		return NewDayTimeIntervalElement(v)
+	case *arrow.MonthDayNanoIntervalType:
+		return NewMonthDayNanoIntervalElement(v)
+	case *arrow.Decimal128Type:
+		return NewDecimal128Element(v)
+	case *arrow.Decimal256Type:
+		return NewDecimal256Element(v)
+	case *arrow.BinaryType:
+		return NewBinaryElement(v)
+	case *arrow.FixedSizeBinaryType:
+		return NewFixedSizeBinaryElement(v)
+	case *arrow.StringType:
+		return NewStringElement(v)
+	case *arrow.LargeStringType:
+		return NewLargeStringElement(v)
+	case *arrow.BooleanType:
+		return NewBooleanElement(v)
 	}
-	panic(fmt.Errorf("bullseye/element: unsupported element for %T", dtype))
+	panic(fmt.Errorf("dataframe/element: unsupported element for %T", dtype))
 }

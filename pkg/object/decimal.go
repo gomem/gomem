@@ -147,8 +147,11 @@ func (e Decimal256) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON is the inverse of MarshalJSON.
+// A JSON null decodes to the zero value (Decimal256(decimal256.Num{})).
 func (e *Decimal256) UnmarshalJSON(data []byte) error {
-	aux := &struct {
+	// json.Unmarshal of null into a struct value leaves all fields at their
+	// zero value, which is the desired zero Decimal256.
+	aux := struct {
 		L0 uint64 `json:"l0"`
 		L1 uint64 `json:"l1"`
 		L2 uint64 `json:"l2"`

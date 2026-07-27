@@ -2345,6 +2345,12 @@ func CastToDecimal256(v interface{}) (Decimal256, bool) {
 		return *pt, true
 	case Decimal256:
 		return pt, true
+	case *decimal256.Num:
+		t := *pt
+		return Decimal256(t), true
+	case decimal256.Num:
+		t := pt
+		return Decimal256(t), true
 	case *decimal128.Num:
 		t := *pt
 		return Decimal256(decimal256.FromDecimal128(t)), true

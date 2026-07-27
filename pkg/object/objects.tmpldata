@@ -951,6 +951,10 @@
     ],
     "CastTo": [
       {
+        "From": "decimal256.Num",
+        "Via": "Decimal256(t)"
+      },
+      {
         "From": "decimal128.Num",
         "Via": "Decimal256(decimal256.FromDecimal128(t))"
       },

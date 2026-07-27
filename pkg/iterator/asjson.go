@@ -134,13 +134,14 @@ func stringAsJSON(v interface{}) (interface{}, error) {
 }
 
 func binaryAsJSON(v interface{}) (interface{}, error) {
-	// Render binary values as their string form so they marshal as JSON strings
-	// rather than being base64-encoded by encoding/json.
-	return string(v.([]byte)), nil
+	// Return the raw []byte so encoding/json base64-encodes it (matching Apache
+	// Arrow's JSON serialization for binary types). Returning string(v) would
+	// silently corrupt non-UTF-8 bytes.
+	return v.([]byte), nil
 }
 
 func fixedSizeBinaryAsJSON(v interface{}) (interface{}, error) {
-	return string(v.([]byte)), nil
+	return v.([]byte), nil
 }
 
 func largeStringAsJSON(v interface{}) (interface{}, error) {

@@ -158,6 +158,33 @@ func TestDecimal256JSONRoundTrip(t *testing.T) {
 	}
 }
 
+// TestDecimal256JSONNull verifies that unmarshaling JSON null does not panic and
+// yields the zero value (regression for a nil-pointer dereference).
+func TestDecimal256JSONNull(t *testing.T) {
+	var d Decimal256
+	if err := json.Unmarshal([]byte("null"), &d); err != nil {
+		t.Fatalf("Unmarshal(null): %v", err)
+	}
+	if (d.Value() != decimal256.Num{}) {
+		t.Errorf("null should decode to zero Decimal256, got %v", d.Value())
+	}
+}
+
+// TestCastToDecimal256Native verifies CastToDecimal256 accepts arrow's native
+// decimal256.Num value (regression for a missing From:decimal256.Num entry).
+func TestCastToDecimal256Native(t *testing.T) {
+	native := decimal256.FromI64(42)
+	got, ok := CastToDecimal256(native)
+	if !ok {
+		t.Fatal("CastToDecimal256(decimal256.Num) returned false; native type not handled")
+	}
+	want := NewDecimal256FromInt64(42)
+	eq, _ := got.Eq(want)
+	if !bool(eq) {
+		t.Errorf("got=%v, want=%v", got, want)
+	}
+}
+
 // TestDecimal256CastFromPrimitives verifies the codegen-generated CastToDecimal256
 // covers the implemented source types (Int64, Uint64, Boolean, decimal256.Num).
 func TestDecimal256CastFromPrimitives(t *testing.T) {
