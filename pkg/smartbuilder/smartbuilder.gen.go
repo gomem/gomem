@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/gomem/gomem/internal/debug"
 	"github.com/gomem/gomem/pkg/object"
 )

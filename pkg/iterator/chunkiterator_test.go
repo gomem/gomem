@@ -17,13 +17,13 @@ package iterator_test
 import (
 	"testing"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/pkg/iterator"
 )
 
-func buildRecords(pool *memory.CheckedAllocator, t *testing.T) ([]array.Record, *arrow.Schema) {
+func buildRecords(pool *memory.CheckedAllocator, t *testing.T) ([]arrow.RecordBatch, *arrow.Schema) {
 	schema := arrow.NewSchema(
 		[]arrow.Field{
 			{Name: "f1-i32", Type: arrow.PrimitiveTypes.Int32},
@@ -51,7 +51,7 @@ func buildRecords(pool *memory.CheckedAllocator, t *testing.T) ([]array.Record, 
 
 	rec3 := b.NewRecord()
 
-	return []array.Record{rec1, rec2, rec3}, schema
+	return []arrow.RecordBatch{rec1, rec2, rec3}, schema
 }
 
 func TestChunkIterator(t *testing.T) {

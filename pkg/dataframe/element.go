@@ -17,7 +17,7 @@ package dataframe
 import (
 	"fmt"
 
-	"github.com/apache/arrow/go/arrow"
+	"github.com/apache/arrow-go/v18/arrow"
 )
 
 // Element is an interface for Elements within a Column.

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/pkg/metadata"
 )
 
@@ -155,8 +155,8 @@ func TestSmartBuilderMaps(t *testing.T) {
 	want := `record:
 	schema:
 	fields: 2
-	- col15-los: type=list<item: struct<field_a: utf8, field_b: utf8, field_c: float64>>
-	- col16-los-sb: type=list<item: struct<Key: utf8, Value: float64>>
+		- col15-los: type=list<item: struct<field_a: utf8, field_b: utf8, field_c: float64>, nullable>
+	- col16-los-sb: type=list<item: struct<Key: utf8, Value: float64>, nullable>
 	metadata: ["GOMEM_DATAFRAME_ORIGINAL_TYPE": "MAP", "LogicalType": "MAP"]
 	rows: 5
 	col[0][col15-los]: [{["r0:s0:e0" "r0:s1:e1"] ["r0:s0:e0" "r0:s1:e1"] [0 1]} {["r1:s0:e2" "r1:s1:e3"] ["r1:s0:e2" "r1:s1:e3"] [0 1]} {["r2:s0:e4" "r2:s1:e5"] ["r2:s0:e4" "r2:s1:e5"] [0 1]} {["r3:s0:e6" "r3:s1:e7"] ["r3:s0:e6" "r3:s1:e7"] [0 1]} {["r4:s0:e8" "r4:s1:e9"] ["r4:s0:e8" "r4:s1:e9"] [0 1]}]

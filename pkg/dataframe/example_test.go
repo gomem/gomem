@@ -17,7 +17,7 @@ package dataframe_test
 import (
 	"fmt"
 
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/pkg/dataframe"
 )
 

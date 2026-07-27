@@ -20,10 +20,10 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/decimal128"
-	"github.com/apache/arrow/go/arrow/float16"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/float16"
 	"github.com/gomem/gomem/internal/debug"
 )
 
@@ -49,7 +49,7 @@ type ValueIterator interface {
 }
 
 // NewValueIterator creates a new generic ValueIterator.
-func NewValueIterator(column *array.Column) ValueIterator {
+func NewValueIterator(column *arrow.Column) ValueIterator {
 	field := column.Field()
 	switch field.Type.(type) {
 
@@ -130,11 +130,11 @@ func NewValueIterator(column *array.Column) ValueIterator {
 	}
 }
 
-func NewInterfaceValueIterator(field arrow.Field, iface array.Interface) ValueIterator {
-	chunk := array.NewChunked(iface.DataType(), []array.Interface{iface})
+func NewInterfaceValueIterator(field arrow.Field, iface arrow.Array) ValueIterator {
+	chunk := arrow.NewChunked(iface.DataType(), []arrow.Array{iface})
 	defer chunk.Release()
 
-	col := array.NewColumn(field, chunk)
+	col := arrow.NewColumn(field, chunk)
 	defer col.Release()
 
 	return NewValueIterator(col)
@@ -155,7 +155,7 @@ type Date32ValueIterator struct {
 }
 
 // NewDate32ValueIterator creates a new Date32ValueIterator for reading an Arrow Column.
-func NewDate32ValueIterator(col *array.Column) *Date32ValueIterator {
+func NewDate32ValueIterator(col *arrow.Column) *Date32ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewDate32ChunkIterator(col)
 
@@ -285,7 +285,7 @@ type Date64ValueIterator struct {
 }
 
 // NewDate64ValueIterator creates a new Date64ValueIterator for reading an Arrow Column.
-func NewDate64ValueIterator(col *array.Column) *Date64ValueIterator {
+func NewDate64ValueIterator(col *arrow.Column) *Date64ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewDate64ChunkIterator(col)
 
@@ -415,7 +415,7 @@ type DayTimeIntervalValueIterator struct {
 }
 
 // NewDayTimeIntervalValueIterator creates a new DayTimeIntervalValueIterator for reading an Arrow Column.
-func NewDayTimeIntervalValueIterator(col *array.Column) *DayTimeIntervalValueIterator {
+func NewDayTimeIntervalValueIterator(col *arrow.Column) *DayTimeIntervalValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewDayTimeIntervalChunkIterator(col)
 
@@ -545,7 +545,7 @@ type Decimal128ValueIterator struct {
 }
 
 // NewDecimal128ValueIterator creates a new Decimal128ValueIterator for reading an Arrow Column.
-func NewDecimal128ValueIterator(col *array.Column) *Decimal128ValueIterator {
+func NewDecimal128ValueIterator(col *arrow.Column) *Decimal128ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewDecimal128ChunkIterator(col)
 
@@ -675,7 +675,7 @@ type DurationValueIterator struct {
 }
 
 // NewDurationValueIterator creates a new DurationValueIterator for reading an Arrow Column.
-func NewDurationValueIterator(col *array.Column) *DurationValueIterator {
+func NewDurationValueIterator(col *arrow.Column) *DurationValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewDurationChunkIterator(col)
 
@@ -805,7 +805,7 @@ type Float16ValueIterator struct {
 }
 
 // NewFloat16ValueIterator creates a new Float16ValueIterator for reading an Arrow Column.
-func NewFloat16ValueIterator(col *array.Column) *Float16ValueIterator {
+func NewFloat16ValueIterator(col *arrow.Column) *Float16ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewFloat16ChunkIterator(col)
 
@@ -935,7 +935,7 @@ type Float32ValueIterator struct {
 }
 
 // NewFloat32ValueIterator creates a new Float32ValueIterator for reading an Arrow Column.
-func NewFloat32ValueIterator(col *array.Column) *Float32ValueIterator {
+func NewFloat32ValueIterator(col *arrow.Column) *Float32ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewFloat32ChunkIterator(col)
 
@@ -1065,7 +1065,7 @@ type Float64ValueIterator struct {
 }
 
 // NewFloat64ValueIterator creates a new Float64ValueIterator for reading an Arrow Column.
-func NewFloat64ValueIterator(col *array.Column) *Float64ValueIterator {
+func NewFloat64ValueIterator(col *arrow.Column) *Float64ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewFloat64ChunkIterator(col)
 
@@ -1195,7 +1195,7 @@ type Int16ValueIterator struct {
 }
 
 // NewInt16ValueIterator creates a new Int16ValueIterator for reading an Arrow Column.
-func NewInt16ValueIterator(col *array.Column) *Int16ValueIterator {
+func NewInt16ValueIterator(col *arrow.Column) *Int16ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewInt16ChunkIterator(col)
 
@@ -1325,7 +1325,7 @@ type Int32ValueIterator struct {
 }
 
 // NewInt32ValueIterator creates a new Int32ValueIterator for reading an Arrow Column.
-func NewInt32ValueIterator(col *array.Column) *Int32ValueIterator {
+func NewInt32ValueIterator(col *arrow.Column) *Int32ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewInt32ChunkIterator(col)
 
@@ -1455,7 +1455,7 @@ type Int64ValueIterator struct {
 }
 
 // NewInt64ValueIterator creates a new Int64ValueIterator for reading an Arrow Column.
-func NewInt64ValueIterator(col *array.Column) *Int64ValueIterator {
+func NewInt64ValueIterator(col *arrow.Column) *Int64ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewInt64ChunkIterator(col)
 
@@ -1585,7 +1585,7 @@ type Int8ValueIterator struct {
 }
 
 // NewInt8ValueIterator creates a new Int8ValueIterator for reading an Arrow Column.
-func NewInt8ValueIterator(col *array.Column) *Int8ValueIterator {
+func NewInt8ValueIterator(col *arrow.Column) *Int8ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewInt8ChunkIterator(col)
 
@@ -1715,7 +1715,7 @@ type MonthIntervalValueIterator struct {
 }
 
 // NewMonthIntervalValueIterator creates a new MonthIntervalValueIterator for reading an Arrow Column.
-func NewMonthIntervalValueIterator(col *array.Column) *MonthIntervalValueIterator {
+func NewMonthIntervalValueIterator(col *arrow.Column) *MonthIntervalValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewMonthIntervalChunkIterator(col)
 
@@ -1845,7 +1845,7 @@ type Time32ValueIterator struct {
 }
 
 // NewTime32ValueIterator creates a new Time32ValueIterator for reading an Arrow Column.
-func NewTime32ValueIterator(col *array.Column) *Time32ValueIterator {
+func NewTime32ValueIterator(col *arrow.Column) *Time32ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewTime32ChunkIterator(col)
 
@@ -1975,7 +1975,7 @@ type Time64ValueIterator struct {
 }
 
 // NewTime64ValueIterator creates a new Time64ValueIterator for reading an Arrow Column.
-func NewTime64ValueIterator(col *array.Column) *Time64ValueIterator {
+func NewTime64ValueIterator(col *arrow.Column) *Time64ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewTime64ChunkIterator(col)
 
@@ -2105,7 +2105,7 @@ type TimestampValueIterator struct {
 }
 
 // NewTimestampValueIterator creates a new TimestampValueIterator for reading an Arrow Column.
-func NewTimestampValueIterator(col *array.Column) *TimestampValueIterator {
+func NewTimestampValueIterator(col *arrow.Column) *TimestampValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewTimestampChunkIterator(col)
 
@@ -2235,7 +2235,7 @@ type Uint16ValueIterator struct {
 }
 
 // NewUint16ValueIterator creates a new Uint16ValueIterator for reading an Arrow Column.
-func NewUint16ValueIterator(col *array.Column) *Uint16ValueIterator {
+func NewUint16ValueIterator(col *arrow.Column) *Uint16ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewUint16ChunkIterator(col)
 
@@ -2365,7 +2365,7 @@ type Uint32ValueIterator struct {
 }
 
 // NewUint32ValueIterator creates a new Uint32ValueIterator for reading an Arrow Column.
-func NewUint32ValueIterator(col *array.Column) *Uint32ValueIterator {
+func NewUint32ValueIterator(col *arrow.Column) *Uint32ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewUint32ChunkIterator(col)
 
@@ -2495,7 +2495,7 @@ type Uint64ValueIterator struct {
 }
 
 // NewUint64ValueIterator creates a new Uint64ValueIterator for reading an Arrow Column.
-func NewUint64ValueIterator(col *array.Column) *Uint64ValueIterator {
+func NewUint64ValueIterator(col *arrow.Column) *Uint64ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewUint64ChunkIterator(col)
 
@@ -2625,7 +2625,7 @@ type Uint8ValueIterator struct {
 }
 
 // NewUint8ValueIterator creates a new Uint8ValueIterator for reading an Arrow Column.
-func NewUint8ValueIterator(col *array.Column) *Uint8ValueIterator {
+func NewUint8ValueIterator(col *arrow.Column) *Uint8ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewUint8ChunkIterator(col)
 

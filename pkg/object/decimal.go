@@ -17,7 +17,7 @@ package object
 import (
 	"encoding/json"
 
-	"github.com/apache/arrow/go/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
 )
 
 // NewDecimal128FromI64 returns a new signed 128-bit integer value from the provided int64 one.

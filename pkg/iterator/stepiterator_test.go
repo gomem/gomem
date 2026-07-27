@@ -17,8 +17,9 @@ package iterator_test
 import (
 	"testing"
 
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/pkg/iterator"
 )
 
@@ -34,7 +35,7 @@ func TestNewStepIteratorForColumns(t *testing.T) {
 	tbl := array.NewTableFromRecords(schema, records)
 	defer tbl.Release()
 
-	cols := make([]array.Column, 0, tbl.NumCols())
+	cols := make([]arrow.Column, 0, tbl.NumCols())
 	for i := 0; i < int(tbl.NumCols()); i++ {
 		cols = append(cols, *tbl.Column(i))
 	}

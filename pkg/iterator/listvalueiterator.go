@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/gomem/gomem/internal/debug"
 )
 
@@ -39,7 +39,7 @@ type ListValueIterator struct {
 	elemDataType arrow.DataType
 }
 
-func NewListValueIterator(col *array.Column) *ListValueIterator {
+func NewListValueIterator(col *arrow.Column) *ListValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewChunkIterator(col)
 	elemDataType := col.DataType().(*arrow.ListType).Elem()
