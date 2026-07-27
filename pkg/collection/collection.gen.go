@@ -752,6 +752,60 @@ func (c *LargeStringCollection) AppendObject(v object.Object) error {
 	return nil
 }
 
+// NewStringViewCollection creates a new StringView collection builder.
+func NewStringViewCollection(builder *array.StringViewBuilder) *StringViewCollection {
+	return &StringViewCollection{
+		builder: builder,
+	}
+}
+
+// StringViewCollection has logic to apply to this type.
+type StringViewCollection struct {
+	builder *array.StringViewBuilder
+}
+
+func (c *StringViewCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToStringView(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.StringView", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
+// NewBinaryViewCollection creates a new BinaryView collection builder.
+func NewBinaryViewCollection(builder *array.BinaryViewBuilder) *BinaryViewCollection {
+	return &BinaryViewCollection{
+		builder: builder,
+	}
+}
+
+// BinaryViewCollection has logic to apply to this type.
+type BinaryViewCollection struct {
+	builder *array.BinaryViewBuilder
+}
+
+func (c *BinaryViewCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToBinaryView(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.BinaryView", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
 var (
 	_ Collection = (*BooleanCollection)(nil)
 	_ Collection = (*Date32Collection)(nil)
@@ -780,4 +834,6 @@ var (
 	_ Collection = (*BinaryCollection)(nil)
 	_ Collection = (*FixedSizeBinaryCollection)(nil)
 	_ Collection = (*LargeStringCollection)(nil)
+	_ Collection = (*StringViewCollection)(nil)
+	_ Collection = (*BinaryViewCollection)(nil)
 )

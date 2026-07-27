@@ -219,6 +219,20 @@ func (sb *SmartBuilder) appendValue(bldr array.Builder, v interface{}) error {
 		}
 		b.Append(vT.Value())
 
+	case *array.StringViewBuilder:
+		vT, ok := object.CastToStringView(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.StringView", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.BinaryViewBuilder:
+		vT, ok := object.CastToBinaryView(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.BinaryView", v)
+		}
+		b.Append(vT.Value())
+
 	case *array.ListBuilder:
 		b.Append(true)
 		sub := b.ValueBuilder()

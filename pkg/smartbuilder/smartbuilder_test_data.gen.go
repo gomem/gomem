@@ -210,6 +210,16 @@ func GenerateSmartBuilderTestCases() []SmartBuilderTestCase {
 			Dtype:  arrow.BinaryTypes.LargeString,
 			Want:   `col[0][col-large_utf8]: ["0" "1" "2" "3" "4" "5" "6" "7" "8" (null)]`,
 		},
+		{
+			Values: StringViewGen(),
+			Dtype:  arrow.BinaryTypes.StringView,
+			Want:   `col[0][col-string_view]: ["0" "1" "2" "3" "4" "5" "6" "7" "8" (null)]`,
+		},
+		{
+			Values: BinaryViewGen(),
+			Dtype:  arrow.BinaryTypes.BinaryView,
+			Want:   `col[0][col-binary_view]: ["a" "b" "c" "d" "e" "f" "g" "h" "i" (null)]`,
+		},
 	}
 }
 
@@ -489,6 +499,22 @@ func LargeStringGen() []interface{} {
 	vals := make([]interface{}, 9)
 	for i := range vals {
 		vals[i] = object.NewLargeString(strconv.Itoa(i))
+	}
+	return vals
+}
+
+func StringViewGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewStringView(strconv.Itoa(i))
+	}
+	return vals
+}
+
+func BinaryViewGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewBinaryView([]byte{byte('a' + i)})
 	}
 	return vals
 }

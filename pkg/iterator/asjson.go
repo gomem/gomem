@@ -148,6 +148,14 @@ func largeStringAsJSON(v interface{}) (interface{}, error) {
 	return v, nil
 }
 
+func stringViewAsJSON(v interface{}) (interface{}, error) {
+	return v, nil
+}
+
+func binaryViewAsJSON(v interface{}) (interface{}, error) {
+	return v.([]byte), nil
+}
+
 // func fixedSizeBinary(v interface{}) (interface{}, error) {
 // 	// TODO(nickpoorman): Verify this is correct....
 // 	// dt := dtype.(*arrow.FixedSizeBinaryType)

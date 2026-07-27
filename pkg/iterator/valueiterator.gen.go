@@ -135,6 +135,12 @@ func NewValueIterator(column *arrow.Column) ValueIterator {
 	case *arrow.LargeStringType:
 		return NewLargeStringValueIterator(column)
 
+	case *arrow.StringViewType:
+		return NewStringViewValueIterator(column)
+
+	case *arrow.BinaryViewType:
+		return NewBinaryViewValueIterator(column)
+
 	case *arrow.ListType:
 		return NewListValueIterator(column)
 

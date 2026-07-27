@@ -54,6 +54,8 @@ var (
 	MaxBinary               = Binary([]byte{0xff})
 	MaxFixedSizeBinary      = FixedSizeBinary([]byte{0xff})
 	MaxLargeString          = LargeString("z")
+	MaxStringView           = StringView("z")
+	MaxBinaryView           = BinaryView([]byte{0xff})
 )
 
 type CastableToBoolean interface {
@@ -257,6 +259,28 @@ func CastToBoolean(v interface{}) (Boolean, bool) {
 	case MonthDayNanoInterval:
 		t := pt
 		return Boolean(t.Months != 0 || t.Days != 0 || t.Nanoseconds != 0), true
+	case *StringView:
+		t := *pt
+		return Boolean(t != ""), true
+	case StringView:
+		t := pt
+		return Boolean(t != ""), true
+	case *BinaryView:
+		t := *pt
+		return func(t BinaryView) Boolean {
+			if len(t) > 0 {
+				return Boolean(true)
+			}
+			return Boolean(false)
+		}(t), true
+	case BinaryView:
+		t := pt
+		return func(t BinaryView) Boolean {
+			if len(t) > 0 {
+				return Boolean(true)
+			}
+			return Boolean(false)
+		}(t), true
 	default:
 		// Also handles when v is nil
 		return false, false
@@ -7003,6 +7027,18 @@ func CastToString(v interface{}) (String, bool) {
 	case MonthDayNanoInterval:
 		t := pt
 		return String(fmt.Sprintf("%#v", t)), true
+	case *StringView:
+		t := *pt
+		return String(t), true
+	case StringView:
+		t := pt
+		return String(t), true
+	case *BinaryView:
+		t := *pt
+		return String(string(t)), true
+	case BinaryView:
+		t := pt
+		return String(string(t)), true
 	default:
 		// Also handles when v is nil
 		return "", false
@@ -7163,6 +7199,36 @@ func (t String) ToLargeStringChecked() (LargeString, Boolean) {
 // an overflow.
 func (t String) ToLargeString() LargeString {
 	return LargeString(string(t))
+}
+
+// ToStringViewChecked attempts to cast the String to a StringView.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t String) ToStringViewChecked() (StringView, Boolean) {
+	return t.ToStringView(), true
+}
+
+// ToStringView attempts to cast the String to a StringView.
+// The result is not checked for an overflow.
+// Use the ToStringViewChecked version of this method if you need to check for
+// an overflow.
+func (t String) ToStringView() StringView {
+	return StringView(string(t))
+}
+
+// ToBinaryViewChecked attempts to cast the String to a BinaryView.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t String) ToBinaryViewChecked() (BinaryView, Boolean) {
+	return t.ToBinaryView(), true
+}
+
+// ToBinaryView attempts to cast the String to a BinaryView.
+// The result is not checked for an overflow.
+// Use the ToBinaryViewChecked version of this method if you need to check for
+// an overflow.
+func (t String) ToBinaryView() BinaryView {
+	return BinaryView([]byte(t))
 }
 
 type CastableToTime32 interface {
@@ -10801,6 +10867,21 @@ func (t Binary) ToFixedSizeBinary() FixedSizeBinary {
 	return FixedSizeBinary([]byte(t))
 }
 
+// ToBinaryViewChecked attempts to cast the Binary to a BinaryView.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t Binary) ToBinaryViewChecked() (BinaryView, Boolean) {
+	return t.ToBinaryView(), true
+}
+
+// ToBinaryView attempts to cast the Binary to a BinaryView.
+// The result is not checked for an overflow.
+// Use the ToBinaryViewChecked version of this method if you need to check for
+// an overflow.
+func (t Binary) ToBinaryView() BinaryView {
+	return BinaryView([]byte(t))
+}
+
 type CastableToFixedSizeBinary interface {
 	ToFixedSizeBinaryChecked() (FixedSizeBinary, Boolean)
 	ToFixedSizeBinary() FixedSizeBinary
@@ -11124,6 +11205,350 @@ func (t LargeString) ToLargeString() LargeString {
 	return t
 }
 
+// ToStringViewChecked attempts to cast the LargeString to a StringView.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t LargeString) ToStringViewChecked() (StringView, Boolean) {
+	return t.ToStringView(), true
+}
+
+// ToStringView attempts to cast the LargeString to a StringView.
+// The result is not checked for an overflow.
+// Use the ToStringViewChecked version of this method if you need to check for
+// an overflow.
+func (t LargeString) ToStringView() StringView {
+	return StringView(string(t))
+}
+
+type CastableToStringView interface {
+	ToStringViewChecked() (StringView, Boolean)
+	ToStringView() StringView
+}
+
+// CastToStringView takes an interface{} type or any Object type and
+// attempts to convert it to the StringView Object type.
+func CastToStringView(v interface{}) (StringView, bool) {
+	switch pt := v.(type) {
+	case *StringView:
+		return *pt, true
+	case StringView:
+		return pt, true
+	case *string:
+		t := *pt
+		return StringView(t), true
+	case string:
+		t := pt
+		return StringView(t), true
+	case *String:
+		t := *pt
+		return StringView(string(t)), true
+	case String:
+		t := pt
+		return StringView(string(t)), true
+	case *LargeString:
+		t := *pt
+		return StringView(string(t)), true
+	case LargeString:
+		t := pt
+		return StringView(string(t)), true
+	default:
+		// Also handles when v is nil
+		return StringView(""), false
+	}
+}
+
+// NewStringView creates a new StringView object
+// from the given value provided as v.
+func NewStringView(v string) StringView {
+	return StringView(v)
+}
+
+// StringView has logic to apply to this type.
+type StringView string
+
+// Value returns the underlying value in it's native type.
+func (e StringView) Value() string {
+	return string(e)
+}
+
+// compare takes the left and right objects and applies the comparator function to them.
+func (e StringView) compareTypes(r Object, f func(string, string) Boolean) (Boolean, error) {
+	if r == nil {
+		return Boolean(false), nil
+	}
+
+	switch right := r.(type) {
+	case StringView:
+		return f(e.Value(), right.Value()), nil
+	case *StringView:
+		return f(e.Value(), right.Value()), nil
+	default:
+		return false, fmt.Errorf("cannot cast %T (%#v) to object.StringView", r, r)
+	}
+}
+
+// Comparation methods
+
+// Eq returns true if the left StringView is equal to the right StringView.
+func (e StringView) Eq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left == right)
+	})
+}
+
+// Neq returns true if the left StringView
+// is not equal to the right StringView.
+func (e StringView) Neq(r Object) (Boolean, error) {
+	v, err := e.Eq(r)
+	if err != nil {
+		return Boolean(false), err
+	}
+	return !v, err
+}
+
+// Less returns true if the left StringView
+// is less than the right StringView.
+func (e StringView) Less(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left < right)
+	})
+}
+
+// LessEq returns true if the left StringView
+// is less than or equal to the right StringView.
+func (e StringView) LessEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left <= right)
+	})
+}
+
+// Greater returns true if the left StringView
+// is greter than the right StringView.
+func (e StringView) Greater(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left > right)
+	})
+}
+
+// GreaterEq returns true if the left StringView
+// is greter than or equal to the right StringView.
+func (e StringView) GreaterEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right string) Boolean {
+		return Boolean(left >= right)
+	})
+}
+
+// ToBooleanChecked attempts to cast the StringView to a Boolean.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t StringView) ToBooleanChecked() (Boolean, Boolean) {
+	return t.ToBoolean(), true
+}
+
+// ToBoolean attempts to cast the StringView to a Boolean.
+// The result is not checked for an overflow.
+// Use the ToBooleanChecked version of this method if you need to check for
+// an overflow.
+func (t StringView) ToBoolean() Boolean {
+	return Boolean(t != "")
+}
+
+// ToStringChecked attempts to cast the StringView to a String.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t StringView) ToStringChecked() (String, Boolean) {
+	return t.ToString(), true
+}
+
+// ToString attempts to cast the StringView to a String.
+// The result is not checked for an overflow.
+// Use the ToStringChecked version of this method if you need to check for
+// an overflow.
+func (t StringView) ToString() String {
+	return String(t)
+}
+
+// ToStringViewChecked attempts to cast the StringView to a StringView.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t StringView) ToStringViewChecked() (StringView, Boolean) {
+	return t.ToStringView(), true
+}
+
+// ToStringView attempts to cast the StringView to a StringView.
+// The result is not checked for an overflow.
+// Use the ToStringViewChecked version of this method if you need to check for
+// an overflow.
+func (t StringView) ToStringView() StringView {
+	return t
+}
+
+type CastableToBinaryView interface {
+	ToBinaryViewChecked() (BinaryView, Boolean)
+	ToBinaryView() BinaryView
+}
+
+// CastToBinaryView takes an interface{} type or any Object type and
+// attempts to convert it to the BinaryView Object type.
+func CastToBinaryView(v interface{}) (BinaryView, bool) {
+	switch pt := v.(type) {
+	case *BinaryView:
+		return *pt, true
+	case BinaryView:
+		return pt, true
+	case *[]byte:
+		t := *pt
+		return BinaryView(t), true
+	case []byte:
+		t := pt
+		return BinaryView(t), true
+	case *Binary:
+		t := *pt
+		return BinaryView([]byte(t)), true
+	case Binary:
+		t := pt
+		return BinaryView([]byte(t)), true
+	case *String:
+		t := *pt
+		return BinaryView([]byte(t)), true
+	case String:
+		t := pt
+		return BinaryView([]byte(t)), true
+	default:
+		// Also handles when v is nil
+		return BinaryView([]byte{}), false
+	}
+}
+
+// NewBinaryView creates a new BinaryView object
+// from the given value provided as v.
+func NewBinaryView(v []byte) BinaryView {
+	return BinaryView(v)
+}
+
+// BinaryView has logic to apply to this type.
+type BinaryView []byte
+
+// Value returns the underlying value in it's native type.
+func (e BinaryView) Value() []byte {
+	return []byte(e)
+}
+
+// compare takes the left and right objects and applies the comparator function to them.
+func (e BinaryView) compareTypes(r Object, f func([]byte, []byte) Boolean) (Boolean, error) {
+	if r == nil {
+		return Boolean(false), nil
+	}
+
+	switch right := r.(type) {
+	case BinaryView:
+		return f(e.Value(), right.Value()), nil
+	case *BinaryView:
+		return f(e.Value(), right.Value()), nil
+	default:
+		return false, fmt.Errorf("cannot cast %T (%#v) to object.BinaryView", r, r)
+	}
+}
+
+// Comparation methods
+
+// Eq returns true if the left BinaryView is equal to the right BinaryView.
+func (e BinaryView) Eq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Equal(left, right))
+	})
+}
+
+// Neq returns true if the left BinaryView
+// is not equal to the right BinaryView.
+func (e BinaryView) Neq(r Object) (Boolean, error) {
+	v, err := e.Eq(r)
+	if err != nil {
+		return Boolean(false), err
+	}
+	return !v, err
+}
+
+// Less returns true if the left BinaryView
+// is less than the right BinaryView.
+func (e BinaryView) Less(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) < 0)
+	})
+}
+
+// LessEq returns true if the left BinaryView
+// is less than or equal to the right BinaryView.
+func (e BinaryView) LessEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) <= 0)
+	})
+}
+
+// Greater returns true if the left BinaryView
+// is greter than the right BinaryView.
+func (e BinaryView) Greater(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) > 0)
+	})
+}
+
+// GreaterEq returns true if the left BinaryView
+// is greter than or equal to the right BinaryView.
+func (e BinaryView) GreaterEq(r Object) (Boolean, error) {
+	return e.compareTypes(r, func(left, right []byte) Boolean {
+		return Boolean(bytes.Compare(left, right) >= 0)
+	})
+}
+
+// ToBooleanChecked attempts to cast the BinaryView to a Boolean.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t BinaryView) ToBooleanChecked() (Boolean, Boolean) {
+	return t.ToBoolean(), true
+}
+
+// ToBoolean attempts to cast the BinaryView to a Boolean.
+// The result is not checked for an overflow.
+// Use the ToBooleanChecked version of this method if you need to check for
+// an overflow.
+func (t BinaryView) ToBoolean() Boolean {
+	if len(t) > 0 {
+		return Boolean(true)
+	}
+	return Boolean(false)
+}
+
+// ToStringChecked attempts to cast the BinaryView to a String.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t BinaryView) ToStringChecked() (String, Boolean) {
+	return t.ToString(), true
+}
+
+// ToString attempts to cast the BinaryView to a String.
+// The result is not checked for an overflow.
+// Use the ToStringChecked version of this method if you need to check for
+// an overflow.
+func (t BinaryView) ToString() String {
+	return String(string(t))
+}
+
+// ToBinaryViewChecked attempts to cast the BinaryView to a BinaryView.
+// The second return value will be false if there was an overflow or any other loss of precision.
+// For example, going from Float64 to Int64 will result in anything after the decimal being truncated.
+func (t BinaryView) ToBinaryViewChecked() (BinaryView, Boolean) {
+	return t.ToBinaryView(), true
+}
+
+// ToBinaryView attempts to cast the BinaryView to a BinaryView.
+// The result is not checked for an overflow.
+// Use the ToBinaryViewChecked version of this method if you need to check for
+// an overflow.
+func (t BinaryView) ToBinaryView() BinaryView {
+	return t
+}
+
 var (
 	_ Object = (*Boolean)(nil)
 	_ Object = (*Date32)(nil)
@@ -11152,4 +11577,6 @@ var (
 	_ Object = (*Binary)(nil)
 	_ Object = (*FixedSizeBinary)(nil)
 	_ Object = (*LargeString)(nil)
+	_ Object = (*StringView)(nil)
+	_ Object = (*BinaryView)(nil)
 )

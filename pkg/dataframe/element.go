@@ -111,6 +111,10 @@ func CastElement(dtype arrow.DataType, v interface{}) Element {
 		return NewStringElement(v)
 	case *arrow.LargeStringType:
 		return NewLargeStringElement(v)
+	case *arrow.StringViewType:
+		return NewStringViewElement(v)
+	case *arrow.BinaryViewType:
+		return NewBinaryViewElement(v)
 	case *arrow.BooleanType:
 		return NewBooleanElement(v)
 	}

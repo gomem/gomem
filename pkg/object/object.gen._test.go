@@ -12405,6 +12405,120 @@ func TestMethodStringToLargeStringChecked(t *testing.T) {
 	}
 }
 
+func TestStringCastableToStringView(t *testing.T) {
+	cases := []struct {
+		o    CastableToStringView
+		want StringView
+	}{
+		{String(""), StringView(StringView(""))},
+	}
+	for _, c := range cases {
+		value := c.o.ToStringView()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodStringToStringView(t *testing.T) {
+	cases := []struct {
+		o    String
+		want StringView
+	}{
+		{String(""), StringView(StringView(""))},
+	}
+	for _, c := range cases {
+		value := c.o.ToStringView()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodStringToStringViewChecked(t *testing.T) {
+	cases := []struct {
+		o String
+	}{
+		{String("abc")},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToStringViewChecked()
+		if ok {
+			v, ok := converted.ToStringChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for String to StringView: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for String to StringView - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestStringCastableToBinaryView(t *testing.T) {
+	cases := []struct {
+		o    CastableToBinaryView
+		want BinaryView
+	}{
+		{String(""), BinaryView(BinaryView([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToBinaryView()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodStringToBinaryView(t *testing.T) {
+	cases := []struct {
+		o    String
+		want BinaryView
+	}{
+		{String(""), BinaryView(BinaryView([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToBinaryView()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodStringToBinaryViewChecked(t *testing.T) {
+	cases := []struct {
+		o String
+	}{
+		{String("abc")},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToBinaryViewChecked()
+		if ok {
+			v, ok := converted.ToStringChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for String to BinaryView: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for String to BinaryView - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
 func TestTime32ToBoolean(t *testing.T) {
 	cases := []struct {
 		Obj  Time32
@@ -20521,6 +20635,638 @@ func TestMethodLargeStringToLargeStringChecked(t *testing.T) {
 				}
 				if err != nil || !equal {
 					t.Errorf("detected unhandled overflow for LargeString to LargeString - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestStringViewToBoolean(t *testing.T) {
+	cases := []struct {
+		Obj  StringView
+		Want bool
+	}{
+		{StringView(""), false},
+		{StringView("%v"), true},
+		{StringView("%v"), true},
+	}
+	for _, c := range cases {
+		if got, want := c.Obj.ToBoolean(), Boolean(c.Want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestStringViewEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{StringView(StringView("")), StringView(StringView("")), nil, true},
+	}
+	for _, c := range cases {
+		eq, err := c.left.Eq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := eq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestStringViewNeq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{StringView(StringView("")), StringView(StringView("")), nil, false},
+		{StringView(StringView("")), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.StringView"), false},
+	}
+	for _, c := range cases {
+		neq, err := c.left.Neq(c.right)
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", c.err) {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := neq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestStringViewLess(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{StringView(StringView("")), StringView(StringView("")), nil, false},
+	}
+	for _, c := range cases {
+		less, err := c.left.Less(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := less, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestStringViewLessEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{StringView(StringView("")), StringView(StringView("")), nil, true},
+	}
+	for _, c := range cases {
+		lessEq, err := c.left.LessEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := lessEq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestStringViewGreater(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{StringView(StringView("")), StringView(StringView("")), nil, false},
+	}
+	for _, c := range cases {
+		greater, err := c.left.Greater(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greater, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestStringViewGreaterEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{StringView(StringView("")), StringView(StringView("")), nil, true},
+	}
+	for _, c := range cases {
+		greaterEq, err := c.left.GreaterEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greaterEq, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestStringViewCastableToString(t *testing.T) {
+	cases := []struct {
+		o    CastableToString
+		want String
+	}{
+		{StringView(StringView("")), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodStringViewToString(t *testing.T) {
+	cases := []struct {
+		o    StringView
+		want String
+	}{
+		{StringView(StringView("")), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodStringViewToStringChecked(t *testing.T) {
+	cases := []struct {
+		o StringView
+	}{
+		{MaxStringView},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToStringChecked()
+		if ok {
+			v, ok := converted.ToStringViewChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for StringView to String: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for StringView to String - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestStringViewCastableToStringView(t *testing.T) {
+	cases := []struct {
+		o    CastableToStringView
+		want StringView
+	}{
+		{StringView(StringView("")), StringView(StringView(""))},
+	}
+	for _, c := range cases {
+		value := c.o.ToStringView()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodStringViewToStringView(t *testing.T) {
+	cases := []struct {
+		o    StringView
+		want StringView
+	}{
+		{StringView(StringView("")), StringView(StringView(""))},
+	}
+	for _, c := range cases {
+		value := c.o.ToStringView()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodStringViewToStringViewChecked(t *testing.T) {
+	cases := []struct {
+		o StringView
+	}{
+		{MaxStringView},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToStringViewChecked()
+		if ok {
+			v, ok := converted.ToStringViewChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for StringView to StringView: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for StringView to StringView - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestBinaryViewToBoolean(t *testing.T) {
+	cases := []struct {
+		Obj  BinaryView
+		Want bool
+	}{
+		{BinaryView([]byte{}), false},
+		{BinaryView([]byte{byte(1)}), true},
+		{BinaryView([]byte{byte(2)}), true},
+	}
+	for _, c := range cases {
+		if got, want := c.Obj.ToBoolean(), Boolean(c.Want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryViewEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{BinaryView(BinaryView([]byte{})), BinaryView(BinaryView([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		eq, err := c.left.Eq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := eq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryViewNeq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{BinaryView(BinaryView([]byte{})), BinaryView(BinaryView([]byte{})), nil, false},
+		{BinaryView(BinaryView([]byte{})), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.BinaryView"), false},
+		{func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.BinaryView"), false},
+		{func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(1)})
+			return &o
+		}(), NewNull(), errors.New("cannot cast object.Null (object.Null{}) to object.BinaryView"), false},
+	}
+	for _, c := range cases {
+		neq, err := c.left.Neq(c.right)
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", c.err) {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := neq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryViewLess(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{BinaryView(BinaryView([]byte{})), BinaryView(BinaryView([]byte{})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		less, err := c.left.Less(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := less, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryViewLessEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{BinaryView(BinaryView([]byte{})), BinaryView(BinaryView([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(2)})
+			return &o
+		}(), nil, true},
+	}
+	for _, c := range cases {
+		lessEq, err := c.left.LessEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := lessEq, Boolean(c.want); got != want {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestBinaryViewGreater(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{BinaryView(BinaryView([]byte{})), BinaryView(BinaryView([]byte{})), nil, false},
+		{func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), nil, false},
+		{func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greater, err := c.left.Greater(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greater, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestBinaryViewGreaterEq(t *testing.T) {
+	cases := []struct {
+		left  Object
+		right Object
+		err   error
+		want  bool
+	}{
+		{BinaryView(BinaryView([]byte{})), BinaryView(BinaryView([]byte{})), nil, true},
+		{func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView(BinaryView([]byte{}))
+			return &o
+		}(), nil, true},
+		{func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(1)})
+			return &o
+		}(), func() Object {
+			t.Helper()
+			o := BinaryView([]byte{byte(2)})
+			return &o
+		}(), nil, false},
+	}
+	for _, c := range cases {
+		greaterEq, err := c.left.GreaterEq(c.right)
+		if err != c.err {
+			t.Errorf("wrong value for error:\ngot=%v\nwant=%v", err, c.err)
+		}
+
+		if got, want := greaterEq, Boolean(c.want); got != want {
+			t.Errorf("\n{left=%v right=%v}\ngot=%v\nwant=%v", c.left, c.right, got, want)
+		}
+	}
+}
+
+func TestBinaryViewCastableToString(t *testing.T) {
+	cases := []struct {
+		o    CastableToString
+		want String
+	}{
+		{BinaryView(BinaryView([]byte{})), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodBinaryViewToString(t *testing.T) {
+	cases := []struct {
+		o    BinaryView
+		want String
+	}{
+		{BinaryView(BinaryView([]byte{})), String("")},
+	}
+	for _, c := range cases {
+		value := c.o.ToString()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodBinaryViewToStringChecked(t *testing.T) {
+	cases := []struct {
+		o BinaryView
+	}{
+		{MaxBinaryView},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToStringChecked()
+		if ok {
+			v, ok := converted.ToBinaryViewChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for BinaryView to String: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for BinaryView to String - %#v != %#v", v, c.o)
+				}
+			}
+		}
+	}
+}
+
+func TestBinaryViewCastableToBinaryView(t *testing.T) {
+	cases := []struct {
+		o    CastableToBinaryView
+		want BinaryView
+	}{
+		{BinaryView(BinaryView([]byte{})), BinaryView(BinaryView([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToBinaryView()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+func TestMethodBinaryViewToBinaryView(t *testing.T) {
+	cases := []struct {
+		o    BinaryView
+		want BinaryView
+	}{
+		{BinaryView(BinaryView([]byte{})), BinaryView(BinaryView([]byte{}))},
+	}
+	for _, c := range cases {
+		value := c.o.ToBinaryView()
+
+		if got, want := value, c.want; !reflect.DeepEqual(got, want) {
+			t.Errorf("\ngot=%v\nwant=%v", got, want)
+		}
+	}
+}
+
+// In some cases we don't need to check it when there is no possible overflow
+// so this test verifys that we have implemented the Checked method correctly.
+func TestMethodBinaryViewToBinaryViewChecked(t *testing.T) {
+	cases := []struct {
+		o BinaryView
+	}{
+		{MaxBinaryView},
+	}
+	for _, c := range cases {
+		converted, ok := c.o.ToBinaryViewChecked()
+		if ok {
+			v, ok := converted.ToBinaryViewChecked()
+			if ok {
+				equal, err := v.Eq(c.o)
+				if err != nil {
+					t.Errorf("error checking for overflow overflow for BinaryView to BinaryView: %v", err)
+				}
+				if err != nil || !equal {
+					t.Errorf("detected unhandled overflow for BinaryView to BinaryView - %#v != %#v", v, c.o)
 				}
 			}
 		}

@@ -25,6 +25,8 @@ func TestCastElementCoversAllTypes(t *testing.T) {
 		{"FixedSizeBinary", &arrow.FixedSizeBinaryType{ByteWidth: 1}, []byte{1}},
 		{"String", arrow.BinaryTypes.String, "x"},
 		{"LargeString", arrow.BinaryTypes.LargeString, "x"},
+		{"StringView", arrow.BinaryTypes.StringView, "x"},
+		{"BinaryView", arrow.BinaryTypes.BinaryView, []byte("x")},
 		{"Float16", arrow.FixedWidthTypes.Float16, int16(1)},
 		{"Time32", arrow.FixedWidthTypes.Time32s, int32(1)},
 		{"Time64", arrow.FixedWidthTypes.Time64ns, int64(1)},

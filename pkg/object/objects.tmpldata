@@ -144,6 +144,14 @@
       {
         "From": "MonthDayNanoInterval",
         "Via": "Boolean(t.Months != 0 || t.Days != 0 || t.Nanoseconds != 0)"
+      },
+      {
+        "From": "StringView",
+        "Via": "Boolean(t != \"\")"
+      },
+      {
+        "From": "BinaryView",
+        "ViaBlock": "if len(t) > 0 { return Boolean(true) }; return Boolean(false);"
       }
     ]
   },
@@ -285,6 +293,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Date32(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Date32(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Date32(t)"
       }
     ]
   },
@@ -424,6 +442,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Date64(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Date64(t)"
       }
@@ -589,6 +617,16 @@
         "From": "MonthDayNanoInterval",
         "Via": "DayTimeInterval(t)",
         "NotImplemented": true
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "DayTimeInterval(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "DayTimeInterval(t)"
       }
     ]
   },
@@ -758,6 +796,16 @@
         "From": "LargeString",
         "NotImplemented": true,
         "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "MonthDayNanoInterval(t)"
       }
     ]
   },
@@ -922,6 +970,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Decimal128(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Decimal128(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Decimal128(t)"
       }
     ]
   },
@@ -1081,6 +1139,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Decimal256(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Decimal256(t)"
       }
@@ -1256,6 +1324,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Duration(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Duration(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Duration(t)"
       }
     ]
   },
@@ -1420,6 +1498,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Float16(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Float16(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Float16(t)"
       }
     ]
   },
@@ -1557,6 +1645,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Float32(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Float32(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Float32(t)"
       }
     ]
   },
@@ -1691,6 +1789,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Float64(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Float64(t)"
       }
@@ -1835,6 +1943,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Int16(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Int16(t)"
       }
@@ -1985,6 +2103,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Int32(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Int32(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Int32(t)"
       }
     ]
   },
@@ -2131,6 +2259,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Int64(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Int64(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Int64(t)"
       }
     ]
   },
@@ -2274,6 +2412,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Int8(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Int8(t)"
       }
@@ -2429,6 +2577,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "MonthInterval(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "MonthInterval(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "MonthInterval(t)"
       }
     ]
   },
@@ -2561,6 +2719,14 @@
       {
         "From": "MonthDayNanoInterval",
         "Via": "String(fmt.Sprintf(\"%#v\", t))"
+      },
+      {
+        "From": "StringView",
+        "Via": "String(t)"
+      },
+      {
+        "From": "BinaryView",
+        "Via": "String(string(t))"
       }
     ]
   },
@@ -2716,6 +2882,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Time32(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Time32(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Time32(t)"
       }
     ]
   },
@@ -2865,6 +3041,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Time64(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Time64(t)"
       }
@@ -3028,6 +3214,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Timestamp(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Timestamp(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Timestamp(t)"
       }
     ]
   },
@@ -3176,6 +3372,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Uint16(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Uint16(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Uint16(t)"
       }
     ]
   },
@@ -3319,6 +3525,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Uint32(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Uint32(t)"
       }
@@ -3467,6 +3683,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "Uint64(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Uint64(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "Uint64(t)"
       }
     ]
   },
@@ -3613,6 +3839,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Uint8(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Uint8(t)"
       }
@@ -3778,6 +4014,16 @@
       },
       {
         "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "Binary(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "Binary(t)"
+      },
+      {
+        "From": "BinaryView",
         "NotImplemented": true,
         "Via": "Binary(t)"
       }
@@ -3946,6 +4192,16 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "FixedSizeBinary(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "FixedSizeBinary(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "FixedSizeBinary(t)"
       }
     ]
   },
@@ -4098,8 +4354,360 @@
         "From": "MonthDayNanoInterval",
         "NotImplemented": true,
         "Via": "LargeString(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "LargeString(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "LargeString(t)"
       }
     ],
     "MaxValue": "LargeString(\"z\")"
+  },
+  {
+    "Name": "StringView",
+    "name": "string_view",
+    "Type": "string",
+    "Default": "StringView(\"\")",
+    "MaxValue": "StringView(\"z\")",
+    "TestConstructor": "StringView(\"%v\")",
+    "TestTypes": [
+      {
+        "Builder": "strconv.Itoa(i)",
+        "DataType": "arrow.BinaryTypes.StringView",
+        "WantValues": "[\"0\" \"1\" \"2\" \"3\" \"4\" \"5\" \"6\" \"7\" \"8\" (null)]"
+      }
+    ],
+    "ExcludeGenerate": [
+      "valueiterator",
+      "chunkiterator"
+    ],
+    "CastTo": [
+      {
+        "From": "string",
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "StringView",
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "String",
+        "Via": "StringView(string(t))"
+      },
+      {
+        "From": "LargeString",
+        "Via": "StringView(string(t))"
+      },
+      {
+        "From": "Binary",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Boolean",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Date32",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Date64",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "DayTimeInterval",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Decimal128",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Decimal256",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Duration",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "FixedSizeBinary",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Float16",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Float32",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Float64",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Int16",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Int32",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Int64",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Int8",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "MonthInterval",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Time32",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Time64",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Timestamp",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Uint16",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Uint32",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Uint64",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "Uint8",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      },
+      {
+        "From": "BinaryView",
+        "NotImplemented": true,
+        "Via": "StringView(t)"
+      }
+    ]
+  },
+  {
+    "Name": "BinaryView",
+    "name": "binary_view",
+    "Type": "[]byte",
+    "Default": "BinaryView([]byte{})",
+    "MaxValue": "BinaryView([]byte{0xff})",
+    "Compare": {
+      "Eq": "bytes.Equal(left, right)",
+      "Less": "bytes.Compare(left, right) < 0",
+      "LessEq": "bytes.Compare(left, right) <= 0",
+      "Greater": "bytes.Compare(left, right) > 0",
+      "GreaterEq": "bytes.Compare(left, right) >= 0",
+      "comment": "lexicographic via bytes.Compare"
+    },
+    "TestConstructor": "BinaryView([]byte{byte(%s)})",
+    "TestTypes": [
+      {
+        "Builder": "[]byte{byte('a' + i)}",
+        "DataType": "arrow.BinaryTypes.BinaryView",
+        "WantValues": "[\"a\" \"b\" \"c\" \"d\" \"e\" \"f\" \"g\" \"h\" \"i\" (null)]"
+      }
+    ],
+    "ExcludeGenerate": [
+      "valueiterator",
+      "chunkiterator"
+    ],
+    "CastTo": [
+      {
+        "From": "[]byte",
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "BinaryView",
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Binary",
+        "Via": "BinaryView([]byte(t))"
+      },
+      {
+        "From": "String",
+        "Via": "BinaryView([]byte(t))"
+      },
+      {
+        "From": "Boolean",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Date32",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Date64",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "DayTimeInterval",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Decimal128",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Decimal256",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Duration",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "FixedSizeBinary",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Float16",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Float32",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Float64",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Int16",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Int32",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Int64",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Int8",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "LargeString",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "MonthDayNanoInterval",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "MonthInterval",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "StringView",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Time32",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Time64",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Timestamp",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Uint16",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Uint32",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Uint64",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      },
+      {
+        "From": "Uint8",
+        "NotImplemented": true,
+        "Via": "BinaryView(t)"
+      }
+    ]
   }
 ]
