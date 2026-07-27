@@ -59,16 +59,35 @@ func (f *tableReaderFacade) Column(i int) *arrow.Column {
 	return f.df.ColumnAt(i)
 }
 
-// AddColumn satisfies the arrow.Table interface. It builds a brand-new table
-// (an *array.Table) composed of the facade's current columns with the provided
-// column and field inserted at the requested position. The returned table owns
-// its own reference counts (array.NewTable retains every column it is given),
-// so the caller is responsible for releasing it when done.
+// AddColumn satisfies the arrow.Table interface. It mirrors Apache Arrow for
+// Go's own table implementation: it validates that the new column's length
+// matches the number of rows and that the field's type matches the column's
+// data type, then builds a brand-new table (an *array.Table) composed of the
+// facade's current columns with the provided column and field inserted at the
+// requested position.
+//
+// The schema is derived via Schema.AddField so that the original schema's
+// metadata and endianness are preserved. The returned table owns its own
+// reference counts (array.NewTable retains every column it is given), so the
+// caller is responsible for releasing it when done.
 func (f *tableReaderFacade) AddColumn(pos int, field arrow.Field, col arrow.Column) (arrow.Table, error) {
+	rows := f.NumRows()
+	if int64(col.Len()) != rows {
+		return nil, fmt.Errorf("arrow/array: column length mismatch: %d != %d: %w", col.Len(), rows, arrow.ErrInvalid)
+	}
+	if !arrow.TypeEqual(field.Type, col.DataType()) {
+		return nil, fmt.Errorf("arrow/array: column type mismatch: %v != %v: %w", field.Type, col.DataType(), arrow.ErrInvalid)
+	}
+
 	curCols := f.df.Columns()
 	n := len(curCols)
 	if pos < 0 || pos > n {
-		return nil, fmt.Errorf("dataframe: invalid column position %d (have %d columns)", pos, n)
+		return nil, fmt.Errorf("arrow/array: invalid column position %d (have %d columns): %w", pos, n, arrow.ErrInvalid)
+	}
+
+	newSchema, err := f.df.Schema().AddField(pos, field)
+	if err != nil {
+		return nil, err
 	}
 
 	cols := make([]arrow.Column, 0, n+1)
@@ -76,14 +95,7 @@ func (f *tableReaderFacade) AddColumn(pos int, field arrow.Field, col arrow.Colu
 	cols = append(cols, col)
 	cols = append(cols, curCols[pos:]...)
 
-	curFields := f.df.Schema().Fields()
-	fields := make([]arrow.Field, 0, len(curFields)+1)
-	fields = append(fields, curFields[:pos]...)
-	fields = append(fields, field)
-	fields = append(fields, curFields[pos:]...)
-	schema := arrow.NewSchema(fields, nil)
-
-	return array.NewTable(schema, cols, f.NumRows()), nil
+	return array.NewTable(newSchema, cols, rows), nil
 }
 
 func (f *tableReaderFacade) Retain() {
