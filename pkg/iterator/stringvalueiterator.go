@@ -17,8 +17,8 @@ package iterator
 import (
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/gomem/gomem/internal/debug"
 )
 
@@ -37,7 +37,7 @@ type StringValueIterator struct {
 }
 
 // NewStringValueIterator creates a new StringValueIterator for reading an Arrow Column.
-func NewStringValueIterator(col *array.Column) *StringValueIterator {
+func NewStringValueIterator(col *arrow.Column) *StringValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewChunkIterator(col)
 

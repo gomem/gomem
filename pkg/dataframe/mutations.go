@@ -17,9 +17,9 @@ package dataframe
 import (
 	"fmt"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/pkg/iterator"
 	"github.com/gomem/gomem/pkg/smartbuilder"
 )
@@ -66,9 +66,12 @@ func (m *Mutator) Slice(beg, end int64) MutationFunc {
 
 		dfCols := df.Columns()
 
-		cols := make([]array.Column, len(dfCols))
+		cols := make([]arrow.Column, len(dfCols))
 		for i, col := range dfCols {
-			cols[i] = *col.NewSlice(beg, end)
+			// sliceColumn returns a *Column with its own reference count.
+			// We dereference into cols[i]; the single reference is balanced by
+			// the deferred Release below (NewDataFrameFromShape takes its own ref).
+			cols[i] = *sliceColumn(&col, beg, end)
 		}
 
 		defer func() {
@@ -80,6 +83,54 @@ func (m *Mutator) Slice(beg, end int64) MutationFunc {
 		rows := end - beg
 		return NewDataFrameFromShape(m.mem, cols, rows)
 	}
+}
+
+// sliceColumn returns a new Column covering rows [beg:end) of col.
+//
+// Apache Arrow for Go removed Column.NewSlice; columns are now sliced by slicing
+// each chunk of the column's underlying Chunked data over the overlapping range
+// (via array.NewSlice) and rebuilding a Column from the result. The returned
+// column has its own reference count (the caller owns one reference and must
+// Release it when done).
+func sliceColumn(col *arrow.Column, beg, end int64) *arrow.Column {
+	chunked := col.Data()
+	chunks := chunked.Chunks()
+
+	var sliced []arrow.Array
+	var offset int64
+	for _, chunk := range chunks {
+		chunkLen := int64(chunk.Len())
+
+		// Overlap of [offset, offset+chunkLen) with the requested [beg, end).
+		lo := beg - offset
+		if lo < 0 {
+			lo = 0
+		}
+		hi := end - offset
+		if hi > chunkLen {
+			hi = chunkLen
+		}
+
+		if lo < hi {
+			sliced = append(sliced, array.NewSlice(chunk, lo, hi))
+		}
+
+		offset += chunkLen
+		if offset >= end {
+			break
+		}
+	}
+
+	// NewChunked retains each chunk it is given, so release our local refs.
+	newChunked := arrow.NewChunked(col.DataType(), sliced)
+	for _, c := range sliced {
+		c.Release()
+	}
+
+	// NewColumn retains the chunked data; release the ref NewChunked gave us.
+	newCol := arrow.NewColumn(col.Field(), newChunked)
+	newChunked.Release()
+	return newCol
 }
 
 // leftJoinConfig are the config params for LeftJoin.
@@ -194,8 +245,8 @@ type joinFuncConfig struct {
 	additionalLeftColsLen  int
 	additionalRightColsLen int
 	columnNames            []string
-	leftColumns            []array.Column
-	rightColumns           []array.Column
+	leftColumns            []arrow.Column
+	rightColumns           []arrow.Column
 	schema                 *arrow.Schema
 	recordBuilder          *array.RecordBuilder
 	smartBuilder           *smartbuilder.SmartBuilder
@@ -207,8 +258,8 @@ func (m *Mutator) newJoinFuncConfig(cfg *leftJoinConfig, leftDf *DataFrame, righ
 	jc := &joinFuncConfig{
 		mutator:      m,
 		columnNames:  columnNames,
-		leftColumns:  make([]array.Column, 0, leftDf.NumCols()),
-		rightColumns: make([]array.Column, 0, rightDf.NumCols()),
+		leftColumns:  make([]arrow.Column, 0, leftDf.NumCols()),
+		rightColumns: make([]arrow.Column, 0, rightDf.NumCols()),
 	}
 
 	// Start by making sure that both DataFrames have the columns we are looking for.

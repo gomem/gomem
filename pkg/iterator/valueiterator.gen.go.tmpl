@@ -18,10 +18,11 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/decimal128"
-	"github.com/apache/arrow/go/arrow/float16"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
+	"github.com/apache/arrow-go/v18/arrow/float16"
 	"github.com/gomem/gomem/internal/debug"
 )
 
@@ -47,7 +48,7 @@ type ValueIterator interface {
 }
 
 // NewValueIterator creates a new generic ValueIterator.
-func NewValueIterator(column *array.Column) ValueIterator {
+func NewValueIterator(column *arrow.Column) ValueIterator {
 	field := column.Field()
 	switch field.Type.(type) {
 	{{range .In}}
@@ -66,11 +67,11 @@ func NewValueIterator(column *array.Column) ValueIterator {
 	}
 }
 
-func NewInterfaceValueIterator(field arrow.Field, iface array.Interface) ValueIterator {
-	chunk := array.NewChunked(iface.DataType(), []array.Interface{iface})
+func NewInterfaceValueIterator(field arrow.Field, iface arrow.Array) ValueIterator {
+	chunk := arrow.NewChunked(iface.DataType(), []arrow.Array{iface})
 	defer chunk.Release()
 
-	col := array.NewColumn(field, chunk)
+	col := arrow.NewColumn(field, chunk)
 	defer col.Release()
 
 	return NewValueIterator(col)
@@ -93,7 +94,7 @@ type {{.Name}}ValueIterator struct {
 }
 
 // New{{.Name}}ValueIterator creates a new {{.Name}}ValueIterator for reading an Arrow Column.
-func New{{.Name}}ValueIterator(col *array.Column) *{{.Name}}ValueIterator {
+func New{{.Name}}ValueIterator(col *arrow.Column) *{{.Name}}ValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := New{{.Name}}ChunkIterator(col)
 

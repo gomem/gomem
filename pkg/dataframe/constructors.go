@@ -15,14 +15,14 @@
 package dataframe
 
 import (
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/internal/cast"
 	"github.com/gomem/gomem/internal/constructors"
 )
 
 // NewColumnFromMem is a helper for creating a new Column from memory.
-func NewColumnFromMem(mem memory.Allocator, name string, values interface{}) (*array.Column, error) {
+func NewColumnFromMem(mem memory.Allocator, name string, values interface{}) (*arrow.Column, error) {
 	arr, field, err := constructors.NewInterfaceFromMem(mem, name, values, nil)
 	if err != nil {
 		return nil, err
@@ -30,17 +30,17 @@ func NewColumnFromMem(mem memory.Allocator, name string, values interface{}) (*a
 	defer arr.Release()
 
 	// create the chunk from the data
-	chunk := array.NewChunked(arr.DataType(), []array.Interface{arr})
+	chunk := arrow.NewChunked(arr.DataType(), []arrow.Array{arr})
 	defer chunk.Release()
 
 	// create the column from the schema and chunk
-	col := array.NewColumn(*field, chunk)
+	col := arrow.NewColumn(*field, chunk)
 
 	return col, nil
 }
 
 // NewColumnFromSparseMem is a helper for creating a new Column from sparse memory.
-func NewColumnFromSparseMem(mem memory.Allocator, name string, values []interface{}, valueIndexes []int, size int) (*array.Column, error) {
+func NewColumnFromSparseMem(mem memory.Allocator, name string, values []interface{}, valueIndexes []int, size int) (*arrow.Column, error) {
 	// build valid mask
 	valid := make([]bool, size)
 	for _, idx := range valueIndexes {
@@ -59,11 +59,11 @@ func NewColumnFromSparseMem(mem memory.Allocator, name string, values []interfac
 	defer arr.Release()
 
 	// create the chunk from the data
-	chunk := array.NewChunked(arr.DataType(), []array.Interface{arr})
+	chunk := arrow.NewChunked(arr.DataType(), []arrow.Array{arr})
 	defer chunk.Release()
 
 	// create the column from the schema and chunk
-	col := array.NewColumn(*field, chunk)
+	col := arrow.NewColumn(*field, chunk)
 
 	return col, nil
 }

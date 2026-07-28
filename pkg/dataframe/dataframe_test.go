@@ -20,9 +20,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/pkg/iterator"
 	"github.com/gomem/gomem/pkg/smartbuilder"
 )
@@ -34,7 +34,7 @@ const (
 	COL1NAME = "f2-f64"
 )
 
-func buildRecords(pool *memory.CheckedAllocator, t *testing.T, last int32) ([]array.Record, *arrow.Schema) {
+func buildRecords(pool *memory.CheckedAllocator, t *testing.T, last int32) ([]arrow.RecordBatch, *arrow.Schema) {
 	schema := arrow.NewSchema(
 		[]arrow.Field{
 			{Name: COL0NAME, Type: arrow.PrimitiveTypes.Int32},
@@ -63,10 +63,10 @@ func buildRecords(pool *memory.CheckedAllocator, t *testing.T, last int32) ([]ar
 
 	rec3 := b.NewRecord()
 
-	return []array.Record{rec1, rec2, rec3}, schema
+	return []arrow.RecordBatch{rec1, rec2, rec3}, schema
 }
 
-func getColumns(pool *memory.CheckedAllocator, t *testing.T, last int32) []array.Column {
+func getColumns(pool *memory.CheckedAllocator, t *testing.T, last int32) []arrow.Column {
 	records, schema := buildRecords(pool, t, last)
 	for i := range records {
 		defer records[i].Release()
@@ -75,7 +75,7 @@ func getColumns(pool *memory.CheckedAllocator, t *testing.T, last int32) []array
 	tbl := array.NewTableFromRecords(schema, records)
 	defer tbl.Release()
 
-	cols := make([]array.Column, tbl.NumCols())
+	cols := make([]arrow.Column, tbl.NumCols())
 	for i := range cols {
 		col := tbl.Column(i)
 		col.Retain()
@@ -528,7 +528,7 @@ func TestNewColumnFromSparseMem(t *testing.T) {
 	}
 	defer col.Release()
 
-	df, err := NewDataFrameFromColumns(pool, []array.Column{*col})
+	df, err := NewDataFrameFromColumns(pool, []arrow.Column{*col})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1183,9 +1183,9 @@ func multByN(columnName string, multipier float64) MutationFunc {
 		}
 		rec := builder.NewRecord()
 		defer rec.Release()
-		chunk := array.NewChunked(col.DataType(), rec.Columns())
+		chunk := arrow.NewChunked(col.DataType(), rec.Columns())
 		defer chunk.Release()
-		newCol := array.NewColumn(col.Field(), chunk)
+		newCol := arrow.NewColumn(col.Field(), chunk)
 		defer newCol.Release()
 		df2, err := df.Drop(columnName)
 		if err != nil {

@@ -15,7 +15,7 @@
 package smartbuilder
 
 import (
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/gomem/gomem/internal/debug"
 )
 

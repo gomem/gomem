@@ -15,8 +15,10 @@
 package dataframe
 
 import (
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
+	"fmt"
+
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
 )
 
 // I don't want to force the DataFrame API to conform to the TableReader API.
@@ -25,7 +27,7 @@ import (
 
 // TableFacade is a simple facade for a TableReader.
 type TableFacade interface {
-	array.Table
+	arrow.Table
 }
 
 type tableReaderFacade struct {
@@ -53,8 +55,47 @@ func (f *tableReaderFacade) NumCols() int64 {
 
 // Column is an immutable column data structure consisting of
 // a field (type metadata) and a chunked data array.
-func (f *tableReaderFacade) Column(i int) *array.Column {
+func (f *tableReaderFacade) Column(i int) *arrow.Column {
 	return f.df.ColumnAt(i)
+}
+
+// AddColumn satisfies the arrow.Table interface. It mirrors Apache Arrow for
+// Go's own table implementation: it validates that the new column's length
+// matches the number of rows and that the field's type matches the column's
+// data type, then builds a brand-new table (an *array.Table) composed of the
+// facade's current columns with the provided column and field inserted at the
+// requested position.
+//
+// The schema is derived via Schema.AddField so that the original schema's
+// metadata and endianness are preserved. The returned table owns its own
+// reference counts (array.NewTable retains every column it is given), so the
+// caller is responsible for releasing it when done.
+func (f *tableReaderFacade) AddColumn(pos int, field arrow.Field, col arrow.Column) (arrow.Table, error) {
+	rows := f.NumRows()
+	if int64(col.Len()) != rows {
+		return nil, fmt.Errorf("arrow/array: column length mismatch: %d != %d: %w", col.Len(), rows, arrow.ErrInvalid)
+	}
+	if !arrow.TypeEqual(field.Type, col.DataType()) {
+		return nil, fmt.Errorf("arrow/array: column type mismatch: %v != %v: %w", field.Type, col.DataType(), arrow.ErrInvalid)
+	}
+
+	curCols := f.df.Columns()
+	n := len(curCols)
+	if pos < 0 || pos > n {
+		return nil, fmt.Errorf("arrow/array: invalid column position %d (have %d columns): %w", pos, n, arrow.ErrInvalid)
+	}
+
+	newSchema, err := f.df.Schema().AddField(pos, field)
+	if err != nil {
+		return nil, err
+	}
+
+	cols := make([]arrow.Column, 0, n+1)
+	cols = append(cols, curCols[:pos]...)
+	cols = append(cols, col)
+	cols = append(cols, curCols[pos:]...)
+
+	return array.NewTable(newSchema, cols, rows), nil
 }
 
 func (f *tableReaderFacade) Retain() {
@@ -63,4 +104,9 @@ func (f *tableReaderFacade) Retain() {
 
 func (f *tableReaderFacade) Release() {
 	f.df.Release()
+}
+
+// String satisfies the fmt.Stringer interface required by arrow.Table.
+func (f *tableReaderFacade) String() string {
+	return fmt.Sprintf("gomem dataframe table: %d cols x %d rows\n%s", f.NumCols(), f.NumRows(), f.df.Schema())
 }

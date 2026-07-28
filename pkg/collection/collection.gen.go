@@ -19,7 +19,7 @@ package collection
 import (
 	"fmt"
 
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/gomem/gomem/pkg/object"
 )
 
@@ -131,6 +131,33 @@ func (c *DayTimeIntervalCollection) AppendObject(v object.Object) error {
 	return nil
 }
 
+// NewMonthDayNanoIntervalCollection creates a new MonthDayNanoInterval collection builder.
+func NewMonthDayNanoIntervalCollection(builder *array.MonthDayNanoIntervalBuilder) *MonthDayNanoIntervalCollection {
+	return &MonthDayNanoIntervalCollection{
+		builder: builder,
+	}
+}
+
+// MonthDayNanoIntervalCollection has logic to apply to this type.
+type MonthDayNanoIntervalCollection struct {
+	builder *array.MonthDayNanoIntervalBuilder
+}
+
+func (c *MonthDayNanoIntervalCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToMonthDayNanoInterval(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.MonthDayNanoInterval", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
 // NewDecimal128Collection creates a new Decimal128 collection builder.
 func NewDecimal128Collection(builder *array.Decimal128Builder) *Decimal128Collection {
 	return &Decimal128Collection{
@@ -152,6 +179,33 @@ func (c *Decimal128Collection) AppendObject(v object.Object) error {
 	b, chkd := object.CastToDecimal128(v)
 	if !chkd {
 		return fmt.Errorf("cannot cast %T to object.Decimal128", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
+// NewDecimal256Collection creates a new Decimal256 collection builder.
+func NewDecimal256Collection(builder *array.Decimal256Builder) *Decimal256Collection {
+	return &Decimal256Collection{
+		builder: builder,
+	}
+}
+
+// Decimal256Collection has logic to apply to this type.
+type Decimal256Collection struct {
+	builder *array.Decimal256Builder
+}
+
+func (c *Decimal256Collection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToDecimal256(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.Decimal256", v)
 	}
 
 	c.builder.Append(b.Value())
@@ -617,12 +671,149 @@ func (c *Uint8Collection) AppendObject(v object.Object) error {
 	return nil
 }
 
+// NewBinaryCollection creates a new Binary collection builder.
+func NewBinaryCollection(builder *array.BinaryBuilder) *BinaryCollection {
+	return &BinaryCollection{
+		builder: builder,
+	}
+}
+
+// BinaryCollection has logic to apply to this type.
+type BinaryCollection struct {
+	builder *array.BinaryBuilder
+}
+
+func (c *BinaryCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToBinary(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.Binary", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
+// NewFixedSizeBinaryCollection creates a new FixedSizeBinary collection builder.
+func NewFixedSizeBinaryCollection(builder *array.FixedSizeBinaryBuilder) *FixedSizeBinaryCollection {
+	return &FixedSizeBinaryCollection{
+		builder: builder,
+	}
+}
+
+// FixedSizeBinaryCollection has logic to apply to this type.
+type FixedSizeBinaryCollection struct {
+	builder *array.FixedSizeBinaryBuilder
+}
+
+func (c *FixedSizeBinaryCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToFixedSizeBinary(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.FixedSizeBinary", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
+// NewLargeStringCollection creates a new LargeString collection builder.
+func NewLargeStringCollection(builder *array.LargeStringBuilder) *LargeStringCollection {
+	return &LargeStringCollection{
+		builder: builder,
+	}
+}
+
+// LargeStringCollection has logic to apply to this type.
+type LargeStringCollection struct {
+	builder *array.LargeStringBuilder
+}
+
+func (c *LargeStringCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToLargeString(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.LargeString", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
+// NewStringViewCollection creates a new StringView collection builder.
+func NewStringViewCollection(builder *array.StringViewBuilder) *StringViewCollection {
+	return &StringViewCollection{
+		builder: builder,
+	}
+}
+
+// StringViewCollection has logic to apply to this type.
+type StringViewCollection struct {
+	builder *array.StringViewBuilder
+}
+
+func (c *StringViewCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToStringView(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.StringView", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
+// NewBinaryViewCollection creates a new BinaryView collection builder.
+func NewBinaryViewCollection(builder *array.BinaryViewBuilder) *BinaryViewCollection {
+	return &BinaryViewCollection{
+		builder: builder,
+	}
+}
+
+// BinaryViewCollection has logic to apply to this type.
+type BinaryViewCollection struct {
+	builder *array.BinaryViewBuilder
+}
+
+func (c *BinaryViewCollection) AppendObject(v object.Object) error {
+	if v == nil {
+		c.builder.AppendNull()
+		return nil
+	}
+
+	b, chkd := object.CastToBinaryView(v)
+	if !chkd {
+		return fmt.Errorf("cannot cast %T to object.BinaryView", v)
+	}
+
+	c.builder.Append(b.Value())
+	return nil
+}
+
 var (
 	_ Collection = (*BooleanCollection)(nil)
 	_ Collection = (*Date32Collection)(nil)
 	_ Collection = (*Date64Collection)(nil)
 	_ Collection = (*DayTimeIntervalCollection)(nil)
+	_ Collection = (*MonthDayNanoIntervalCollection)(nil)
 	_ Collection = (*Decimal128Collection)(nil)
+	_ Collection = (*Decimal256Collection)(nil)
 	_ Collection = (*DurationCollection)(nil)
 	_ Collection = (*Float16Collection)(nil)
 	_ Collection = (*Float32Collection)(nil)
@@ -640,4 +831,9 @@ var (
 	_ Collection = (*Uint32Collection)(nil)
 	_ Collection = (*Uint64Collection)(nil)
 	_ Collection = (*Uint8Collection)(nil)
+	_ Collection = (*BinaryCollection)(nil)
+	_ Collection = (*FixedSizeBinaryCollection)(nil)
+	_ Collection = (*LargeStringCollection)(nil)
+	_ Collection = (*StringViewCollection)(nil)
+	_ Collection = (*BinaryViewCollection)(nil)
 )

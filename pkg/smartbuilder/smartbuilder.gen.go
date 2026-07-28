@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/gomem/gomem/internal/debug"
 	"github.com/gomem/gomem/pkg/object"
 )
@@ -58,10 +58,24 @@ func (sb *SmartBuilder) appendValue(bldr array.Builder, v interface{}) error {
 		}
 		b.Append(vT.Value())
 
+	case *array.MonthDayNanoIntervalBuilder:
+		vT, ok := object.CastToMonthDayNanoInterval(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.MonthDayNanoInterval", v)
+		}
+		b.Append(vT.Value())
+
 	case *array.Decimal128Builder:
 		vT, ok := object.CastToDecimal128(v)
 		if !ok {
 			return fmt.Errorf("cannot cast %T to object.Decimal128", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.Decimal256Builder:
+		vT, ok := object.CastToDecimal256(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.Decimal256", v)
 		}
 		b.Append(vT.Value())
 
@@ -181,6 +195,41 @@ func (sb *SmartBuilder) appendValue(bldr array.Builder, v interface{}) error {
 		vT, ok := object.CastToUint8(v)
 		if !ok {
 			return fmt.Errorf("cannot cast %T to object.Uint8", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.BinaryBuilder:
+		vT, ok := object.CastToBinary(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.Binary", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.FixedSizeBinaryBuilder:
+		vT, ok := object.CastToFixedSizeBinary(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.FixedSizeBinary", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.LargeStringBuilder:
+		vT, ok := object.CastToLargeString(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.LargeString", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.StringViewBuilder:
+		vT, ok := object.CastToStringView(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.StringView", v)
+		}
+		b.Append(vT.Value())
+
+	case *array.BinaryViewBuilder:
+		vT, ok := object.CastToBinaryView(v)
+		if !ok {
+			return fmt.Errorf("cannot cast %T to object.BinaryView", v)
 		}
 		b.Append(vT.Value())
 

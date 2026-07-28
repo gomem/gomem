@@ -15,17 +15,17 @@
 package constructors
 
 import (
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/internal/cast"
 	"fmt"
 )
 
 // NewInterfaceFromMem builds a new column from memory
 // valid is an optional array of booleans. If not specified, all values are valid.
-func NewInterfaceFromMem(mem memory.Allocator, name string, values interface{}, valid []bool) (array.Interface, *arrow.Field, error) {
-	var arr array.Interface
+func NewInterfaceFromMem(mem memory.Allocator, name string, values interface{}, valid []bool) (arrow.Array, *arrow.Field, error) {
+	var arr arrow.Array
 
 	switch v := values.(type) {
 	case []bool:

@@ -19,11 +19,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/float16"
-	"github.com/apache/arrow/go/arrow/ipc"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/float16"
+	"github.com/apache/arrow-go/v18/arrow/ipc"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/pkg/iterator"
 )
 
@@ -148,7 +148,7 @@ func TestFloat64ValueIterator(t *testing.T) {
 	rec3 := b.NewRecord()
 	defer rec3.Release()
 
-	records := []array.Record{rec1, rec2, rec3}
+	records := []arrow.RecordBatch{rec1, rec2, rec3}
 	tbl := array.NewTableFromRecords(schema, records)
 	defer tbl.Release()
 	column := tbl.Column(0)
@@ -214,7 +214,7 @@ func TestBooleanValueIterator(t *testing.T) {
 	rec3 := b.NewRecord()
 	defer rec3.Release()
 
-	records := []array.Record{rec1, rec2, rec3}
+	records := []arrow.RecordBatch{rec1, rec2, rec3}
 	tbl := array.NewTableFromRecords(schema, records)
 	defer tbl.Release()
 	column := tbl.Column(0)
@@ -272,7 +272,7 @@ func TestStringValueIterator(t *testing.T) {
 	rec3 := b.NewRecord()
 	defer rec3.Release()
 
-	records := []array.Record{rec1, rec2, rec3}
+	records := []arrow.RecordBatch{rec1, rec2, rec3}
 	tbl := array.NewTableFromRecords(schema, records)
 	defer tbl.Release()
 	column := tbl.Column(0)
@@ -312,14 +312,14 @@ func TestValueAsJSON(t *testing.T) {
 				i1 := ib.NewInt32Array()
 				defer i1.Release()
 
-				chunk := array.NewChunked(
+				chunk := arrow.NewChunked(
 					arrow.PrimitiveTypes.Int32,
-					[]array.Interface{i1},
+					[]arrow.Array{i1},
 				)
 				defer chunk.Release()
 
 				field := arrow.Field{Name: "i32", Type: arrow.PrimitiveTypes.Int32}
-				col := array.NewColumn(field, chunk)
+				col := arrow.NewColumn(field, chunk)
 				defer col.Release()
 
 				return iterator.NewValueIterator(col)
@@ -337,14 +337,14 @@ func TestValueAsJSON(t *testing.T) {
 				i1 := ib.NewStringArray()
 				defer i1.Release()
 
-				chunk := array.NewChunked(
+				chunk := arrow.NewChunked(
 					arrow.BinaryTypes.String,
-					[]array.Interface{i1},
+					[]arrow.Array{i1},
 				)
 				defer chunk.Release()
 
 				field := arrow.Field{Name: "str", Type: arrow.BinaryTypes.String}
-				col := array.NewColumn(field, chunk)
+				col := arrow.NewColumn(field, chunk)
 				defer col.Release()
 
 				return iterator.NewValueIterator(col)
@@ -362,14 +362,14 @@ func TestValueAsJSON(t *testing.T) {
 				i1 := ib.NewFloat16Array()
 				defer i1.Release()
 
-				chunk := array.NewChunked(
+				chunk := arrow.NewChunked(
 					arrow.FixedWidthTypes.Float16,
-					[]array.Interface{i1},
+					[]arrow.Array{i1},
 				)
 				defer chunk.Release()
 
 				field := arrow.Field{Name: "f16", Type: arrow.FixedWidthTypes.Float16}
-				col := array.NewColumn(field, chunk)
+				col := arrow.NewColumn(field, chunk)
 				defer col.Release()
 
 				return iterator.NewValueIterator(col)
@@ -394,14 +394,14 @@ func TestValueAsJSON(t *testing.T) {
 				i1 := lb.NewListArray()
 				defer i1.Release()
 
-				chunk := array.NewChunked(
+				chunk := arrow.NewChunked(
 					arrow.ListOf(arrow.BinaryTypes.String),
-					[]array.Interface{i1},
+					[]arrow.Array{i1},
 				)
 				defer chunk.Release()
 
 				field := arrow.Field{Name: "los", Type: arrow.ListOf(arrow.BinaryTypes.String), Nullable: true}
-				col := array.NewColumn(field, chunk)
+				col := arrow.NewColumn(field, chunk)
 				defer col.Release()
 
 				return iterator.NewValueIterator(col)
@@ -432,14 +432,14 @@ func TestValueAsJSON(t *testing.T) {
 				s1 := sb.NewStructArray()
 				defer s1.Release()
 
-				chunk := array.NewChunked(
+				chunk := arrow.NewChunked(
 					dt,
-					[]array.Interface{s1},
+					[]arrow.Array{s1},
 				)
 				defer chunk.Release()
 
 				field := arrow.Field{Name: "sofstr", Type: dt, Nullable: true}
-				col := array.NewColumn(field, chunk)
+				col := arrow.NewColumn(field, chunk)
 				defer col.Release()
 
 				return iterator.NewValueIterator(col)
@@ -472,14 +472,14 @@ func TestValueAsJSON(t *testing.T) {
 				i1 := lb.NewListArray()
 				defer i1.Release()
 
-				chunk := array.NewChunked(
+				chunk := arrow.NewChunked(
 					arrow.ListOf(arrow.ListOf(arrow.BinaryTypes.String)),
-					[]array.Interface{i1},
+					[]arrow.Array{i1},
 				)
 				defer chunk.Release()
 
 				field := arrow.Field{Name: "los", Type: arrow.ListOf(arrow.ListOf(arrow.BinaryTypes.String)), Nullable: true}
-				col := array.NewColumn(field, chunk)
+				col := arrow.NewColumn(field, chunk)
 				defer col.Release()
 
 				return iterator.NewValueIterator(col)
@@ -519,14 +519,14 @@ func TestValueAsJSON(t *testing.T) {
 				s1 := sb.NewStructArray()
 				defer s1.Release()
 
-				chunk := array.NewChunked(
+				chunk := arrow.NewChunked(
 					dt,
-					[]array.Interface{s1},
+					[]arrow.Array{s1},
 				)
 				defer chunk.Release()
 
 				field := arrow.Field{Name: "sofstr", Type: dt, Nullable: true}
-				col := array.NewColumn(field, chunk)
+				col := arrow.NewColumn(field, chunk)
 				defer col.Release()
 
 				return iterator.NewValueIterator(col)
@@ -568,14 +568,14 @@ func TestValueAsJSON(t *testing.T) {
 				i1 := lb.NewListArray()
 				defer i1.Release()
 
-				chunk := array.NewChunked(
+				chunk := arrow.NewChunked(
 					arrow.ListOf(dt),
-					[]array.Interface{i1},
+					[]arrow.Array{i1},
 				)
 				defer chunk.Release()
 
 				field := arrow.Field{Name: "los", Type: arrow.ListOf(dt), Nullable: true}
-				col := array.NewColumn(field, chunk)
+				col := arrow.NewColumn(field, chunk)
 				defer col.Release()
 
 				return iterator.NewValueIterator(col)
@@ -629,7 +629,7 @@ func getColumnFromFile(t *testing.T, mem memory.Allocator) iterator.ValueIterato
 	}
 	defer r.Close()
 
-	recs := make([]array.Record, r.NumRecords())
+	recs := make([]arrow.RecordBatch, r.NumRecords())
 	for i := 0; i < r.NumRecords(); i++ {
 		rec, err := r.Record(i)
 		if err != nil {
@@ -653,13 +653,13 @@ func TestSliceArray(t *testing.T) {
 	for _, tc := range []struct {
 		name  string
 		want  string
-		arr   array.Interface
-		check func(arr array.Interface) string
+		arr   arrow.Array
+		check func(arr arrow.Array) string
 	}{
 		{
 			name: "SliceArray int32",
 			want: "[1 2 3]",
-			arr: func() array.Interface {
+			arr: func() arrow.Array {
 				ib := array.NewInt32Builder(mem)
 				defer ib.Release()
 
@@ -667,7 +667,7 @@ func TestSliceArray(t *testing.T) {
 				i1 := ib.NewInt32Array()
 				return i1
 			}(),
-			check: func(arr array.Interface) string {
+			check: func(arr arrow.Array) string {
 				t.Helper()
 				vals := arr.(*array.Int32)
 				return vals.String()
@@ -676,7 +676,7 @@ func TestSliceArray(t *testing.T) {
 		{
 			name: "SliceArray struct",
 			want: "{[1 (null) 3] [2 (null) 4] [1 (null) 3] [2 (null) 4]}",
-			arr: func() array.Interface {
+			arr: func() arrow.Array {
 				fields := []arrow.Field{
 					{Name: "field1", Type: arrow.PrimitiveTypes.Int32},
 					{Name: "field2", Type: arrow.PrimitiveTypes.Int32},
@@ -719,7 +719,7 @@ func TestSliceArray(t *testing.T) {
 				s1 := sb.NewStructArray()
 				return s1
 			}(),
-			check: func(arr array.Interface) string {
+			check: func(arr arrow.Array) string {
 				t.Helper()
 				vals := arr.(*array.Struct)
 				return vals.String()

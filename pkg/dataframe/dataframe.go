@@ -21,9 +21,9 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/internal/constructors"
 	"github.com/gomem/gomem/internal/debug"
 	"github.com/gomem/gomem/pkg/iterator"
@@ -37,7 +37,7 @@ type Dict map[string]interface{}
 type Option func(interface{}) error
 
 // NewDataFrame creates a new data frame from the provided schema and arrays.
-func NewDataFrame(mem memory.Allocator, schema *arrow.Schema, arrs []array.Interface) (*DataFrame, error) {
+func NewDataFrame(mem memory.Allocator, schema *arrow.Schema, arrs []arrow.Array) (*DataFrame, error) {
 	df := &DataFrame{
 		refs:    1,
 		mem:     mem,
@@ -74,13 +74,13 @@ func NewDataFrame(mem memory.Allocator, schema *arrow.Schema, arrs []array.Inter
 		}
 	}
 
-	df.cols = make([]array.Column, len(arrs))
+	df.cols = make([]arrow.Column, len(arrs))
 	for i := range arrs {
 		func(i int) {
-			chunk := array.NewChunked(arrs[i].DataType(), []array.Interface{arrs[i]})
+			chunk := arrow.NewChunked(arrs[i].DataType(), []arrow.Array{arrs[i]})
 			defer chunk.Release()
 
-			col := array.NewColumn(df.schema.Field(i), chunk)
+			col := arrow.NewColumn(df.schema.Field(i), chunk)
 			df.cols[i] = *col
 		}(i)
 	}
@@ -89,7 +89,7 @@ func NewDataFrame(mem memory.Allocator, schema *arrow.Schema, arrs []array.Inter
 }
 
 // NewDataFrameFromColumns returns a DataFrame interface.
-func NewDataFrameFromColumns(mem memory.Allocator, cols []array.Column) (*DataFrame, error) {
+func NewDataFrameFromColumns(mem memory.Allocator, cols []arrow.Column) (*DataFrame, error) {
 	var rows int64
 	if len(cols) > 0 {
 		rows = columnLen(cols[0])
@@ -102,7 +102,7 @@ func NewDataFrameFromColumns(mem memory.Allocator, cols []array.Column) (*DataFr
 func NewDataFrameFromMem(mem memory.Allocator, dict Dict) (*DataFrame, error) {
 	var (
 		err    error
-		arrs   = make([]array.Interface, 0, len(dict))
+		arrs   = make([]arrow.Array, 0, len(dict))
 		fields = make([]arrow.Field, 0, len(dict))
 	)
 
@@ -138,7 +138,7 @@ func NewDataFrameFromMem(mem memory.Allocator, dict Dict) (*DataFrame, error) {
 
 // NewDataFrameFromShape is the same as NewDataFrameFromColumns only it allows you to specify the number
 // of rows in the DataFrame.
-func NewDataFrameFromShape(mem memory.Allocator, cols []array.Column, rows int64) (*DataFrame, error) {
+func NewDataFrameFromShape(mem memory.Allocator, cols []arrow.Column, rows int64) (*DataFrame, error) {
 	df := &DataFrame{
 		refs:    1,
 		mem:     mem,
@@ -163,8 +163,8 @@ func NewDataFrameFromShape(mem memory.Allocator, cols []array.Column, rows int64
 	return df, nil
 }
 
-func NewDataFrameFromTable(mem memory.Allocator, table array.Table) (*DataFrame, error) {
-	cols := make([]array.Column, table.NumCols())
+func NewDataFrameFromTable(mem memory.Allocator, table arrow.Table) (*DataFrame, error) {
+	cols := make([]arrow.Column, table.NumCols())
 	for i := range cols {
 		col := table.Column(i)
 		cols[i] = *col
@@ -173,7 +173,7 @@ func NewDataFrameFromTable(mem memory.Allocator, table array.Table) (*DataFrame,
 	return NewDataFrameFromShape(mem, cols, table.NumRows())
 }
 
-func NewDataFrameFromRecord(mem memory.Allocator, record array.Record) (*DataFrame, error) {
+func NewDataFrameFromRecord(mem memory.Allocator, record arrow.RecordBatch) (*DataFrame, error) {
 	return NewDataFrame(mem, record.Schema(), record.Columns())
 }
 
@@ -184,7 +184,7 @@ type DataFrame struct {
 	mem    memory.Allocator
 	schema *arrow.Schema
 
-	cols []array.Column
+	cols []arrow.Column
 	rows int64
 
 	// Mutations that can be performed on this DataFrame
@@ -198,7 +198,7 @@ func (df *DataFrame) Allocator() memory.Allocator {
 }
 
 // Column returns the column matching the given name.
-func (df *DataFrame) Column(name string) *array.Column {
+func (df *DataFrame) Column(name string) *arrow.Column {
 	for i, col := range df.cols {
 		if col.Name() == name {
 			return &df.cols[i]
@@ -208,12 +208,12 @@ func (df *DataFrame) Column(name string) *array.Column {
 }
 
 // ColumnAt returns the i-th column of this Frame.
-func (df *DataFrame) ColumnAt(i int) *array.Column {
+func (df *DataFrame) ColumnAt(i int) *arrow.Column {
 	return &df.cols[i]
 }
 
 // Columns is the slice of Columns that make up this DataFrame.
-func (df *DataFrame) Columns() []array.Column {
+func (df *DataFrame) Columns() []arrow.Column {
 	return df.cols
 }
 
@@ -305,9 +305,9 @@ func (df *DataFrame) Display(chunkSize int64) string {
  */
 
 // SelectColumns returns only columns matching names.
-func (df *DataFrame) SelectColumns(names ...string) []array.Column {
+func (df *DataFrame) SelectColumns(names ...string) []arrow.Column {
 	if len(names) == 0 {
-		return []array.Column{}
+		return []arrow.Column{}
 	}
 
 	set := make(map[string]struct{}, len(names))
@@ -315,7 +315,7 @@ func (df *DataFrame) SelectColumns(names ...string) []array.Column {
 		set[name] = struct{}{}
 	}
 
-	cols := make([]array.Column, 0, len(names))
+	cols := make([]arrow.Column, 0, len(names))
 
 	dfColumns := df.Columns()
 	for i := range dfColumns {
@@ -329,7 +329,7 @@ func (df *DataFrame) SelectColumns(names ...string) []array.Column {
 }
 
 // RejectColumns returns only columns not matching names.
-func (df *DataFrame) RejectColumns(names ...string) []array.Column {
+func (df *DataFrame) RejectColumns(names ...string) []arrow.Column {
 	if len(names) == 0 {
 		return df.Columns()
 	}
@@ -339,7 +339,7 @@ func (df *DataFrame) RejectColumns(names ...string) []array.Column {
 		set[name] = struct{}{}
 	}
 
-	cols := make([]array.Column, 0, df.NumCols()-len(names))
+	cols := make([]arrow.Column, 0, df.NumCols()-len(names))
 
 	dfColumns := df.Columns()
 	for i := range dfColumns {
@@ -402,9 +402,9 @@ func (df *DataFrame) ApplyToColumn(columnName, newColumnName string, fn ApplyToC
 		}
 		rec := builder.NewRecord()
 		defer rec.Release()
-		chunk := array.NewChunked(col.DataType(), rec.Columns())
+		chunk := arrow.NewChunked(col.DataType(), rec.Columns())
 		defer chunk.Release()
-		newCol := array.NewColumn(field, chunk)
+		newCol := arrow.NewColumn(field, chunk)
 		defer newCol.Release()
 		return df.AppendColumn(newCol)
 	})
@@ -415,9 +415,9 @@ func (df *DataFrame) ApplyToColumn(columnName, newColumnName string, fn ApplyToC
  */
 
 // AppendColumn builds a new DataFrame with the provided Column included.
-func (df *DataFrame) AppendColumn(c *array.Column) (*DataFrame, error) {
+func (df *DataFrame) AppendColumn(c *arrow.Column) (*DataFrame, error) {
 	nCols := len(df.cols)
-	cols := make([]array.Column, nCols+1)
+	cols := make([]arrow.Column, nCols+1)
 	copy(cols, df.cols)
 	cols[nCols] = *c
 	return NewDataFrameFromShape(df.mem, cols, df.rows)
@@ -426,7 +426,7 @@ func (df *DataFrame) AppendColumn(c *array.Column) (*DataFrame, error) {
 // Copy returns a copy of this dataframe. The underlying byte buffers will not be copied.
 func (df *DataFrame) Copy() (*DataFrame, error) {
 	nCols := len(df.cols)
-	cols := make([]array.Column, nCols)
+	cols := make([]arrow.Column, nCols)
 	copy(cols, df.cols)
 	return NewDataFrameFromShape(df.mem, cols, df.rows)
 }
@@ -521,7 +521,7 @@ func (df *DataFrame) validate() error {
 	return nil
 }
 
-func compareColumns(left, right *array.Column) bool {
+func compareColumns(left, right *arrow.Column) bool {
 	// We have to use value iterators and the only way to do that is to switch on the type
 	leftDtype := left.DataType()
 	rightDtype := right.DataType()
@@ -531,7 +531,7 @@ func compareColumns(left, right *array.Column) bool {
 	}
 
 	// Let's use the stuff we already have to do all columns
-	it := iterator.NewStepIteratorForColumns([]array.Column{*left, *right})
+	it := iterator.NewStepIteratorForColumns([]arrow.Column{*left, *right})
 	defer it.Release()
 
 	for it.Next() {
@@ -558,7 +558,7 @@ func compareColumns(left, right *array.Column) bool {
 	return true
 }
 
-func buildSchema(cols []array.Column) *arrow.Schema {
+func buildSchema(cols []arrow.Column) *arrow.Schema {
 	fields := make([]arrow.Field, 0, len(cols))
 	for i := range cols {
 		fields = append(fields, cols[i].Field())
@@ -569,7 +569,7 @@ func buildSchema(cols []array.Column) *arrow.Schema {
 // columnLen returns the number of rows in the Column.
 // Because Arrow chunks arrays, you may encounter an overflow if
 // there are MaxInt64 rows, i.e. 9223372036854775807.
-func columnLen(col array.Column) int64 {
+func columnLen(col arrow.Column) int64 {
 	var length int64
 	for _, chunk := range col.Data().Chunks() {
 		// Keep our own counters instead of Chunked's

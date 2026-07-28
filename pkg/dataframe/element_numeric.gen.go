@@ -17,12 +17,14 @@
 package dataframe
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/decimal128"
-	"github.com/apache/arrow/go/arrow/float16"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
+	"github.com/apache/arrow-go/v18/arrow/float16"
 )
 
 // BooleanElement has logic to apply to this type.
@@ -485,6 +487,127 @@ func (e DayTimeIntervalElement) IsNil() bool {
 	return e.v == nil
 }
 
+// MonthDayNanoIntervalElement has logic to apply to this type.
+type MonthDayNanoIntervalElement struct {
+	v interface{}
+}
+
+// NewMonthDayNanoIntervalElement creates a new MonthDayNanoIntervalElement logic wrapper
+// from the given value provided as v.
+func NewMonthDayNanoIntervalElement(v interface{}) *MonthDayNanoIntervalElement {
+	return &MonthDayNanoIntervalElement{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e MonthDayNanoIntervalElement) compare(r Element, f func(left, right arrow.MonthDayNanoInterval) bool) (bool, error) {
+	rE, ok := r.(*MonthDayNanoIntervalElement)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to MonthDayNanoIntervalElement", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.(arrow.MonthDayNanoInterval)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a arrow.MonthDayNanoInterval", e.v)
+	}
+	rv, rok := rE.v.(arrow.MonthDayNanoInterval)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a arrow.MonthDayNanoInterval", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left MonthDayNanoIntervalElement is equal to the right MonthDayNanoIntervalElement.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e MonthDayNanoIntervalElement) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Months == right.Months && left.Days == right.Days && left.Nanoseconds == right.Nanoseconds
+	})
+}
+
+// EqStrict returns true if the left MonthDayNanoIntervalElement is equal to the right MonthDayNanoIntervalElement.
+// When both are nil EqStrict returns true.
+func (e MonthDayNanoIntervalElement) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Months == right.Months && left.Days == right.Days && left.Nanoseconds == right.Nanoseconds
+	})
+}
+
+// Neq returns true if the left MonthDayNanoIntervalElement
+// is not equal to the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left MonthDayNanoIntervalElement
+// is less than the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) Less(r Element) (bool, error) {
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Cmp(right) < 0
+	})
+}
+
+// LessEq returns true if the left MonthDayNanoIntervalElement
+// is less than or equal to the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) LessEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Cmp(right) <= 0
+	})
+}
+
+// Greater returns true if the left MonthDayNanoIntervalElement
+// is greter than the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) Greater(r Element) (bool, error) {
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Cmp(right) > 0
+	})
+}
+
+// GreaterEq returns true if the left MonthDayNanoIntervalElement
+// is greter than or equal to the right MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) GreaterEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right arrow.MonthDayNanoInterval) bool {
+		return left.Cmp(right) >= 0
+	})
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this MonthDayNanoIntervalElement.
+func (e MonthDayNanoIntervalElement) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e MonthDayNanoIntervalElement) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e MonthDayNanoIntervalElement) IsNil() bool {
+	return e.v == nil
+}
+
 // Decimal128Element has logic to apply to this type.
 type Decimal128Element struct {
 	v interface{}
@@ -603,6 +726,127 @@ func (e Decimal128Element) String() string {
 
 // IsNil returns true when the underlying value is nil.
 func (e Decimal128Element) IsNil() bool {
+	return e.v == nil
+}
+
+// Decimal256Element has logic to apply to this type.
+type Decimal256Element struct {
+	v interface{}
+}
+
+// NewDecimal256Element creates a new Decimal256Element logic wrapper
+// from the given value provided as v.
+func NewDecimal256Element(v interface{}) *Decimal256Element {
+	return &Decimal256Element{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e Decimal256Element) compare(r Element, f func(left, right decimal256.Num) bool) (bool, error) {
+	rE, ok := r.(*Decimal256Element)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to Decimal256Element", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.(decimal256.Num)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a decimal256.Num", e.v)
+	}
+	rv, rok := rE.v.(decimal256.Num)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a decimal256.Num", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left Decimal256Element is equal to the right Decimal256Element.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e Decimal256Element) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.Cmp(right) == 0
+	})
+}
+
+// EqStrict returns true if the left Decimal256Element is equal to the right Decimal256Element.
+// When both are nil EqStrict returns true.
+func (e Decimal256Element) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.Cmp(right) == 0
+	})
+}
+
+// Neq returns true if the left Decimal256Element
+// is not equal to the right Decimal256Element.
+func (e Decimal256Element) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left Decimal256Element
+// is less than the right Decimal256Element.
+func (e Decimal256Element) Less(r Element) (bool, error) {
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.Less(right)
+	})
+}
+
+// LessEq returns true if the left Decimal256Element
+// is less than or equal to the right Decimal256Element.
+func (e Decimal256Element) LessEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.LessEqual(right)
+	})
+}
+
+// Greater returns true if the left Decimal256Element
+// is greter than the right Decimal256Element.
+func (e Decimal256Element) Greater(r Element) (bool, error) {
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.Greater(right)
+	})
+}
+
+// GreaterEq returns true if the left Decimal256Element
+// is greter than or equal to the right Decimal256Element.
+func (e Decimal256Element) GreaterEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right decimal256.Num) bool {
+		return left.GreaterEqual(right)
+	})
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this Decimal256Element.
+func (e Decimal256Element) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e Decimal256Element) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e Decimal256Element) IsNil() bool {
 	return e.v == nil
 }
 
@@ -2532,5 +2776,594 @@ func (e Uint8Element) String() string {
 
 // IsNil returns true when the underlying value is nil.
 func (e Uint8Element) IsNil() bool {
+	return e.v == nil
+}
+
+// BinaryElement has logic to apply to this type.
+type BinaryElement struct {
+	v interface{}
+}
+
+// NewBinaryElement creates a new BinaryElement logic wrapper
+// from the given value provided as v.
+func NewBinaryElement(v interface{}) *BinaryElement {
+	return &BinaryElement{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e BinaryElement) compare(r Element, f func(left, right []byte) bool) (bool, error) {
+	rE, ok := r.(*BinaryElement)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to BinaryElement", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.([]byte)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a []byte", e.v)
+	}
+	rv, rok := rE.v.([]byte)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a []byte", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left BinaryElement is equal to the right BinaryElement.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e BinaryElement) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Equal(left, right)
+	})
+}
+
+// EqStrict returns true if the left BinaryElement is equal to the right BinaryElement.
+// When both are nil EqStrict returns true.
+func (e BinaryElement) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Equal(left, right)
+	})
+}
+
+// Neq returns true if the left BinaryElement
+// is not equal to the right BinaryElement.
+func (e BinaryElement) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left BinaryElement
+// is less than the right BinaryElement.
+func (e BinaryElement) Less(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) < 0
+	})
+}
+
+// LessEq returns true if the left BinaryElement
+// is less than or equal to the right BinaryElement.
+func (e BinaryElement) LessEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) <= 0
+	})
+}
+
+// Greater returns true if the left BinaryElement
+// is greter than the right BinaryElement.
+func (e BinaryElement) Greater(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) > 0
+	})
+}
+
+// GreaterEq returns true if the left BinaryElement
+// is greter than or equal to the right BinaryElement.
+func (e BinaryElement) GreaterEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) >= 0
+	})
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this BinaryElement.
+func (e BinaryElement) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e BinaryElement) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e BinaryElement) IsNil() bool {
+	return e.v == nil
+}
+
+// FixedSizeBinaryElement has logic to apply to this type.
+type FixedSizeBinaryElement struct {
+	v interface{}
+}
+
+// NewFixedSizeBinaryElement creates a new FixedSizeBinaryElement logic wrapper
+// from the given value provided as v.
+func NewFixedSizeBinaryElement(v interface{}) *FixedSizeBinaryElement {
+	return &FixedSizeBinaryElement{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e FixedSizeBinaryElement) compare(r Element, f func(left, right []byte) bool) (bool, error) {
+	rE, ok := r.(*FixedSizeBinaryElement)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to FixedSizeBinaryElement", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.([]byte)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a []byte", e.v)
+	}
+	rv, rok := rE.v.([]byte)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a []byte", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left FixedSizeBinaryElement is equal to the right FixedSizeBinaryElement.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e FixedSizeBinaryElement) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Equal(left, right)
+	})
+}
+
+// EqStrict returns true if the left FixedSizeBinaryElement is equal to the right FixedSizeBinaryElement.
+// When both are nil EqStrict returns true.
+func (e FixedSizeBinaryElement) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Equal(left, right)
+	})
+}
+
+// Neq returns true if the left FixedSizeBinaryElement
+// is not equal to the right FixedSizeBinaryElement.
+func (e FixedSizeBinaryElement) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left FixedSizeBinaryElement
+// is less than the right FixedSizeBinaryElement.
+func (e FixedSizeBinaryElement) Less(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) < 0
+	})
+}
+
+// LessEq returns true if the left FixedSizeBinaryElement
+// is less than or equal to the right FixedSizeBinaryElement.
+func (e FixedSizeBinaryElement) LessEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) <= 0
+	})
+}
+
+// Greater returns true if the left FixedSizeBinaryElement
+// is greter than the right FixedSizeBinaryElement.
+func (e FixedSizeBinaryElement) Greater(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) > 0
+	})
+}
+
+// GreaterEq returns true if the left FixedSizeBinaryElement
+// is greter than or equal to the right FixedSizeBinaryElement.
+func (e FixedSizeBinaryElement) GreaterEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) >= 0
+	})
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this FixedSizeBinaryElement.
+func (e FixedSizeBinaryElement) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e FixedSizeBinaryElement) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e FixedSizeBinaryElement) IsNil() bool {
+	return e.v == nil
+}
+
+// LargeStringElement has logic to apply to this type.
+type LargeStringElement struct {
+	v interface{}
+}
+
+// NewLargeStringElement creates a new LargeStringElement logic wrapper
+// from the given value provided as v.
+func NewLargeStringElement(v interface{}) *LargeStringElement {
+	return &LargeStringElement{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e LargeStringElement) compare(r Element, f func(left, right string) bool) (bool, error) {
+	rE, ok := r.(*LargeStringElement)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to LargeStringElement", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.(string)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a string", e.v)
+	}
+	rv, rok := rE.v.(string)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a string", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left LargeStringElement is equal to the right LargeStringElement.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e LargeStringElement) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right string) bool {
+		return left == right
+	})
+}
+
+// EqStrict returns true if the left LargeStringElement is equal to the right LargeStringElement.
+// When both are nil EqStrict returns true.
+func (e LargeStringElement) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right string) bool {
+		return left == right
+	})
+}
+
+// Neq returns true if the left LargeStringElement
+// is not equal to the right LargeStringElement.
+func (e LargeStringElement) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left LargeStringElement
+// is less than the right LargeStringElement.
+func (e LargeStringElement) Less(r Element) (bool, error) {
+	return false, errors.New("operator < not defined on LargeString")
+}
+
+// LessEq returns true if the left LargeStringElement
+// is less than or equal to the right LargeStringElement.
+func (e LargeStringElement) LessEq(r Element) (bool, error) {
+	return false, errors.New("operator <= not defined on LargeString")
+}
+
+// Greater returns true if the left LargeStringElement
+// is greter than the right LargeStringElement.
+func (e LargeStringElement) Greater(r Element) (bool, error) {
+	return false, errors.New("operator > not defined on LargeString")
+}
+
+// GreaterEq returns true if the left LargeStringElement
+// is greter than or equal to the right LargeStringElement.
+func (e LargeStringElement) GreaterEq(r Element) (bool, error) {
+	return false, errors.New("operator >= not defined on LargeString")
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this LargeStringElement.
+func (e LargeStringElement) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e LargeStringElement) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e LargeStringElement) IsNil() bool {
+	return e.v == nil
+}
+
+// StringViewElement has logic to apply to this type.
+type StringViewElement struct {
+	v interface{}
+}
+
+// NewStringViewElement creates a new StringViewElement logic wrapper
+// from the given value provided as v.
+func NewStringViewElement(v interface{}) *StringViewElement {
+	return &StringViewElement{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e StringViewElement) compare(r Element, f func(left, right string) bool) (bool, error) {
+	rE, ok := r.(*StringViewElement)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to StringViewElement", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.(string)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a string", e.v)
+	}
+	rv, rok := rE.v.(string)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a string", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left StringViewElement is equal to the right StringViewElement.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e StringViewElement) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right string) bool {
+		return left == right
+	})
+}
+
+// EqStrict returns true if the left StringViewElement is equal to the right StringViewElement.
+// When both are nil EqStrict returns true.
+func (e StringViewElement) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right string) bool {
+		return left == right
+	})
+}
+
+// Neq returns true if the left StringViewElement
+// is not equal to the right StringViewElement.
+func (e StringViewElement) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left StringViewElement
+// is less than the right StringViewElement.
+func (e StringViewElement) Less(r Element) (bool, error) {
+	return false, errors.New("operator < not defined on StringView")
+}
+
+// LessEq returns true if the left StringViewElement
+// is less than or equal to the right StringViewElement.
+func (e StringViewElement) LessEq(r Element) (bool, error) {
+	return false, errors.New("operator <= not defined on StringView")
+}
+
+// Greater returns true if the left StringViewElement
+// is greter than the right StringViewElement.
+func (e StringViewElement) Greater(r Element) (bool, error) {
+	return false, errors.New("operator > not defined on StringView")
+}
+
+// GreaterEq returns true if the left StringViewElement
+// is greter than or equal to the right StringViewElement.
+func (e StringViewElement) GreaterEq(r Element) (bool, error) {
+	return false, errors.New("operator >= not defined on StringView")
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this StringViewElement.
+func (e StringViewElement) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e StringViewElement) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e StringViewElement) IsNil() bool {
+	return e.v == nil
+}
+
+// BinaryViewElement has logic to apply to this type.
+type BinaryViewElement struct {
+	v interface{}
+}
+
+// NewBinaryViewElement creates a new BinaryViewElement logic wrapper
+// from the given value provided as v.
+func NewBinaryViewElement(v interface{}) *BinaryViewElement {
+	return &BinaryViewElement{
+		v: v,
+	}
+}
+
+// compare takes the left and right elements and applies the comparator function to them.
+func (e BinaryViewElement) compare(r Element, f func(left, right []byte) bool) (bool, error) {
+	rE, ok := r.(*BinaryViewElement)
+	if !ok {
+		return false, fmt.Errorf("cannot cast %v to BinaryViewElement", r)
+	}
+
+	// When their nil status isn't the same, we can't compare them.
+	// Explicit both nil should be handled elsewhere.
+	if e.IsNil() != rE.IsNil() {
+		return false, nil
+	}
+
+	lv, lok := e.v.([]byte)
+	if !lok {
+		return false, fmt.Errorf("cannot assert %v is a []byte", e.v)
+	}
+	rv, rok := rE.v.([]byte)
+	if !rok {
+		return false, fmt.Errorf("cannot assert %v is a []byte", rE.v)
+	}
+
+	return f(lv, rv), nil
+}
+
+// Comparation methods
+
+// Eq returns true if the left BinaryViewElement is equal to the right BinaryViewElement.
+// When both are nil Eq returns false because nil actualy signifies "unknown"
+// and you can't compare two things when you don't know what they are.
+func (e BinaryViewElement) Eq(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return false, nil
+	}
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Equal(left, right)
+	})
+}
+
+// EqStrict returns true if the left BinaryViewElement is equal to the right BinaryViewElement.
+// When both are nil EqStrict returns true.
+func (e BinaryViewElement) EqStrict(r Element) (bool, error) {
+	if e.IsNil() && r.IsNil() {
+		return true, nil
+	}
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Equal(left, right)
+	})
+}
+
+// Neq returns true if the left BinaryViewElement
+// is not equal to the right BinaryViewElement.
+func (e BinaryViewElement) Neq(r Element) (bool, error) {
+	v, ok := e.Eq(r)
+	return !v, ok
+}
+
+// Less returns true if the left BinaryViewElement
+// is less than the right BinaryViewElement.
+func (e BinaryViewElement) Less(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) < 0
+	})
+}
+
+// LessEq returns true if the left BinaryViewElement
+// is less than or equal to the right BinaryViewElement.
+func (e BinaryViewElement) LessEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) <= 0
+	})
+}
+
+// Greater returns true if the left BinaryViewElement
+// is greter than the right BinaryViewElement.
+func (e BinaryViewElement) Greater(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) > 0
+	})
+}
+
+// GreaterEq returns true if the left BinaryViewElement
+// is greter than or equal to the right BinaryViewElement.
+func (e BinaryViewElement) GreaterEq(r Element) (bool, error) {
+	return e.compare(r, func(left, right []byte) bool {
+		return bytes.Compare(left, right) >= 0
+	})
+}
+
+// Accessor/conversion methods
+
+// Copy returns a copy of this BinaryViewElement.
+func (e BinaryViewElement) Copy() Element {
+	return e
+}
+
+// String prints the value of this element as a string.
+func (e BinaryViewElement) String() string {
+	return fmt.Sprintf("%v", e.v)
+}
+
+// Information methods
+
+// IsNil returns true when the underlying value is nil.
+func (e BinaryViewElement) IsNil() bool {
 	return e.v == nil
 }

@@ -17,8 +17,8 @@ package iterator
 import (
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/gomem/gomem/internal/debug"
 )
 
@@ -36,7 +36,7 @@ type BooleanValueIterator struct {
 }
 
 // NewBooleanValueIterator creates a new BooleanValueIterator for reading an Arrow Column.
-func NewBooleanValueIterator(col *array.Column) *BooleanValueIterator {
+func NewBooleanValueIterator(col *arrow.Column) *BooleanValueIterator {
 	// We need a ChunkIterator to read the chunks
 	chunkIterator := NewChunkIterator(col)
 

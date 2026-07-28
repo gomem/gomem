@@ -1,31 +1,39 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+# CI for gomem/gomem — builds and tests the Apache Arrow DataFrame library.
+#
+# Mirrors the local Makefile targets (make build, make test, make ci) and
+# installs goimports, which the codegen step (bin/tmpl) requires to format the
+# generated .gen.go files.
 
 name: Go
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
-
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.20'
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          # Pinned to match the go directive in go.mod (currently go 1.25).
+          go-version-file: go.mod
+          cache: true
 
-    - name: Imports
-      run: go get golang.org/x/tools/cmd/goimports
+      - name: Install goimports
+        # The codegen (make build) runs goimports to format generated files.
+        run: go install golang.org/x/tools/cmd/goimports@latest
 
-    - name: make
-      run: make
+      - name: Build (codegen + compile)
+        run: make build
 
-    - name: make ci
-      run: make ci
+      - name: Test (assert)
+        run: make test
+
+      - name: Test (debug assert, CI matrix)
+        run: make ci

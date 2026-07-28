@@ -7,9 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/memory"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/gomem/gomem/pkg/metadata"
 )
 
@@ -58,6 +59,68 @@ func buildRecord(pool *memory.CheckedAllocator, dtype arrow.DataType, vals []int
 	defer rec1.Release()
 
 	return fmt.Sprintf("%v", rec1), nil
+}
+
+// TestSmartBuilderDecimal128StoredValues verifies that SmartBuilder stores the
+// exact decimal128.Num values, independent of how Arrow formats them for display.
+//
+// The generated TestNewSmartBuilderTypes asserts on the record's String()
+// output, which (since Arrow for Go v18) renders decimals respecting the
+// column precision; at low precision distinct stored values can collapse to
+// the same display string (e.g. i=6,7,8 all render as "1e+10"), so that test
+// alone cannot prove the stored values are correct. This test closes that gap
+// by reading the underlying *array.Decimal128 and comparing each Value(i)
+// directly against the input.
+func TestSmartBuilderDecimal128StoredValues(t *testing.T) {
+	pool := memory.NewCheckedAllocator(memory.NewGoAllocator())
+	defer pool.AssertSize(t, 0)
+
+	// precision 38 is the maximum for decimal128 and comfortably holds
+	// decimal128.New(i, i) = i*(2^64+1) for i in [0,8].
+	dtype := &arrow.Decimal128Type{Precision: 38, Scale: 10}
+	vals := Decimal128Gen() // []interface{}{ NewDecimal128(decimal128.New(i,i)) for i in 0..8 }
+
+	schema := arrow.NewSchema(
+		[]arrow.Field{{Name: fmt.Sprintf("col-%s", dtype.Name()), Type: dtype}},
+		nil,
+	)
+
+	b := array.NewRecordBuilder(pool, schema)
+	defer b.Release()
+
+	sb := NewSmartBuilder(b)
+	for j := range vals {
+		if err := sb.Append(0, vals[j]); err != nil {
+			t.Fatalf("Append(%d): %v", j, err)
+		}
+	}
+	if err := sb.Append(0, nil); err != nil {
+		t.Fatalf("Append(null): %v", err)
+	}
+
+	rec := b.NewRecord()
+	defer rec.Release()
+
+	col, ok := rec.Column(0).(*array.Decimal128)
+	if !ok {
+		t.Fatalf("expected *array.Decimal128, got %T", rec.Column(0))
+	}
+
+	// 9 appended values + 1 null = 10 rows.
+	if got, want := col.Len(), len(vals)+1; got != want {
+		t.Fatalf("Len: got=%d, want=%d", got, want)
+	}
+	if !col.IsNull(len(vals)) {
+		t.Fatalf("expected last value to be null")
+	}
+
+	for i := 0; i < len(vals); i++ {
+		want := decimal128.New(int64(i), uint64(i))
+		got := col.Value(i)
+		if got != want {
+			t.Errorf("Value(%d): got=%v, want=%v", i, got, want)
+		}
+	}
 }
 
 type keyValue struct {
@@ -155,8 +218,8 @@ func TestSmartBuilderMaps(t *testing.T) {
 	want := `record:
 	schema:
 	fields: 2
-	- col15-los: type=list<item: struct<field_a: utf8, field_b: utf8, field_c: float64>>
-	- col16-los-sb: type=list<item: struct<Key: utf8, Value: float64>>
+		- col15-los: type=list<item: struct<field_a: utf8, field_b: utf8, field_c: float64>, nullable>
+	- col16-los-sb: type=list<item: struct<Key: utf8, Value: float64>, nullable>
 	metadata: ["GOMEM_DATAFRAME_ORIGINAL_TYPE": "MAP", "LogicalType": "MAP"]
 	rows: 5
 	col[0][col15-los]: [{["r0:s0:e0" "r0:s1:e1"] ["r0:s0:e0" "r0:s1:e1"] [0 1]} {["r1:s0:e2" "r1:s1:e3"] ["r1:s0:e2" "r1:s1:e3"] [0 1]} {["r2:s0:e4" "r2:s1:e5"] ["r2:s0:e4" "r2:s1:e5"] [0 1]} {["r3:s0:e6" "r3:s1:e7"] ["r3:s0:e6" "r3:s1:e7"] [0 1]} {["r4:s0:e8" "r4:s1:e9"] ["r4:s0:e8" "r4:s1:e9"] [0 1]}]

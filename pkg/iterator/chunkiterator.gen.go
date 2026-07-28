@@ -19,17 +19,18 @@ package iterator
 import (
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/decimal128"
-	"github.com/apache/arrow/go/arrow/float16"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
+	"github.com/apache/arrow-go/v18/arrow/float16"
 	"github.com/gomem/gomem/internal/debug"
 )
 
 // Date32ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Date32ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Date32 // cache the chunks on this iterator
@@ -43,7 +44,7 @@ type Date32ChunkIterator struct {
 }
 
 // NewDate32ChunkIterator creates a new Date32ChunkIterator for reading an Arrow Column.
-func NewDate32ChunkIterator(col *array.Column) *Date32ChunkIterator {
+func NewDate32ChunkIterator(col *arrow.Column) *Date32ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -134,7 +135,7 @@ func (cr *Date32ChunkIterator) Release() {
 // Date64ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Date64ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Date64 // cache the chunks on this iterator
@@ -148,7 +149,7 @@ type Date64ChunkIterator struct {
 }
 
 // NewDate64ChunkIterator creates a new Date64ChunkIterator for reading an Arrow Column.
-func NewDate64ChunkIterator(col *array.Column) *Date64ChunkIterator {
+func NewDate64ChunkIterator(col *arrow.Column) *Date64ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -239,7 +240,7 @@ func (cr *Date64ChunkIterator) Release() {
 // DayTimeIntervalChunkIterator is an iterator for reading an Arrow Column value by value.
 type DayTimeIntervalChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.DayTimeInterval // cache the chunks on this iterator
@@ -253,7 +254,7 @@ type DayTimeIntervalChunkIterator struct {
 }
 
 // NewDayTimeIntervalChunkIterator creates a new DayTimeIntervalChunkIterator for reading an Arrow Column.
-func NewDayTimeIntervalChunkIterator(col *array.Column) *DayTimeIntervalChunkIterator {
+func NewDayTimeIntervalChunkIterator(col *arrow.Column) *DayTimeIntervalChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -341,10 +342,117 @@ func (cr *DayTimeIntervalChunkIterator) Release() {
 	}
 }
 
+// MonthDayNanoIntervalChunkIterator is an iterator for reading an Arrow Column value by value.
+type MonthDayNanoIntervalChunkIterator struct {
+	refCount int64
+	col      *arrow.Column
+
+	// Things Chunked maintains. We're going to maintain it ourselves.
+	chunks []*array.MonthDayNanoInterval // cache the chunks on this iterator
+	length int64                         // this isn't set right on Chunked so we won't rely on it there. Instead we keep the correct value here.
+	nulls  int64
+	dtype  arrow.DataType
+
+	// Things we need to maintain for the iterator
+	currentIndex int                         // current chunk
+	currentChunk *array.MonthDayNanoInterval // current chunk
+}
+
+// NewMonthDayNanoIntervalChunkIterator creates a new MonthDayNanoIntervalChunkIterator for reading an Arrow Column.
+func NewMonthDayNanoIntervalChunkIterator(col *arrow.Column) *MonthDayNanoIntervalChunkIterator {
+	col.Retain()
+
+	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
+	columnChunks := col.Data().Chunks()
+	chunks := make([]*array.MonthDayNanoInterval, len(columnChunks))
+	var length int64
+	var nulls int64
+
+	for i, chunk := range columnChunks {
+		// Keep our own refs to chunks
+		chunks[i] = chunk.(*array.MonthDayNanoInterval)
+		// Retain the chunk
+		chunks[i].Retain()
+
+		// Keep our own counters instead of Chunked's
+		length += int64(chunk.Len())
+		nulls += int64(chunk.NullN())
+	}
+
+	return &MonthDayNanoIntervalChunkIterator{
+		refCount: 1,
+		col:      col,
+
+		chunks: chunks,
+		length: length,
+		nulls:  nulls,
+		dtype:  col.DataType(),
+
+		currentIndex: 0,
+		currentChunk: nil,
+	}
+}
+
+// Chunk will return the current chunk that the iterator is on.
+func (cr *MonthDayNanoIntervalChunkIterator) Chunk() *array.MonthDayNanoInterval {
+	return cr.currentChunk
+}
+
+// ChunkValues returns the underlying []arrow.MonthDayNanoInterval chunk values.
+// Keep in mind the []arrow.MonthDayNanoInterval type might not be able
+// to account for nil values. You must check for those explicitly via the chunk.
+func (cr *MonthDayNanoIntervalChunkIterator) ChunkValues() []arrow.MonthDayNanoInterval {
+
+	return cr.Chunk().MonthDayNanoIntervalValues()
+
+}
+
+// Next moves the iterator to the next chunk. This will return false
+// when there are no more chunks.
+func (cr *MonthDayNanoIntervalChunkIterator) Next() bool {
+	if cr.currentIndex >= len(cr.chunks) {
+		return false
+	}
+
+	if cr.currentChunk != nil {
+		cr.currentChunk.Release()
+	}
+
+	cr.currentChunk = cr.chunks[cr.currentIndex]
+	cr.currentChunk.Retain()
+	cr.currentIndex++
+
+	return true
+}
+
+// Retain keeps a reference to the MonthDayNanoIntervalChunkIterator
+func (cr *MonthDayNanoIntervalChunkIterator) Retain() {
+	atomic.AddInt64(&cr.refCount, 1)
+}
+
+// Release removes a reference to the MonthDayNanoIntervalChunkIterator
+func (cr *MonthDayNanoIntervalChunkIterator) Release() {
+	debug.Assert(atomic.LoadInt64(&cr.refCount) > 0, "too many releases")
+	ref := atomic.AddInt64(&cr.refCount, -1)
+	if ref == 0 {
+		cr.col.Release()
+		for i := range cr.chunks {
+			cr.chunks[i].Release()
+		}
+		if cr.currentChunk != nil {
+			cr.currentChunk.Release()
+			cr.currentChunk = nil
+		}
+		cr.col = nil
+		cr.chunks = nil
+		cr.dtype = nil
+	}
+}
+
 // Decimal128ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Decimal128ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Decimal128 // cache the chunks on this iterator
@@ -358,7 +466,7 @@ type Decimal128ChunkIterator struct {
 }
 
 // NewDecimal128ChunkIterator creates a new Decimal128ChunkIterator for reading an Arrow Column.
-func NewDecimal128ChunkIterator(col *array.Column) *Decimal128ChunkIterator {
+func NewDecimal128ChunkIterator(col *arrow.Column) *Decimal128ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -446,10 +554,115 @@ func (cr *Decimal128ChunkIterator) Release() {
 	}
 }
 
+// Decimal256ChunkIterator is an iterator for reading an Arrow Column value by value.
+type Decimal256ChunkIterator struct {
+	refCount int64
+	col      *arrow.Column
+
+	// Things Chunked maintains. We're going to maintain it ourselves.
+	chunks []*array.Decimal256 // cache the chunks on this iterator
+	length int64               // this isn't set right on Chunked so we won't rely on it there. Instead we keep the correct value here.
+	nulls  int64
+	dtype  arrow.DataType
+
+	// Things we need to maintain for the iterator
+	currentIndex int               // current chunk
+	currentChunk *array.Decimal256 // current chunk
+}
+
+// NewDecimal256ChunkIterator creates a new Decimal256ChunkIterator for reading an Arrow Column.
+func NewDecimal256ChunkIterator(col *arrow.Column) *Decimal256ChunkIterator {
+	col.Retain()
+
+	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
+	columnChunks := col.Data().Chunks()
+	chunks := make([]*array.Decimal256, len(columnChunks))
+	var length int64
+	var nulls int64
+
+	for i, chunk := range columnChunks {
+		// Keep our own refs to chunks
+		chunks[i] = chunk.(*array.Decimal256)
+		// Retain the chunk
+		chunks[i].Retain()
+
+		// Keep our own counters instead of Chunked's
+		length += int64(chunk.Len())
+		nulls += int64(chunk.NullN())
+	}
+
+	return &Decimal256ChunkIterator{
+		refCount: 1,
+		col:      col,
+
+		chunks: chunks,
+		length: length,
+		nulls:  nulls,
+		dtype:  col.DataType(),
+
+		currentIndex: 0,
+		currentChunk: nil,
+	}
+}
+
+// Chunk will return the current chunk that the iterator is on.
+func (cr *Decimal256ChunkIterator) Chunk() *array.Decimal256 { return cr.currentChunk }
+
+// ChunkValues returns the underlying []decimal256.Num chunk values.
+// Keep in mind the []decimal256.Num type might not be able
+// to account for nil values. You must check for those explicitly via the chunk.
+func (cr *Decimal256ChunkIterator) ChunkValues() []decimal256.Num {
+
+	return cr.Chunk().Values()
+
+}
+
+// Next moves the iterator to the next chunk. This will return false
+// when there are no more chunks.
+func (cr *Decimal256ChunkIterator) Next() bool {
+	if cr.currentIndex >= len(cr.chunks) {
+		return false
+	}
+
+	if cr.currentChunk != nil {
+		cr.currentChunk.Release()
+	}
+
+	cr.currentChunk = cr.chunks[cr.currentIndex]
+	cr.currentChunk.Retain()
+	cr.currentIndex++
+
+	return true
+}
+
+// Retain keeps a reference to the Decimal256ChunkIterator
+func (cr *Decimal256ChunkIterator) Retain() {
+	atomic.AddInt64(&cr.refCount, 1)
+}
+
+// Release removes a reference to the Decimal256ChunkIterator
+func (cr *Decimal256ChunkIterator) Release() {
+	debug.Assert(atomic.LoadInt64(&cr.refCount) > 0, "too many releases")
+	ref := atomic.AddInt64(&cr.refCount, -1)
+	if ref == 0 {
+		cr.col.Release()
+		for i := range cr.chunks {
+			cr.chunks[i].Release()
+		}
+		if cr.currentChunk != nil {
+			cr.currentChunk.Release()
+			cr.currentChunk = nil
+		}
+		cr.col = nil
+		cr.chunks = nil
+		cr.dtype = nil
+	}
+}
+
 // DurationChunkIterator is an iterator for reading an Arrow Column value by value.
 type DurationChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Duration // cache the chunks on this iterator
@@ -463,7 +676,7 @@ type DurationChunkIterator struct {
 }
 
 // NewDurationChunkIterator creates a new DurationChunkIterator for reading an Arrow Column.
-func NewDurationChunkIterator(col *array.Column) *DurationChunkIterator {
+func NewDurationChunkIterator(col *arrow.Column) *DurationChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -554,7 +767,7 @@ func (cr *DurationChunkIterator) Release() {
 // Float16ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Float16ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Float16 // cache the chunks on this iterator
@@ -568,7 +781,7 @@ type Float16ChunkIterator struct {
 }
 
 // NewFloat16ChunkIterator creates a new Float16ChunkIterator for reading an Arrow Column.
-func NewFloat16ChunkIterator(col *array.Column) *Float16ChunkIterator {
+func NewFloat16ChunkIterator(col *arrow.Column) *Float16ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -659,7 +872,7 @@ func (cr *Float16ChunkIterator) Release() {
 // Float32ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Float32ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Float32 // cache the chunks on this iterator
@@ -673,7 +886,7 @@ type Float32ChunkIterator struct {
 }
 
 // NewFloat32ChunkIterator creates a new Float32ChunkIterator for reading an Arrow Column.
-func NewFloat32ChunkIterator(col *array.Column) *Float32ChunkIterator {
+func NewFloat32ChunkIterator(col *arrow.Column) *Float32ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -764,7 +977,7 @@ func (cr *Float32ChunkIterator) Release() {
 // Float64ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Float64ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Float64 // cache the chunks on this iterator
@@ -778,7 +991,7 @@ type Float64ChunkIterator struct {
 }
 
 // NewFloat64ChunkIterator creates a new Float64ChunkIterator for reading an Arrow Column.
-func NewFloat64ChunkIterator(col *array.Column) *Float64ChunkIterator {
+func NewFloat64ChunkIterator(col *arrow.Column) *Float64ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -869,7 +1082,7 @@ func (cr *Float64ChunkIterator) Release() {
 // Int16ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Int16ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Int16 // cache the chunks on this iterator
@@ -883,7 +1096,7 @@ type Int16ChunkIterator struct {
 }
 
 // NewInt16ChunkIterator creates a new Int16ChunkIterator for reading an Arrow Column.
-func NewInt16ChunkIterator(col *array.Column) *Int16ChunkIterator {
+func NewInt16ChunkIterator(col *arrow.Column) *Int16ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -974,7 +1187,7 @@ func (cr *Int16ChunkIterator) Release() {
 // Int32ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Int32ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Int32 // cache the chunks on this iterator
@@ -988,7 +1201,7 @@ type Int32ChunkIterator struct {
 }
 
 // NewInt32ChunkIterator creates a new Int32ChunkIterator for reading an Arrow Column.
-func NewInt32ChunkIterator(col *array.Column) *Int32ChunkIterator {
+func NewInt32ChunkIterator(col *arrow.Column) *Int32ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1079,7 +1292,7 @@ func (cr *Int32ChunkIterator) Release() {
 // Int64ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Int64ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Int64 // cache the chunks on this iterator
@@ -1093,7 +1306,7 @@ type Int64ChunkIterator struct {
 }
 
 // NewInt64ChunkIterator creates a new Int64ChunkIterator for reading an Arrow Column.
-func NewInt64ChunkIterator(col *array.Column) *Int64ChunkIterator {
+func NewInt64ChunkIterator(col *arrow.Column) *Int64ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1184,7 +1397,7 @@ func (cr *Int64ChunkIterator) Release() {
 // Int8ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Int8ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Int8 // cache the chunks on this iterator
@@ -1198,7 +1411,7 @@ type Int8ChunkIterator struct {
 }
 
 // NewInt8ChunkIterator creates a new Int8ChunkIterator for reading an Arrow Column.
-func NewInt8ChunkIterator(col *array.Column) *Int8ChunkIterator {
+func NewInt8ChunkIterator(col *arrow.Column) *Int8ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1289,7 +1502,7 @@ func (cr *Int8ChunkIterator) Release() {
 // MonthIntervalChunkIterator is an iterator for reading an Arrow Column value by value.
 type MonthIntervalChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.MonthInterval // cache the chunks on this iterator
@@ -1303,7 +1516,7 @@ type MonthIntervalChunkIterator struct {
 }
 
 // NewMonthIntervalChunkIterator creates a new MonthIntervalChunkIterator for reading an Arrow Column.
-func NewMonthIntervalChunkIterator(col *array.Column) *MonthIntervalChunkIterator {
+func NewMonthIntervalChunkIterator(col *arrow.Column) *MonthIntervalChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1394,7 +1607,7 @@ func (cr *MonthIntervalChunkIterator) Release() {
 // Time32ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Time32ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Time32 // cache the chunks on this iterator
@@ -1408,7 +1621,7 @@ type Time32ChunkIterator struct {
 }
 
 // NewTime32ChunkIterator creates a new Time32ChunkIterator for reading an Arrow Column.
-func NewTime32ChunkIterator(col *array.Column) *Time32ChunkIterator {
+func NewTime32ChunkIterator(col *arrow.Column) *Time32ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1499,7 +1712,7 @@ func (cr *Time32ChunkIterator) Release() {
 // Time64ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Time64ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Time64 // cache the chunks on this iterator
@@ -1513,7 +1726,7 @@ type Time64ChunkIterator struct {
 }
 
 // NewTime64ChunkIterator creates a new Time64ChunkIterator for reading an Arrow Column.
-func NewTime64ChunkIterator(col *array.Column) *Time64ChunkIterator {
+func NewTime64ChunkIterator(col *arrow.Column) *Time64ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1604,7 +1817,7 @@ func (cr *Time64ChunkIterator) Release() {
 // TimestampChunkIterator is an iterator for reading an Arrow Column value by value.
 type TimestampChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Timestamp // cache the chunks on this iterator
@@ -1618,7 +1831,7 @@ type TimestampChunkIterator struct {
 }
 
 // NewTimestampChunkIterator creates a new TimestampChunkIterator for reading an Arrow Column.
-func NewTimestampChunkIterator(col *array.Column) *TimestampChunkIterator {
+func NewTimestampChunkIterator(col *arrow.Column) *TimestampChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1709,7 +1922,7 @@ func (cr *TimestampChunkIterator) Release() {
 // Uint16ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Uint16ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Uint16 // cache the chunks on this iterator
@@ -1723,7 +1936,7 @@ type Uint16ChunkIterator struct {
 }
 
 // NewUint16ChunkIterator creates a new Uint16ChunkIterator for reading an Arrow Column.
-func NewUint16ChunkIterator(col *array.Column) *Uint16ChunkIterator {
+func NewUint16ChunkIterator(col *arrow.Column) *Uint16ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1814,7 +2027,7 @@ func (cr *Uint16ChunkIterator) Release() {
 // Uint32ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Uint32ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Uint32 // cache the chunks on this iterator
@@ -1828,7 +2041,7 @@ type Uint32ChunkIterator struct {
 }
 
 // NewUint32ChunkIterator creates a new Uint32ChunkIterator for reading an Arrow Column.
-func NewUint32ChunkIterator(col *array.Column) *Uint32ChunkIterator {
+func NewUint32ChunkIterator(col *arrow.Column) *Uint32ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -1919,7 +2132,7 @@ func (cr *Uint32ChunkIterator) Release() {
 // Uint64ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Uint64ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Uint64 // cache the chunks on this iterator
@@ -1933,7 +2146,7 @@ type Uint64ChunkIterator struct {
 }
 
 // NewUint64ChunkIterator creates a new Uint64ChunkIterator for reading an Arrow Column.
-func NewUint64ChunkIterator(col *array.Column) *Uint64ChunkIterator {
+func NewUint64ChunkIterator(col *arrow.Column) *Uint64ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
@@ -2024,7 +2237,7 @@ func (cr *Uint64ChunkIterator) Release() {
 // Uint8ChunkIterator is an iterator for reading an Arrow Column value by value.
 type Uint8ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.Uint8 // cache the chunks on this iterator
@@ -2038,7 +2251,7 @@ type Uint8ChunkIterator struct {
 }
 
 // NewUint8ChunkIterator creates a new Uint8ChunkIterator for reading an Arrow Column.
-func NewUint8ChunkIterator(col *array.Column) *Uint8ChunkIterator {
+func NewUint8ChunkIterator(col *arrow.Column) *Uint8ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.

@@ -15,8 +15,9 @@
 package iterator
 
 import (
-	"github.com/apache/arrow/go/arrow/decimal128"
-	"github.com/apache/arrow/go/arrow/float16"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
+	"github.com/apache/arrow-go/v18/arrow/float16"
 	"github.com/gomem/gomem/pkg/object"
 )
 
@@ -107,7 +108,16 @@ func decimal128AsJSON(v interface{}) (interface{}, error) {
 	return object.Decimal128(d128), nil
 }
 
+func decimal256AsJSON(v interface{}) (interface{}, error) {
+	d256 := v.(decimal256.Num)
+	return object.Decimal256(d256), nil
+}
+
 func dayTimeIntervalAsJSON(v interface{}) (interface{}, error) {
+	return v, nil
+}
+
+func monthDayNanoIntervalAsJSON(v interface{}) (interface{}, error) {
 	return v, nil
 }
 
@@ -121,6 +131,29 @@ func booleanAsJSON(v interface{}) (interface{}, error) {
 
 func stringAsJSON(v interface{}) (interface{}, error) {
 	return v, nil
+}
+
+func binaryAsJSON(v interface{}) (interface{}, error) {
+	// Return the raw []byte so encoding/json base64-encodes it (matching Apache
+	// Arrow's JSON serialization for binary types). Returning string(v) would
+	// silently corrupt non-UTF-8 bytes.
+	return v.([]byte), nil
+}
+
+func fixedSizeBinaryAsJSON(v interface{}) (interface{}, error) {
+	return v.([]byte), nil
+}
+
+func largeStringAsJSON(v interface{}) (interface{}, error) {
+	return v, nil
+}
+
+func stringViewAsJSON(v interface{}) (interface{}, error) {
+	return v, nil
+}
+
+func binaryViewAsJSON(v interface{}) (interface{}, error) {
+	return v.([]byte), nil
 }
 
 // func fixedSizeBinary(v interface{}) (interface{}, error) {

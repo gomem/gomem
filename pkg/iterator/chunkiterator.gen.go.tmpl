@@ -17,10 +17,11 @@ package iterator
 import (
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
-	"github.com/apache/arrow/go/arrow/decimal128"
-	"github.com/apache/arrow/go/arrow/float16"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
+	"github.com/apache/arrow-go/v18/arrow/float16"
 	"github.com/gomem/gomem/internal/debug"
 )
 
@@ -29,7 +30,7 @@ import (
 // {{.Name}}ChunkIterator is an iterator for reading an Arrow Column value by value.
 type {{.Name}}ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
 	chunks []*array.{{.Name}} // cache the chunks on this iterator
@@ -43,7 +44,7 @@ type {{.Name}}ChunkIterator struct {
 }
 
 // New{{.Name}}ChunkIterator creates a new {{.Name}}ChunkIterator for reading an Arrow Column.
-func New{{.Name}}ChunkIterator(col *array.Column) *{{.Name}}ChunkIterator {
+func New{{.Name}}ChunkIterator(col *arrow.Column) *{{.Name}}ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.

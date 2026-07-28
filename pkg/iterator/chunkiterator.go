@@ -17,34 +17,33 @@ package iterator
 import (
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/gomem/gomem/internal/debug"
 )
 
 // ChunkIterator is a generic iterator for reading an Arrow Column chunk by chunk.
 type ChunkIterator struct {
 	refCount int64
-	col      *array.Column
+	col      *arrow.Column
 
 	// Things Chunked maintains. We're going to maintain it ourselves.
-	chunks []array.Interface // cache the chunks on this iterator
+	chunks []arrow.Array // cache the chunks on this iterator
 	length int64             // this isn't set right on Chunked so we won't rely on it there. Instead we keep the correct value here.
 	nulls  int64
 	dtype  arrow.DataType
 
 	// Things we need to maintain for the iterator
 	currentIndex int             // current chunk
-	currentChunk array.Interface // current chunk
+	currentChunk arrow.Array // current chunk
 }
 
 // NewChunkIterator creates a new ChunkIterator for reading an Arrow Column.
-func NewChunkIterator(col *array.Column) *ChunkIterator {
+func NewChunkIterator(col *arrow.Column) *ChunkIterator {
 	col.Retain()
 
 	// Chunked is not using the correct type to keep track of length so we have to recalculate it.
 	columnChunks := col.Data().Chunks()
-	chunks := make([]array.Interface, len(columnChunks))
+	chunks := make([]arrow.Array, len(columnChunks))
 	var length int64
 	var nulls int64
 
@@ -75,7 +74,7 @@ func NewChunkIterator(col *array.Column) *ChunkIterator {
 }
 
 // Chunk will return the current chunk that the iterator is on.
-func (cr *ChunkIterator) Chunk() array.Interface { return cr.currentChunk }
+func (cr *ChunkIterator) Chunk() arrow.Array { return cr.currentChunk }
 
 // Next moves the iterator to the next chunk. This will return false
 // when there are no more chunks.

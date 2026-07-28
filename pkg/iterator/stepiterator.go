@@ -17,8 +17,7 @@ package iterator
 import (
 	"sync/atomic"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/gomem/gomem/internal/debug"
 )
 
@@ -56,7 +55,7 @@ type stepIterator struct {
 }
 
 // NewStepIteratorForColumns creates a new StepIterator given a slice of columns.
-func NewStepIteratorForColumns(cols []array.Column) StepIterator {
+func NewStepIteratorForColumns(cols []arrow.Column) StepIterator {
 	itrs := make([]ValueIterator, 0, len(cols))
 	dtypes := make([]arrow.DataType, 0, len(cols))
 	for i := range cols {

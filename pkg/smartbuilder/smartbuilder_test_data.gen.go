@@ -19,9 +19,10 @@ package smartbuilder
 import (
 	"strconv"
 
-	"github.com/apache/arrow/go/arrow"
-	"github.com/apache/arrow/go/arrow/decimal128"
-	"github.com/apache/arrow/go/arrow/float16"
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/decimal128"
+	"github.com/apache/arrow-go/v18/arrow/decimal256"
+	"github.com/apache/arrow-go/v18/arrow/float16"
 	"github.com/gomem/gomem/pkg/object"
 )
 
@@ -55,9 +56,19 @@ func GenerateSmartBuilderTestCases() []SmartBuilderTestCase {
 			Want:   `col[0][col-day_time_interval]: [{0 0} {1 2} {2 4} {3 6} {4 8} {5 10} {6 12} {7 14} {8 16} (null)]`,
 		},
 		{
+			Values: MonthDayNanoIntervalGen(),
+			Dtype:  arrow.FixedWidthTypes.MonthDayNanoInterval,
+			Want:   `col[0][col-month_day_nano_interval]: [{0 0 0} {1 2 3} {2 4 6} {3 6 9} {4 8 12} {5 10 15} {6 12 18} {7 14 21} {8 16 24} (null)]`,
+		},
+		{
 			Values: Decimal128Gen(),
 			Dtype:  &arrow.Decimal128Type{Precision: 1, Scale: 10},
-			Want:   `col[0][col-decimal]: [{0 0} {1 1} {2 2} {3 3} {4 4} {5 5} {6 6} {7 7} {8 8} (null)]`,
+			Want:   `col[0][col-decimal]: [0 2e+09 4e+09 6e+09 7e+09 9e+09 1e+10 1e+10 1e+10 (null)]`,
+		},
+		{
+			Values: Decimal256Gen(),
+			Dtype:  &arrow.Decimal256Type{Precision: 38, Scale: 0},
+			Want:   `col[0][col-decimal256]: [0 1 2 3 4 5 6 7 8 (null)]`,
 		},
 		{
 			Values: Duration_sGen(),
@@ -184,6 +195,31 @@ func GenerateSmartBuilderTestCases() []SmartBuilderTestCase {
 			Dtype:  arrow.PrimitiveTypes.Uint8,
 			Want:   `col[0][col-uint8]: [0 1 2 3 4 5 6 7 8 (null)]`,
 		},
+		{
+			Values: BinaryGen(),
+			Dtype:  arrow.BinaryTypes.Binary,
+			Want:   `col[0][col-binary]: ["a" "b" "c" "d" "e" "f" "g" "h" "i" (null)]`,
+		},
+		{
+			Values: FixedSizeBinaryGen(),
+			Dtype:  &arrow.FixedSizeBinaryType{ByteWidth: 1},
+			Want:   `col[0][col-fixed_size_binary]: ["a" "b" "c" "d" "e" "f" "g" "h" "i" (null)]`,
+		},
+		{
+			Values: LargeStringGen(),
+			Dtype:  arrow.BinaryTypes.LargeString,
+			Want:   `col[0][col-large_utf8]: ["0" "1" "2" "3" "4" "5" "6" "7" "8" (null)]`,
+		},
+		{
+			Values: StringViewGen(),
+			Dtype:  arrow.BinaryTypes.StringView,
+			Want:   `col[0][col-string_view]: ["0" "1" "2" "3" "4" "5" "6" "7" "8" (null)]`,
+		},
+		{
+			Values: BinaryViewGen(),
+			Dtype:  arrow.BinaryTypes.BinaryView,
+			Want:   `col[0][col-binary_view]: ["a" "b" "c" "d" "e" "f" "g" "h" "i" (null)]`,
+		},
 	}
 }
 
@@ -219,10 +255,26 @@ func DayTimeIntervalGen() []interface{} {
 	return vals
 }
 
+func MonthDayNanoIntervalGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewMonthDayNanoInterval(arrow.MonthDayNanoInterval{Months: int32(i), Days: int32(i * 2), Nanoseconds: int64(i * 3)})
+	}
+	return vals
+}
+
 func Decimal128Gen() []interface{} {
 	vals := make([]interface{}, 9)
 	for i := range vals {
 		vals[i] = object.NewDecimal128(decimal128.New(int64(i), uint64(i)))
+	}
+	return vals
+}
+
+func Decimal256Gen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewDecimal256(decimal256.FromI64(int64(i)))
 	}
 	return vals
 }
@@ -423,6 +475,46 @@ func Uint8Gen() []interface{} {
 	vals := make([]interface{}, 9)
 	for i := range vals {
 		vals[i] = object.NewUint8(uint8(i))
+	}
+	return vals
+}
+
+func BinaryGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewBinary([]byte{byte('a' + i)})
+	}
+	return vals
+}
+
+func FixedSizeBinaryGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewFixedSizeBinary([]byte{byte('a' + i)})
+	}
+	return vals
+}
+
+func LargeStringGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewLargeString(strconv.Itoa(i))
+	}
+	return vals
+}
+
+func StringViewGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewStringView(strconv.Itoa(i))
+	}
+	return vals
+}
+
+func BinaryViewGen() []interface{} {
+	vals := make([]interface{}, 9)
+	for i := range vals {
+		vals[i] = object.NewBinaryView([]byte{byte('a' + i)})
 	}
 	return vals
 }
